@@ -4,26 +4,32 @@ namespace xepan\accounts;
 class Model_Account extends \xepan\base\Model_Table{
 	public $table="accounts";
 	public $acl=false;	
+	
 	function init(){
 		parent::init();
-		$acc_j=$this->join('accounts.contact_id');
+
+
 		
-		$acc_j->hasOne('xepan\accounts\Group','group_id')->mandatory(true);
+		$this->hasOne('xepan\base\Contact','contact_id');
+		$this->hasOne('xepan\accounts\Group','group_id')->mandatory(true);
 		
-		$acc_j->addField('name')->mandatory(true);
-		$acc_j->addField('account_type');
-		$acc_j->addField('AccountDisplayName')->caption('Account Displ. Name');
-		$acc_j->addField('is_active')->type('boolean')->defaultValue(true);
+		$this->addField('name')->mandatory(true);
+		$this->addField('account_type');
+		$this->addField('AccountDisplayName')->caption('Account Displ. Name');
+		$this->addField('is_active')->type('boolean')->defaultValue(true);
 
-		$acc_j->addField('OpeningBalanceDr')->type('money')->defaultValue(0);
-		$acc_j->addField('OpeningBalanceCr')->type('money')->defaultValue(0);
-		$acc_j->addField('CurrentBalanceDr')->type('money')->defaultValue(0);
-		$acc_j->addField('CurrentBalanceCr')->type('money')->defaultValue(0);
+		$this->addField('OpeningBalanceDr')->type('money')->defaultValue(0);
+		$this->addField('OpeningBalanceCr')->type('money')->defaultValue(0);
+		$this->addField('CurrentBalanceDr')->type('money')->defaultValue(0);
+		$this->addField('CurrentBalanceCr')->type('money')->defaultValue(0);
 
-		$acc_j->addField('affectsBalanceSheet')->type('boolean')->defaultValue(true);
+		$this->addField('affectsBalanceSheet')->type('boolean')->defaultValue(true);
 
-		$acc_j->hasMany('xepan\accounts\TransactionRow','account_id',null,'TransactionRows');
+		$this->hasMany('xepan\accounts\TransactionRow','account_id',null,'TransactionRows');
 
+		$this->is([
+				'name|required|unique_in_epan'
+			]);
 	}
 
 

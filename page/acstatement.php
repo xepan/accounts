@@ -19,6 +19,7 @@ class page_acstatement extends \Page {
 		$transactions = $this->add('xepan\accounts\Model_TransactionRow');
 
 		if($_GET['account_id'] or $_GET['AccountNumber']){
+
 			$account_id = $this->api->stickyGET('account_id');
 			$this->api->stickyGET('AccountNumber');
 			$this->api->stickyGET('from_date');
@@ -100,7 +101,6 @@ class page_acstatement extends \Page {
 
 		if($form->isSubmitted()){
 			
-			$a=$this->add('xepan\accounts\Model_Account');
 			$grid->js()->reload(
 					[
 						'account_id'=>$form['account'],
@@ -108,9 +108,10 @@ class page_acstatement extends \Page {
 						'to_date'=>($form['to_date'])?:0,
 						]
 					)->execute();
-			$a->tryLoad($form['account']);
-			$open = $a->getOpeningBalance();
-			$form->displayError('accounts',($open['DR'] - $open['CR']));
+			// $a=$this->add('xepan\accounts\Model_Account');
+			// $a->tryLoad($form['account']);
+			// $open = $a->getOpeningBalance();
+			// $form->displayError('accounts',($open['DR'] - $open['CR']));
 		}
 	}
 }

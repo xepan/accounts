@@ -10,8 +10,8 @@ Accounting Application for xEpan Platfom
 		Sales Ledger
 		Purchase Ledger
 
-Head
-	Groups
-		Ledger
+Head (BalanceSheet)
+	Groups 
+		Ledger (Account)
 			Transaction
 				transaction row : hasOne ledger

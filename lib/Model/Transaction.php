@@ -150,10 +150,10 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		}
 
 		//FOR ROUND AMOUNT CALCULATION
-		$shop_config = $this->add('xShop/Model_Configuration')->tryLoadAny();
-		if($shop_config['is_round_amount_calculation']){
+		// $shop_config = $this->add('xShop/Model_Configuration')->tryLoadAny();
+		// if($shop_config['is_round_amount_calculation']){
 			$total_debit_amount = $this->round($total_debit_amount);
-		}
+		// }
 
 		$total_credit_amount =0;
 		// Foreach Cr add new Transactionrow (Cr Wala)
@@ -164,9 +164,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		}
 		
 		//FOR ROUND AMOUNT CALCULATION
-		if($shop_config['is_round_amount_calculation']){
+		// if($shop_config['is_round_amount_calculation']){
 			$total_credit_amount = $this->round($total_credit_amount);
-		}
+		// }
 
 		
 	// 	// Credit Sum Must Be Equal to Debit Sum
@@ -243,6 +243,10 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			if($acc->isSundryDebtor())
 				return $trrow->account()->contact();
 		}
+	}
+
+	function round($amount){
+		return round($amount,3);
 	}
 
 }

@@ -3,6 +3,7 @@
 namespace xepan\accounts;
 
 class Grid_AccountsBase extends \xepan\base\Grid{
+	
 	public $sno=1;
 	public $order=null;
 	public $opening_balance = 0;
