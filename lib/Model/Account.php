@@ -12,6 +12,7 @@ class Model_Account extends \xepan\base\Model_Table{
 		
 		$this->hasOne('xepan\base\Contact','contact_id');
 		$this->hasOne('xepan\accounts\Group','group_id')->mandatory(true);
+		$this->hasOne('xepan\base\Epan','epan_id');
 		
 		$this->addField('name')->mandatory(true);
 		$this->addField('account_type');
