@@ -11,6 +11,7 @@ Accounting Application for xEpan Platfom
 		Purchase Ledger
 
 Head
-	Ledger
-		Transaction
-			transaction row : hasOne Nominal
+	Groups
+		Ledger
+			Transaction
+				transaction row : hasOne ledger
