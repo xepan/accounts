@@ -10,9 +10,8 @@ class page_amtpaid extends \Page {
 
 		$cash_accounts = $this->add('xepan\accounts\Model_Account')->loadCashAccounts();
 
-		$form = $cash_tab->add('Form_Stacked');
+		$form = $this->add('Form_Stacked',null,'cash_view');
 		$form->setLayout('view/form/payment-paid-cash');
-
 		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
 		$cash_field = $form->addField('autocomplete/Basic','cash_account')->validateNotNull(true);
 		$cash_field->setModel($cash_accounts);
@@ -47,7 +46,7 @@ class page_amtpaid extends \Page {
 
 		$bank_accounts = $this->add('xepan\accounts\Model_Account')->loadBankAccounts();
 
-		$form = $bank_tab->add('Form_Stacked');
+		$form = $this->add('Form_Stacked',null,'bank_view');
 		$form->setLayout('view/form/payment-paid-bank');
 
 		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
@@ -77,5 +76,8 @@ class page_amtpaid extends \Page {
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Done')->execute();
 		}
 
+	}
+	function defaultTemplate(){
+		return ['page/amtpaid'];
 	}
 }

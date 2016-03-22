@@ -4,16 +4,13 @@ class page_amtreceived extends \Page {
 	public $title="Account Receipt";
 	function init(){
 		parent::init();
-		$tabs= $this->add('Tabs');
-		$cash_tab = $tabs->addTab('Cash Received');
-		$bank_tab = $tabs->addTab('Bank Received');
 
 		// ==== CASH PAYMENT ===========
 		$received_from_model=$this->add('xepan\accounts\Model_Account');
 
 		$cash_accounts = $this->add('xepan\accounts\Model_Account')->loadCashAccounts();
 
-		$form = $cash_tab->add('Form_Stacked');
+		$form = $this->add('Form_Stacked',null,'cash_view');
 		$form->setLayout('view/form/payment-received-cash');
 
 		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
@@ -50,7 +47,7 @@ class page_amtreceived extends \Page {
 
 		$bank_accounts = $this->add('xepan\accounts\Model_Account')->loadBankAccounts();
 
-		$form = $bank_tab->add('Form_Stacked');
+		$form = $this->add('Form_Stacked',null,'bank_view');
 		$form->setLayout('view/form/payment-received-bank');
 
 		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
@@ -93,5 +90,8 @@ class page_amtreceived extends \Page {
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Done')->execute();
 		}
 
+	}
+	function defaultTemplate(){
+		return ['page/amtrecevied'];
 	}
 }
