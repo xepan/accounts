@@ -14,6 +14,7 @@ class page_amtreceived extends \Page {
 		$cash_accounts = $this->add('xepan\accounts\Model_Account')->loadCashAccounts();
 
 		$form = $cash_tab->add('Form_Stacked');
+		$form->setLayout('view/form/payment-received-cash');
 
 		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
 		$cash_field = $form->addField('autocomplete/Basic','cash_account')->validateNotNull(true);
@@ -50,6 +51,7 @@ class page_amtreceived extends \Page {
 		$bank_accounts = $this->add('xepan\accounts\Model_Account')->loadBankAccounts();
 
 		$form = $bank_tab->add('Form_Stacked');
+		$form->setLayout('view/form/payment-received-bank');
 
 		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
 		$bank_field = $form->addField('autocomplete/Basic','bank_account')->validateNotNull(true);
@@ -61,6 +63,9 @@ class page_amtreceived extends \Page {
 		$received_from_field->setModel($received_from_model);
 
 		$form->addField('Money','amount')->validateNotNull(true);
+		$curreny_field=$form->addField('Dropdown','currency')->validateNotNull(true);
+		$curreny_field->setModel('xepan\commerce\Model_Currency');
+		$form->addField('line','exchange_rate')->validateNotNull(true);
 		$form->addField('Text','narration');
 		$form->addSubmit('Receive Now');
 
