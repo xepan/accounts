@@ -58,16 +58,16 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	}
 
 	function beforeDelete(){
-		if($this->ref('xAccount/TransactionRow')->count()->getOne())
+		if($this->ref('TransactionRows')->count()->getOne())
 			throw $this->exception('TRansaction Contains Rows, Cannot Delete','Growl');
 	}
 
 	function cr_sum(){
-		return $this->ref('xAccount/TransactionRow')->sum('amountCr');
+		return $this->ref('TransactionRows')->sum('amountCr');
 	}
 
 	function dr_sum(){
-		return $this->ref('xAccount/TransactionRow')->sum('amountDr');
+		return $this->ref('TransactionRows')->sum('amountDr');
 	}
 
 
