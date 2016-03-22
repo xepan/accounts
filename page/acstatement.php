@@ -68,7 +68,7 @@ class page_acstatement extends \Page {
 				
 				$account_model=$p->add('xepan\accounts\Model_Account');
 				$acc=$account_model->load($account_id);
-				$email=$acc->customer()->get('customer_email');
+				$email=$acc->contact()->refSQL('Emails')->get('value');
 				
 				$vp_form=$p->add('Form');
 				$vp_form->addField('line','email_to')->set($email);

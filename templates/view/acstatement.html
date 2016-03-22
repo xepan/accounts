@@ -1,55 +1,36 @@
-<div class=" {$class}" style=" {$style}">
-	<br/><table width="95%" border="1" align="center">
-		<tr>
-			<th>S No</th>
-			<th>Voucher No</th>
-			<th>Transaction Type</th>
-			<th>Created Date</th>
-			<th>Narration</th>
-			<th>Debit</th>
-			<th>Credit</th>
-			<th>Balance</th>
-		</tr>
-		{opening_balance_section}
-		<tr>
-			<td colspan="4" align="right">
-				{$opening_balance_narration}
-			</td>
-			<td></td>
-			<td>{$opening_balance}</td>
-			<td></td>
-		</tr>
-		{/opening_balance_section}
-	{$Content}
-		{rows}
-			{row}
-				<tr>
-					<td>
-						{$s_no}
-					</td>
-					<td>
-						{$voucher_no}
-					</td>
-					<td>
-						{$transaction_type}
-					</td>
-					<td>
-						{$created_date}
-					</td>
-					<td>
-						{$Narration}
-					</td>
-					<td>
-						{$amountDr}
-					</td>
-					<td>
-						{$amountCr}
-					</td>
-					<td>
-						{$balance}
-					</td>
-				</tr>
-			{/row}
-		{/rows}
-		</table>
+
+<div id="{$_name}" class="main-box clearfix atk-table atk-table-zebra atk-table-bordered {$class}">
+  <div class="main-box-body clearfix table">
+    <h1>|Hello</h1>
+    <table width="95%" border="1" align="center" class="table user-list table-hover">
+      <tr>
+        <th><a href="#"><span>S.no</span></a></th>
+        <th class="text-right"><a href="#" class="asc"><span>Voucher No</span></a></th>
+        <th class="text-right"><a href="#" class="asc"><span>Transaction Type</span></a></th>
+        <th class="text-right"><a href="#" class="asc"><span>Created At</span></a></th>
+        <th class="text-right"><a href="#" class="asc"><span>Narration</span></a></th>
+        <th class="text-right"><a href="#" class="asc"><span>Debit</span></a></th>
+        <th class="text-right"><a href="#" class="asc"><span>credit</span></a></th>
+        <th class="text-right"><a href="#" class="asc"><span>Balance                                                </span></a></th>
+        <th> </th>
+      </tr>{opening_balance_section}
+      <tr>
+        <td colspan="4" align="right">{$opening_balance_narration}</td>
+        <td></td>
+        <td>{$opening_balance}</td>
+        <td></td>
+      </tr>{/opening_balance_section}    
+      {rows}{row}
+      <tr>
+        <td>{$sno}</td>
+        <td>{$voucher_no}</td>
+        <td class="text-right">{$transaction_type}</td>
+        <td>{$created_at}</td>
+        <td>{$Narration}</td>
+        <td>{$amountDr}</td>
+        <td>{$amountCr}</td>
+        <td>{$balance}</td>
+      </tr>
+    </table>
+  </div>
 </div>

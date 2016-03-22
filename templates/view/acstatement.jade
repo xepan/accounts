@@ -1,0 +1,57 @@
+.main-box.clearfix.atk-table.atk-table-zebra.atk-table-bordered(id="{$_name}" class="{$class}")
+    .main-box-body.clearfix.table
+        h1 |Hello
+        table.table.user-list.table-hover(width="95%" border="1" align="center")
+            tr
+                th
+                    a(href='#')
+                        span S.no
+                th.text-right
+                    a.asc(href='#')
+                        span Voucher No
+                th.text-right
+                    a.asc(href='#')
+                        span Transaction Type
+                th.text-right
+                    a.asc(href='#')
+                        span Created At
+                th.text-right
+                    a.asc(href='#')
+                        span Narration
+                th.text-right
+                    a.asc(href='#')
+                        span Debit
+                th.text-right
+                    a.asc(href='#')
+                        span credit
+                th.text-right
+                    a.asc(href='#')
+                        span Balance                                                
+                th 
+            {opening_balance_section}
+            tr
+                td(colspan="4" align="right")
+                    {$opening_balance_narration}
+                td
+                td
+                    {$opening_balance}
+                td
+            {/opening_balance_section}    
+            {rows}{row}
+            tr
+                td
+                  {$sno}
+                td
+                  {$voucher_no}
+                td.text-right
+                  {$transaction_type}
+                td
+                  {$created_at}
+                td
+                  {$Narration}
+                td
+                  {$amountDr}
+                td
+                  {$amountCr}
+                td
+                  {$balance}
