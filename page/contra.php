@@ -5,13 +5,9 @@ class page_contra extends \Page {
 	function init(){
 		parent::init();
 
-		$tabs= $this->add('Tabs');
-
-		$cash_to_bank_tab = $tabs->addTab('Cash To Bank');
-		$bank_to_cash_tab = $tabs->addTab('Bank To Cash');
 
 		// ============ CASH => BANK =================
-		$cash_to_bank_form = $cash_to_bank_tab->add('Form_Stacked');
+		$cash_to_bank_form = $this->add('Form_Stacked',null,'bank_view');
 
 		$bank_accounts = $this->add('xepan\accounts\Model_Account');
 		$bank_accounts->loadBankAccounts();
@@ -50,7 +46,7 @@ class page_contra extends \Page {
 
 		// ============ BANK => CASH =================
 
-		$bank_to_cash_form = $bank_to_cash_tab->add('Form_Stacked');
+		$bank_to_cash_form = $this->add('Form_Stacked',null,'cash_view');
 
 		$bank_accounts = $this->add('xepan\accounts\Model_Account');
 		$bank_accounts->loadBankAccounts();
@@ -87,5 +83,8 @@ class page_contra extends \Page {
 			$bank_to_cash_form->js(null, $bank_to_cash_form->js()->reload())->univ()->successMessage('Done')->execute();
 		}
 
+	}
+	function defaultTemplate(){
+		return ['page/contra'];
 	}
 }
