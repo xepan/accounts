@@ -1,0 +1,41 @@
+.xepan-grid.main-box.clearfix(id="{$_name}" class="{$class}")
+    {Pannel}
+    header.main-box-header.clearfix.atk-actions(class=" {$class} ")
+        div.filter-block
+            .pull-right {$grid_buttons} 
+            .form-group.pull-right.xepan-filter-form
+                div(class="form-control pull-left")|{$quick_search}
+                    i(class="fa fa-search search-icon")
+    {/Pannel}
+    .main-box-body.clearfix()
+        .row
+            {header}{cols}{col}
+            .col-md-12
+                .col-md-6
+                    strong Accounts:
+                .col-md-3
+                    strong.pull-right Debit:
+                .col-md-3
+                    strong.pull-right Credit:
+            {/}{/}{/}
+            {rows}{row}
+            div(class="{$odd_even} col-md-{col-width}12{/}" data-id="{$id}")
+                {cols}
+                .row
+                    .col-md-6
+                      {$account}
+                    .col-md-3.text-right
+                      {$amountDr}
+                    .col-md-3.text-right
+                      {$amountCr}
+                
+            {/}
+            {/}{/}
+            {not_found}
+            div.row
+                .col-md-12.text-center.alert.alert-warning(role="alert")
+                    span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
+            {/}
+
+            {totals}{cols}{col}{$content}{/}{/}{/}
+        {$Paginator}

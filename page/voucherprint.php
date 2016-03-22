@@ -8,7 +8,7 @@ class page_voucherprint extends \Page{
 			$this->api->stickyGET('transaction_id');
 
 			$this->vp=$this->add('VirtualPage')->set(function($p){
-				$related_root_document_name = $p->api->stickyGET('root_document_name');
+				// $related_root_document_name = $p->api->stickyGET('root_document_name');
 
 				$array = [
 						'xepan\commerce\SalesInvoice'=>'invoice',
@@ -31,26 +31,28 @@ class page_voucherprint extends \Page{
 			$transaction = $this->add('xepan\accounts\Model_Transaction');
 			$transaction->load($_GET['transaction_id']);
 
-			$cols= $this->add('Columns');
-			$left=$cols->addColumn(4);
-			$mid=$cols->addColumn(4);
-			$right=$cols->addColumn(4);
+			$cols= $this->add('Columns')->addClass('row xepan-push');
+			$left=$cols->addColumn(4)->addClass('col-md-4');
+			$mid=$cols->addColumn(4)->addClass('col-md-4');
+			$right=$cols->addColumn(4)->addClass('col-md-4');
 
-			$left->add('View')->set(['Transaction Date : ' . $transaction['created_at'],'icon'=>'calendar']);
-			$mid->add('View')->set([$transaction['transaction_type'],'icon'=>'check'])->addClass('text-center');
+			$left->add('View')->set(['Transaction Date : ' . $transaction['created_at']])->addClass('fa fa-calendar');
+			$mid->add('View')->set([$transaction['transaction_type']])->addClass('text-center fa fa-check');
 			
-			if(!$transaction->relatedDocument() instanceof \Dummy){
-				$right->add('View')
+			if(!$transaction instanceof \Dummy){
+				$right->add('View_Info')
 					->setElement('a')
-					->set([$transaction->relatedDocument()->get('name'),'icon'=>'export'])
+					->set([$transaction->get('name')."tst",'icon'=>'fa fa-export'])
 					->setAttr('href','#xepan')
-					->js('click',$this->js()->univ()->frameURL($transaction->relatedDocument()->get('name'), $this->api->url($this->vp->getURL(),['root_document_name'=>$transaction['related_root_document_name'],'document_id'=>$transaction['related_document_id']]) ));				
+					->addClass('fa fa-export')
+					->js('click',$this->js()->univ()->frameURL($transaction->get('name'), $this->api->url($this->vp->getURL()) ));				
 			}
 
-			$grid=$this->add('Grid');
-			$grid->setModel($transaction->ref('xepan\accounts\TransactionRow')->setOrder('amountDr desc, amountCr desc'),['account','amountDr','amountCr']);
+			$grid=$this->add('xepan\hr\Grid',null,null,['view/voucher-grid']);
+			$grid->template->tryDel('Pannel');
+			$grid->setModel($transaction->ref('TransactionRows')->setOrder('amountDr desc, amountCr desc'),['account','amountDr','amountCr']);
 
-			$this->add('View')->set([$transaction['Narration'],'icon'=>'pencil']);
+			$this->add('View')->set([$transaction['Narration']])->addClass('fa fa-pencil');
 	}
 
 	function relatedDocumentLink(){

@@ -9,27 +9,17 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th><a href="#"><span>S.no</span></a></th>
-        <th class="text-right"><a href="#" class="asc"><span>Voucher No</span></a></th>
-        <th class="text-right"><a href="#" class="asc"><span>Transaction Type</span></a></th>
-        <th class="text-right"><a href="#" class="asc"><span>Created At</span></a></th>
-        <th class="text-right"><a href="#" class="asc"><span>Narration</span></a></th>
-        <th class="text-right"><a href="#" class="asc"><span>Debit</span></a></th>
-        <th class="text-right"><a href="#" class="asc"><span>credit</span></a></th>
-        <th class="text-right"><a href="#" class="asc"><span>Balance                                                </span></a></th>
+        <th><a href="#"><span>Name</span></a></th>
+        <th class="text-left"><a href="#" class="asc"><span>Group</span></a></th>
+        <th class="text-center"><a href="#" class="asc"><span>Balance</span></a></th>
         <th> </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td>{$sno}</td>
-          <td>{$voucher_no}</td>
-          <td class="text-right">{$transaction_type}</td>
-          <td>{$created_at}</td>
-          <td>{$Narration}</td>
-          <td>{$amountDr}</td>
-          <td>{$amountCr}</td>
-          <td></td>
+          <td>{$name}</td>
+          <td class="text-left">{$group}</td>
+          <td style="width: 15%;">{$balance}</td>
           <td style="width: 15%;">
             {$edit}
             {$delete}

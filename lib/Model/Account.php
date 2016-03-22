@@ -23,16 +23,25 @@ class Model_Account extends \xepan\base\Model_Table{
 		$this->addField('OpeningBalanceCr')->type('money')->defaultValue(0);
 		$this->addField('CurrentBalanceDr')->type('money')->defaultValue(0);
 		$this->addField('CurrentBalanceCr')->type('money')->defaultValue(0);
+		
+		$this->addField('created_at')->type('date')->defaultValue($this->app->now);
+		$this->addField('updated_at')->type('date');
 
 		$this->addField('affectsBalanceSheet')->type('boolean')->defaultValue(true);
 
 		$this->hasMany('xepan\accounts\TransactionRow','account_id',null,'TransactionRows');
 
+		$this->addHook('beforeDelete',$this);
+		
 		$this->is([
 				'name|required|unique_in_epan'
 			]);
 	}
 
+	function beforeDelete(){
+		if($this->ref('TransactionRows')->count()->getOne())
+			throw new \Exception("This Account Cannot be Deleted, its has content Many. Please delete Transaction Row first", 1);
+	}
 
 	function createNewAccount($account_for,$group,$name){
 

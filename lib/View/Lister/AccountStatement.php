@@ -30,15 +30,6 @@ class View_Lister_AccountStatement extends \CompleteLister{
 	}
 
 	function defaultTemplate(){
-		$this->app->pathfinder->base_location->addRelativeLocation(
-		    'epan-components/'.__NAMESPACE__, array(
-		        'php'=>'lib',
-		        'template'=>'templates',
-		        'css'=>'templates/css',
-		        'js'=>'templates/js',
-		    )
-		);
-
-		return array('view/acstatement');
+		return ['view/acstatement'];
 	}
 }

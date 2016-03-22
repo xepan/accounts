@@ -14,28 +14,13 @@
                 {cols}{col}
                 th
                     a(href='#')
-                        span S.no
-                th.text-right
+                        span Name
+                th.text-left
                     a.asc(href='#')
-                        span Voucher No
-                th.text-right
+                        span Group
+                th.text-center
                     a.asc(href='#')
-                        span Transaction Type
-                th.text-right
-                    a.asc(href='#')
-                        span Created At
-                th.text-right
-                    a.asc(href='#')
-                        span Narration
-                th.text-right
-                    a.asc(href='#')
-                        span Debit
-                th.text-right
-                    a.asc(href='#')
-                        span credit
-                th.text-right
-                    a.asc(href='#')
-                        span Balance                                                
+                        span Balance
                 th 
                 {/}{/}
             {/}
@@ -46,20 +31,11 @@
                 tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
                     td
-                      {$sno}
-                    td
-                      {$voucher_no}
-                    td.text-right
-                      {$transaction_type}
-                    td
-                      {$created_at}
-                    td
-                      {$Narration}
-                    td
-                      {$amountDr}
-                    td
-                      {$amountCr}
-                    td
+                      | {$name}
+                    td.text-left
+                      | {$group}
+                    td(style="width: 15%;")
+                        {$balance}
                     td(style="width: 15%;")
                         {$edit}
                         {$delete}
