@@ -2,6 +2,7 @@
 namespace xepan\accounts;
 class page_acstatement extends \Page {
 	public $title="Account Statement";
+	public $acl=false;
 	function init(){
 		parent::init();
 
@@ -14,7 +15,7 @@ class page_acstatement extends \Page {
 		$form->addField('DatePicker','to_date');
 		$form->addSubmit('Get Statement');
 
-		$grid = $this->add('xepan\accounts\Grid_AccountsBase',null,null,['view/accountstatement-grid']);
+		$crud = $this->add('xepan\base\CRUD',['grid_class'=>'xepan\accounts\Grid_AccountsBase'],null,['view/accountstatement-grid']);
 
 		$transactions = $this->add('xepan\accounts\Model_TransactionRow');
 
@@ -56,11 +57,11 @@ class page_acstatement extends \Page {
 				$opening_narration = "By Opening balace";
 				$opening_side = 'CR';
 			}
-			$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
-			$grid->addCurrentBalanceInEachRow();
+			$crud->grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
+			$crud->grid->addCurrentBalanceInEachRow();
 
 
-			$send_email_btn = $grid->addButton('Send E-mail');
+			$send_email_btn = $crud->grid->addButton('Send E-mail');
 
 	/*Send Account Statement In mail to Customer*/
 			$mail_vp = $this->add('VirtualPage');
@@ -94,16 +95,16 @@ class page_acstatement extends \Page {
 		}
 
 		$transactions->setOrder('created_at');
-		$grid->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr']);
+		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr']);
 		// $grid->addPaginator(10);
-		$grid->addSno();
+		$crud->grid->addSno();
 		
 
 
 
 		if($form->isSubmitted()){
 			
-			$grid->js()->reload(
+			$crud->grid->js()->reload(
 					[
 						'account_id'=>$form['account'],
 						'from_date'=>($form['from_date'])?:0,
