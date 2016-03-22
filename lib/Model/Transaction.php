@@ -38,7 +38,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// $this->addExpression('cr_sum')->set($this->refSQL('xAccount/TransactionRow')->sum('amountCr'));
 		// $this->addExpression('dr_sum')->set($this->refSQL('xAccount/TransactionRow')->sum('amountDr'));
 
-		$this->addHook('beforeDelete',$this);
+		// $this->addHook('beforeDelete',[$this,'deleteAllTransactionRow']);
 		$this->addHook('afterSave',[$this,'searchStringAfterSave']);
 
 		// $this->add('dynamic_model/Controller_AutoCreator');
@@ -57,10 +57,6 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this['search_string'] = $str;
 	}
 
-	function beforeDelete(){
-		if($this->ref('TransactionRows')->count()->getOne())
-			throw $this->exception('TRansaction Contains Rows, Cannot Delete','Growl');
-	}
 
 	function cr_sum(){
 		return $this->ref('TransactionRows')->sum('amountCr');

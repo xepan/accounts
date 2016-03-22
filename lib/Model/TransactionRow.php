@@ -20,22 +20,28 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addExpression('Narration')->set($this->refSQL('transaction_id')->fieldQuery('Narration'));
 		$this->addExpression('transaction_type')->set($this->refSQL('transaction_id')->fieldQuery('transaction_type'));
 
-		$this->addHook('beforeDelete',$this);
+		$this->addHook('beforeDelete',[$this,'deleteTransaction']);
 
 	}
 
 	function account(){
 		return $this->ref('account_id');
 	}
-
-	function beforeDelete(){
-		if($this['amountCr'])
-			$this->account()->creditOnly(-1 * $this['amountCr']);
-
-		if($this['amountDr'])
-			$this->account()->debitOnly(-1 * $this['amountDr']);
-		
+	function deleteTransaction(){
+		// $tra=$this->ref('transaction_id');
+		$tra=$this->add('xepan\accounts\Model_Transaction');
+		$tra->load($this['transaction_id']);
+		$tra->ref('TransactionRows')->deleteAll();
+		$tra->deleteAll();
 	}
+	// function beforeDelete(){
+	// 	if($this['amountCr'])
+	// 		$this->account()->creditOnly(-1 * $this['amountCr']);
+
+	// 	if($this['amountDr'])
+	// 		$this->account()->debitOnly(-1 * $this['amountDr']);
+		
+	// }
 
 	
 }
