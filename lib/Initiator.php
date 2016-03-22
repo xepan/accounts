@@ -14,6 +14,7 @@ class Initiator extends \Controller_Addon {
 
 		if($this->app->is_admin){
 			$m = $this->app->top_menu->addMenu('Account');
+			$m->addItem('Create Account','xepan_accounts_accounts');
 			$m->addItem('Account Paid','xepan_accounts_amtpaid');
 			$m->addItem('Payment Received','xepan_accounts_amtreceived');
 			$m->addItem('Cash & Bank','xepan_accounts_contra');
