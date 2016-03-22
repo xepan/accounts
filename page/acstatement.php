@@ -15,7 +15,7 @@ class page_acstatement extends \Page {
 		$form->addField('DatePicker','to_date');
 		$form->addSubmit('Get Statement');
 
-		$crud = $this->add('xepan\base\CRUD',['grid_class'=>'xepan\accounts\Grid_AccountsBase'],null,['view/accountstatement-grid']);
+		$crud = $this->add('xepan\base\CRUD',['grid_class'=>'xepan\accounts\Grid_AccountsBase','allow_add'=>false],null,['view/accountstatement-grid']);
 
 		$transactions = $this->add('xepan\accounts\Model_TransactionRow');
 
