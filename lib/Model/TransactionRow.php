@@ -20,14 +20,14 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addExpression('Narration')->set($this->refSQL('transaction_id')->fieldQuery('Narration'));
 		$this->addExpression('transaction_type')->set($this->refSQL('transaction_id')->fieldQuery('transaction_type'));
 
-		$this->addHook('beforeDelete',[$this,'deleteTransaction']);
+		$this->addHook('beforeDelete',[$this,'deleteTransactionAndRow']);
 
 	}
 
 	function account(){
 		return $this->ref('account_id');
 	}
-	function deleteTransaction(){
+	function deleteTransactionAndRow(){
 		// $tra=$this->ref('transaction_id');
 		$tra=$this->add('xepan\accounts\Model_Transaction');
 		$tra->load($this['transaction_id']);
