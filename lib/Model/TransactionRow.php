@@ -27,8 +27,8 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 	function account(){
 		return $this->ref('account_id');
 	}
+	/*===TODO This Code Temporary  ====*/
 	function deleteTransactionAndRow(){
-		// $tra=$this->ref('transaction_id');
 		$tra=$this->add('xepan\accounts\Model_Transaction');
 		$tra->load($this['transaction_id']);
 		$tra->ref('TransactionRows')->deleteAll();
