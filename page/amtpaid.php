@@ -15,6 +15,7 @@ class page_amtpaid extends \Page {
 		$cash_accounts = $this->add('xepan\accounts\Model_Account')->loadCashAccounts();
 
 		$form = $cash_tab->add('Form_Stacked');
+		$form->setLayout('view/form/payment-paid-cash');
 
 		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
 		$cash_field = $form->addField('autocomplete/Basic','cash_account')->validateNotNull(true);
@@ -51,6 +52,7 @@ class page_amtpaid extends \Page {
 		$bank_accounts = $this->add('xepan\accounts\Model_Account')->loadBankAccounts();
 
 		$form = $bank_tab->add('Form_Stacked');
+		$form->setLayout('view/form/payment-paid-bank');
 
 		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
 		$bank_field = $form->addField('autocomplete/Basic','bank_account')->validateNotNull(true);

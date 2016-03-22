@@ -63,6 +63,16 @@ class page_amtreceived extends \Page {
 		$received_from_field->setModel($received_from_model);
 
 		$form->addField('Money','amount')->validateNotNull(true);
+		
+		$invoice_field=$form->addField('Dropdown','invoice_no')->validateNotNull(true);
+		$invoice_field->setModel('xepan\commerce\Model_QSP_Master');
+		$invoice_field_2=$form->addField('Dropdown','invoice_no_2')->validateNotNull(true);
+		$invoice_field_2->setModel('xepan\commerce\Model_QSP_Master');
+		$invoice_field_3=$form->addField('Dropdown','invoice_no_3')->validateNotNull(true);
+		$invoice_field_3->setModel('xepan\commerce\Model_QSP_Master');
+		$invoice_field_4=$form->addField('Dropdown','invoice_no_4')->validateNotNull(true);
+		$invoice_field_4->setModel('xepan\commerce\Model_QSP_Master');
+		
 		$curreny_field=$form->addField('Dropdown','currency')->validateNotNull(true);
 		$curreny_field->setModel('xepan\commerce\Model_Currency');
 		$form->addField('line','exchange_rate')->validateNotNull(true);
