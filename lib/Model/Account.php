@@ -68,26 +68,30 @@ class Model_Account extends \xepan\base\Model_Table{
 		return $this;
 	}
 
-	function debitWithTransaction($amount,$transaction_id,$no_of_accounts_in_side=null){
+	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate){
 
 		$transaction_row=$this->add('xepan\accounts\Model_TransactionRow');
-		$transaction_row['amountDr']=$amount;
+		$transaction_row['_amountDr']=$amount;
 		$transaction_row['side']='DR';
 		$transaction_row['transaction_id']=$transaction_id;
 		$transaction_row['account_id']=$this->id;
+		$transaction_row['currency_id']=$currency_id;
+		$transaction_row['exchange_rate']=$exchange_rate;
 		// $transaction_row['accounts_in_side']=$no_of_accounts_in_side;
 		$transaction_row->save();
 
 		$this->debitOnly($amount);
 	}
 
-	function creditWithTransaction($amount,$transaction_id,$only_transaction=null,$no_of_accounts_in_side=null){
+	function creditWithTransaction($amount,$transaction_id,$only_transaction=null,$currency_id,$exchange_rate){
 
 		$transaction_row=$this->add('xepan\accounts\Model_TransactionRow');
-		$transaction_row['amountCr']=$amount;
+		$transaction_row['_amountCr']=$amount;
 		$transaction_row['side']='CR';
 		$transaction_row['transaction_id']=$transaction_id;
 		$transaction_row['account_id']=$this->id;
+		$transaction_row['currency_id']=$currency_id;
+		$transaction_row['exchange_rate']=$exchange_rate;
 		// $transaction_row['accounts_in_side']=$no_of_accounts_in_side;
 		$transaction_row->save();
 

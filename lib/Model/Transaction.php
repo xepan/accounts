@@ -22,8 +22,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		parent::init();
 
 		$this->hasOne('xepan\base\Epan','epan_id');
-
 		$this->hasOne('xepan\accounts\TransactionType','transaction_type_id');
+		$this->hasOne('xepan\commerce\Currency');
+
 		$this->addField('name')->caption('Voucher No');
 		$this->addExpression('voucher_no')->set(function ($m,$q){
 			return $q->getField('name');
@@ -32,6 +33,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->addField('Narration')->type('text');
 		$this->addField('created_at')->type('date');
 		$this->addField('updated_at')->type('date');
+		$this->addField('exchange_rate')->type('number');
 
 		$this->hasMany('xepan\accounts\TransactionRow','transaction_id',null,'TransactionRows');
 
@@ -71,7 +73,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return $this->ref('TransactionRows');
 	}
 	
-	function createNewTransaction($transaction_type, $related_document=false, $transaction_date=null, $Narration=null){
+	function createNewTransaction($transaction_type, $related_document=false, $transaction_date=null, $Narration=null, $Currency, $exchange_rate){
 		if($this->loaded()) throw $this->exception('Use Unloaded Transaction model to create new Transaction');
 		
 		$transaction_type_model = $this->add('xepan\accounts\Model_TransactionType');
@@ -86,30 +88,32 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this['name'] = $transaction_type_model->newVoucherNumber($transaction_date);
 		$this['Narration'] = $Narration;
 		$this['created_at'] = $transaction_date;
+		$this['currency_id'] = $Currency->id;
+		$this['exchange_rate'] = $exchange_rate;
 
 		$this->related_document = $related_document;
 
 		$this->create_called=true;
 	}
 
-	function addDebitAccount($account, $amount){
+	function addDebitAccount($account, $amount, $Currency, $exchange_rate){
 		if(is_string($account)){
 			$account = $this->add('xepan\accounts\Model_Account')->load($account->id);
 		}
 
 		$amount = $this->round($amount);
 		
-		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account));
+		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency->id, 'exchange_rate'=>$exchange_rate));
 	}
 
-	function addCreditAccount($account, $amount){
+	function addCreditAccount($account, $amount, $Currency, $exchange_rate){
 		if(is_string($account)){
 			$account = $this->add('xepan\accounts\Model_Account')->load($account->id);
 		}
 
 		$amount = $this->round($amount);
 		
-		$this->cr_accounts += array($account->id=>array('amount'=>$amount,'account'=>$account));
+		$this->cr_accounts += array($account->id=>array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency->id, 'exchange_rate'=>$exchange_rate));
 	}
 
 	function execute(){
@@ -117,9 +121,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			throw $this->exception('New Transaction can only be added on unLoaded Transaction Model ');
 
 		if(!$this->create_called) throw $this->exception('Create Account Function Must Be Called First');
-		
-		// $this->senitizeTransaction();
-		
+				
 		if(($msg=$this->isValidTransaction($this->dr_accounts,$this->cr_accounts, $this['transaction_type_id'])) !== true)
 			throw $this->exception('Transaction is Not Valid ' .  $msg)->addMoreInfo('message',$msg);
 
@@ -141,7 +143,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// Foreach Dr add new TransactionRow (Dr wali)
 		foreach ($this->dr_accounts as $accountNumber => $dtl) {
 			if($dtl['amount'] ==0) continue;
-			$dtl['account']->debitWithTransaction($dtl['amount'],$this->id);
+			$dtl['account']->debitWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate']);
 			$total_debit_amount += $dtl['amount'];
 		}
 
@@ -155,7 +157,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// Foreach Cr add new Transactionrow (Cr Wala)
 		foreach ($this->cr_accounts as $accountNumber => $dtl) {
 			if($dtl['amount'] ==0) continue;
-			$dtl['account']->creditWithTransaction($dtl['amount'],$this->id);
+			$dtl['account']->creditWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate']);
 			$total_credit_amount += $dtl['amount'];
 		}
 		
