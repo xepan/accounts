@@ -6,7 +6,7 @@ class page_transactionrow extends \Page{
 		parent::init();
 
 	$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
-		$crud = $this->app->layout->add('xepan\base\CRUD');
+		$crud = $this->add('xepan\base\CRUD');
 		$crud->setModel($transaction_row);
 	}
 }
