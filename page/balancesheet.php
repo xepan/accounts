@@ -5,7 +5,7 @@ class page_balancesheet extends \Page{
 	function init(){
 		parent::init();
 		$balance_sheet = $this->add('xepan\accounts\Model_BalanceSheet');
-		$crud = $this->app->layout->add('xepan\hr\CRUD');
+		$crud = $this->add('xepan\hr\CRUD');
 		$crud->setModel($balance_sheet);
 		
 	}
