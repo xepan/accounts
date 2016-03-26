@@ -9,7 +9,7 @@ class page_config extends \Page{
 		$form=$this->add('Form',null,'currency');
 
 		$currency_field=$form->addField('Dropdown','currency_id')->set($default_currency);
-		$currency_field->setModel('xepan\commerce\Model_Currency');
+		$currency_field->setModel('xepan\accounts\Model_Currency');
 		$form->addSubmit('Update');
 		if($form->isSubmitted()){
 			$config->setConfig('DEFAULT_CURRENCY_ID',$form['currency_id'],'accounts');
