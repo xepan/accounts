@@ -23,7 +23,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\base\Epan','epan_id');
 		$this->hasOne('xepan\accounts\TransactionType','transaction_type_id');
-		$this->hasOne('xepan\commerce\Currency');
+		$this->hasOne('xepan\accounts\Currency');
 
 		$this->addField('name')->caption('Voucher No');
 		$this->addExpression('voucher_no')->set(function ($m,$q){
@@ -73,7 +73,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return $this->ref('TransactionRows');
 	}
 	
-	function createNewTransaction($transaction_type, $related_document=false, $transaction_date=null, $Narration=null, $Currency, $exchange_rate){
+	function createNewTransaction($transaction_type, $related_document=false, $transaction_date=null, $Narration=null, $Currency=null, $exchange_rate=1.00){
 		if($this->loaded()) throw $this->exception('Use Unloaded Transaction model to create new Transaction');
 		
 		$transaction_type_model = $this->add('xepan\accounts\Model_TransactionType');
@@ -83,12 +83,14 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		if(!$transaction_date) $transaction_date = date('Y-m-d H:i:s');
 
+		if($Currency && !$exchange_rate) throw $this->exception('Exchange rate must be provided if providing currency');
+
 		// Transaction TYpe Save if not available
 		$this['transaction_type_id'] = $transaction_type_model->id;
 		$this['name'] = $transaction_type_model->newVoucherNumber($transaction_date);
 		$this['Narration'] = $Narration;
 		$this['created_at'] = $transaction_date;
-		$this['currency_id'] = $Currency->id;
+		$this['currency_id'] = $Currency ? $Currency->id : $this->app->epan->default_currency->id;
 		$this['exchange_rate'] = $exchange_rate;
 
 		$this->related_document = $related_document;
@@ -96,24 +98,24 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->create_called=true;
 	}
 
-	function addDebitAccount($account, $amount, $Currency, $exchange_rate){
+	function addDebitAccount($account, $amount, $Currency=null, $exchange_rate=1.00){
 		if(is_string($account)){
 			$account = $this->add('xepan\accounts\Model_Account')->load($account->id);
 		}
 
 		$amount = $this->round($amount);
 		
-		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency->id, 'exchange_rate'=>$exchange_rate));
+		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate));
 	}
 
-	function addCreditAccount($account, $amount, $Currency, $exchange_rate){
+	function addCreditAccount($account, $amount, $Currency=null, $exchange_rate=1.00){
 		if(is_string($account)){
 			$account = $this->add('xepan\accounts\Model_Account')->load($account->id);
 		}
 
 		$amount = $this->round($amount);
 		
-		$this->cr_accounts += array($account->id=>array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency->id, 'exchange_rate'=>$exchange_rate));
+		$this->cr_accounts += array($account->id=>array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate));
 	}
 
 	function execute(){
@@ -147,11 +149,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			$total_debit_amount += $dtl['amount'];
 		}
 
-		//FOR ROUND AMOUNT CALCULATION
-		// $shop_config = $this->add('xShop/Model_Configuration')->tryLoadAny();
-		// if($shop_config['is_round_amount_calculation']){
-			$total_debit_amount = $this->round($total_debit_amount);
-		// }
+		$total_debit_amount = $this->round($total_debit_amount);
 
 		$total_credit_amount =0;
 		// Foreach Cr add new Transactionrow (Cr Wala)
@@ -161,12 +159,8 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			$total_credit_amount += $dtl['amount'];
 		}
 		
-		//FOR ROUND AMOUNT CALCULATION
-		// if($shop_config['is_round_amount_calculation']){
-			$total_credit_amount = $this->round($total_credit_amount);
-		// }
+		$total_credit_amount = $this->round($total_credit_amount);
 
-		
 	// 	// Credit Sum Must Be Equal to Debit Sum
 	// 	// throw new \Exception($total_credit_amount." = ".$total_debit_amount);
 		if($total_debit_amount != $total_credit_amount)

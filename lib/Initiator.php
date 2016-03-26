@@ -25,6 +25,8 @@ class Initiator extends \Controller_Addon {
 			$m->addItem('Debit/Credit Note','xepan_accounts_debitcreditnote');
 			$m->addItem('Configuration','xepan_accounts_config');
 
+			$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
+
 		}
 
 		$this->addAppDateFunctions();
