@@ -11,10 +11,10 @@
               <div class="atk-form-row atk-form-field">{$received_from}</div>
             </div>
             <div class="col-md-4 col-lg-4">
-              <div class="atk-form-row atk-form-field">{$amount}</div>
+              <div class="atk-form-row atk-form-field">{$from_amount}</div>
             </div>
             <div class="col-md-4 col-lg-4">
-              <div class="atk-form-row atk-form-field">{$currency}&nbsp;@{$exchange_rate}</div>
+              <div class="atk-form-row atk-form-field">{$from_currency}&nbsp;@{$from_exchange_rate}</div>
             </div>
           </div>
           <div class="main-box">
@@ -27,7 +27,7 @@
                       <div class="atk-form-row atk-form-field">{$invoice_no}</div>
                     </div>
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$amount}</div>
+                      <div class="atk-form-row atk-form-field">{$invoice_amount_1}</div>
                     </div>
                   </div>
                   <div class="row xepan-push">
@@ -35,7 +35,7 @@
                       <div class="atk-form-row atk-form-field">{$invoice_no_2}</div>
                     </div>
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$amount}</div>
+                      <div class="atk-form-row atk-form-field">{$invoice_amount_2}</div>
                     </div>
                   </div>
                   <div class="row xepan-push">
@@ -43,7 +43,7 @@
                       <div class="atk-form-row atk-form-field">{$invoice_no_3}</div>
                     </div>
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$amount}</div>
+                      <div class="atk-form-row atk-form-field">{$invoice_amount_3}</div>
                     </div>
                   </div>
                   <div class="row xepan-push">
@@ -51,7 +51,7 @@
                       <div class="atk-form-row atk-form-field">{$invoice_no_4}</div>
                     </div>
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$amount}</div>
+                      <div class="atk-form-row atk-form-field">{$invoice_amount_4}</div>
                     </div>
                   </div>
                 </div>
@@ -61,16 +61,16 @@
           <h2 class="xepan-push-small">To:- </h2>
           <div class="row xepan-push">
             <div class="col-md-3 col-lg-3">
-              <div class="atk-form-row atk-form-field">{$bank_account}</div>
+              <div class="atk-form-row atk-form-field">{$to_bank_account}</div>
+            </div>
+            <div class="col-md-3 col-lg-2">
+              <div class="atk-form-row atk-form-field">{$to_date}</div>
             </div>
             <div class="col-md-3 col-lg-3">
-              <div class="atk-form-row atk-form-field">{$date}</div>
+              <div class="atk-form-row atk-form-field">{$to_amount}</div>
             </div>
-            <div class="col-md-3 col-lg-3">
-              <div class="atk-form-row atk-form-field">{$currency}</div>
-            </div>
-            <div class="col-md-3 col-lg-3">
-              <div class="atk-form-row atk-form-field">{$amount}</div>
+            <div class="col-md-3 col-lg-4">
+              <div class="atk-form-row atk-form-field">{$to_currency}@{$to_exchange_rate}</div>
             </div>
           </div>
           <div class="main-box">
@@ -80,35 +80,35 @@
                   <h2 class="xepan-push-small">Different Charges:</h2>
                   <div class="row xepan-push"> 
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$bank_account}</div>
+                      <div class="atk-form-row atk-form-field">{$bank_account_1}</div>
                     </div>
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$date}</div>
+                      <div class="atk-form-row atk-form-field">{$c_date_1}</div>
                     </div>
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$amount}</div>
-                    </div>
-                  </div>
-                  <div class="row xepan-push"> 
-                    <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$bank_account}</div>
-                    </div>
-                    <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$date}</div>
-                    </div>
-                    <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$amount}</div>
+                      <div class="atk-form-row atk-form-field">{$c_amount_1}</div>
                     </div>
                   </div>
                   <div class="row xepan-push"> 
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$bank_account}</div>
+                      <div class="atk-form-row atk-form-field">{$bank_account_2}</div>
                     </div>
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$date}</div>
+                      <div class="atk-form-row atk-form-field">{$c_date_2}</div>
                     </div>
                     <div class="col-md-4 col-lg-4">
-                      <div class="atk-form-row atk-form-field">{$amount}</div>
+                      <div class="atk-form-row atk-form-field">{$c_amount_2}</div>
+                    </div>
+                  </div>
+                  <div class="row xepan-push"> 
+                    <div class="col-md-4 col-lg-4">
+                      <div class="atk-form-row atk-form-field">{$bank_account_3}</div>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                      <div class="atk-form-row atk-form-field">{$c_date_3}</div>
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                      <div class="atk-form-row atk-form-field">{$c_amount_3}</div>
                     </div>
                   </div>
                 </div>
