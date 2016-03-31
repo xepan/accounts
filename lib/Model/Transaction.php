@@ -25,6 +25,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\accounts\TransactionType','transaction_type_id');
 		$this->hasOne('xepan\accounts\Currency');
 
+		$this->addField('related_id'); // used for sale invoice/purchase invoice
+		$this->addField('related_type'); // Sale or Purchase
+
 		$this->addField('name')->caption('Voucher No');
 		$this->addExpression('voucher_no')->set(function ($m,$q){
 			return $q->getField('name');
@@ -73,7 +76,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return $this->ref('TransactionRows');
 	}
 	
-	function createNewTransaction($transaction_type, $related_document=false, $transaction_date=null, $Narration=null, $Currency=null, $exchange_rate=1.00){
+	function createNewTransaction($transaction_type, $related_document=false, $transaction_date=null, $Narration=null, $Currency=null, $exchange_rate=1.00,$related_id,$related_type){
 		if($this->loaded()) throw $this->exception('Use Unloaded Transaction model to create new Transaction');
 		
 		$transaction_type_model = $this->add('xepan\accounts\Model_TransactionType');
@@ -92,6 +95,8 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this['created_at'] = $transaction_date;
 		$this['currency_id'] = $Currency ? $Currency->id : $this->app->epan->default_currency->id;
 		$this['exchange_rate'] = $exchange_rate;
+		$this['related_id'] = $related_id;
+		$this['related_type'] = $related_type;
 
 		$this->related_document = $related_document;
 
