@@ -10,6 +10,9 @@ class Model_Group extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\accounts\BalanceSheet','balance_sheet_id');
 
+		$this->hasOne('xepan\accounts\ParentGroup','parent_group_id');
+		$this->hasOne('xepan\accounts\RootGroup','root_group_id');
+
 		$this->addField('name')->caption('Group Name')->mandatory(true);
 		$this->addField('created_at')->type('date')->defaultValue(date('Y-m-d'));
 
@@ -21,6 +24,9 @@ class Model_Group extends \xepan\base\Model_Table{
 					]
 				);
 		
+		$this->hasMany('xepan\accounts\Group','parent_group_id',null,'ParentGroup');
+		$this->hasMany('xepan\accounts\Group','root_group_id',null,'RootGroup');
+
 		$this->addHook('beforeDelete',$this);
 		//$this->add('dynamic_model/Controller_AutoCreator');
 	}
