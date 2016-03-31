@@ -29,6 +29,8 @@ class Initiator extends \Controller_Addon {
 
 		}
 
+		$this->app->addHook('tax_update',['xepan\accounts\Model_Ledger','createVatLedger']);
+		
 		$this->addAppDateFunctions();
 
 		$this->app->addHook('customer_update',['xepan\accounts\Model_Ledger','createCustomerLedger']);
