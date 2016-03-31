@@ -31,6 +31,7 @@ class Initiator extends \Controller_Addon {
 
 		$this->addAppDateFunctions();
 
+		$this->app->addHook('customer_update',['xepan\accounts\Model_Ledger','createCustomerLedger']);
 		
 	}
 

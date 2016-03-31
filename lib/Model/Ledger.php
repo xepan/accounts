@@ -43,29 +43,47 @@ class Model_Ledger extends \xepan\base\Model_Table{
 			throw new \Exception("This Account Cannot be Deleted, its has content Many. Please delete Transaction Row first", 1);
 	}
 
-	function createNewAccount($account_for,$group,$name){
 
-		if($account_for instanceof \xepan\bae\Model_Contact){
-			$this['contact_id'] = $account_for->id;
-		}
+	//creating customer ledger
+	function createCustomerLedger($app,$customer_for){
+		
+		if(!($customer_for instanceof \xepan\commerce\Model_Customer))
+			throw new \Exception("must pass customer model", 1);	
+		
+		if(!$customer_for->loaded())
+			throw new \Exception("must pass customer loaded model", 1);	
 
-		// if($account_for instanceof \xepan\commerce\Model_Supplier){
-		// 	$this['supplier_id'] = $account_for->id;
-		// }
+		$debtor = $app->add('xepan\accounts\Model_Group')->loadSundryDebtor();
+		
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($customer_for,$debtor,"Customer");
+	}
 
-		// if($account_for instanceof \xepan\hr\Model_Employee){
-		// 	$this['employee_id'] = $account_for->id;
-		// }
+	//creating supplier ledger
+	function createSupplierLedger($supplier_for){
+		if($supplier_for instanceof \xepan\commerce\Model_Supplier)
+			throw new \Exception("must pass supplier model", 1);	
 
-		// if($account_for instanceof \xepan\production\Model_OutSourceParty){
-		// 	$this['out_source_party_id'] = $account_for->id;
-		// }
+		if(!$supplier_for->loaded())
+			throw new \Exception("must pass loaded supplier", 1);	
 
-		$this['group_id'] = $group->id;
-		$this['name'] = $name;
-	
-		$this->save();
-		return $this;
+		$creditor = $this->add('xepan\accounts\Model_Group')->loadSundryCreditor();
+
+		return $this->createNewLedger($supplier_for,$creditor,"Supplier");
+
+	}
+
+	function createNewLedger($contact_for,$group,$ledger_type=null){
+
+		$ledger = $this->add('xepan\accounts\Model_Ledger');
+		$ledger->addCondition('contact_id',$contact_for->id);
+		$ledger->addCondition('group_id',$group->id);
+		$ledger->addCondition('ledger_type',$ledger_type);
+
+		$ledger->tryLoadAny();
+
+		$ledger['name'] = $contact_for['name'];
+		$ledger['LedgerDisplayName'] = $contact_for['name'];
+		return $ledger->save();
 	}
 
 	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate){
