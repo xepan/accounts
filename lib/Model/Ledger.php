@@ -75,6 +75,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	}
 
+
 	function createNewLedger($contact_for,$group,$ledger_type=null){
 
 		$ledger = $this->add('xepan\accounts\Model_Ledger');
@@ -88,6 +89,36 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$ledger['LedgerDisplayName'] = $contact_for['name'];
 		$ledger['updated_at'] =  $this->api->now;
 		$ledger['related_id'] =  $contact_for->id;
+		return $ledger->save();
+	}
+
+	function createTaxLedger($app,$tax_for){
+		
+		if(!($tax_for instanceof \xepan\commerce\Model_Taxation))
+			throw new \Exception("must pass taxation model", 1);	
+
+		if(!$tax_for->loaded())
+			throw new \Exception("must loaded taxation", 1);	
+
+		$tax = $app->add('xepan\accounts\Model_Group')->loadTax();
+
+		return $app->add('xepan\accounts\Model_Ledger')->createTaxLedger($tax_for,$tax,"VatTax");
+
+	}
+
+	function createVatLedger($tax_for,$group,$ledger_type=null){
+
+		$ledger = $this->add('xepan\accounts\Model_Ledger');
+		$ledger->addCondition('taxation_id',$tax_for->id);
+		$ledger->addCondition('group_id',$group->id);
+		$ledger->addCondition('ledger_type',$ledger_type);
+
+		$ledger->tryLoadAny();
+
+		$ledger['name'] = $tax_for['name'];
+		$ledger['LedgerDisplayName'] = $tax_for['name'];
+		$ledger['updated_at'] =  $this->api->now;
+		$ledger['related_id'] =  $tax_for->id;
 		return $ledger->save();
 	}
 

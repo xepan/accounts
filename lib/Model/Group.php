@@ -378,6 +378,22 @@ class Model_Group extends \xepan\base\Model_Table{
 		return $this;	
 	}
 
+	function isVatTax(){
+		return $this['name'] == "VatTax";
+	}
+
+	function loadTax(){
+		if($this->loaded())
+			$this->unload();
+		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadTax()->fieldquery('id'));
+		$this->addCondition('name','VatTax')
+			->tryLoadAny();
+		
+		if(!$this->loaded()) $this->save();
+
+		return $this;	
+	}
+
 	function isSuspenceAccount(){
 		return $this['name'] == "Suspense Account";
 	}
