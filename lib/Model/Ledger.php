@@ -59,16 +59,17 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	//creating supplier ledger
-	function createSupplierLedger($supplier_for){
-		if($supplier_for instanceof \xepan\commerce\Model_Supplier)
+	function createSupplierLedger($app,$supplier_for){
+		
+		if(!($supplier_for instanceof \xepan\commerce\Model_Supplier))
 			throw new \Exception("must pass supplier model", 1);	
 
 		if(!$supplier_for->loaded())
 			throw new \Exception("must pass loaded supplier", 1);	
 
-		$creditor = $this->add('xepan\accounts\Model_Group')->loadSundryCreditor();
+		$creditor = $app->add('xepan\accounts\Model_Group')->loadSundryCreditor();
 
-		return $this->createNewLedger($supplier_for,$creditor,"Supplier");
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($supplier_for,$creditor,"Supplier");
 
 	}
 
@@ -83,6 +84,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$ledger['name'] = $contact_for['name'];
 		$ledger['LedgerDisplayName'] = $contact_for['name'];
+		$ledger['updated_at'] =  $this->api->now;
 		return $ledger->save();
 	}
 
