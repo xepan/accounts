@@ -381,4 +381,17 @@ class Model_Group extends \xepan\base\Model_Table{
 	function isSuspenceAccount(){
 		return $this['name'] == "Suspense Account";
 	}
+
+	function loadSalesAccount(){
+		if($this->loaded())
+			$this->unload();
+		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadIncome()->fieldquery('id'));
+		$this->addCondition('name','Sale Invoice')
+			->tryLoadAny();
+		
+		if(!$this->loaded()) $this->save();
+		
+		return $this;	
+	}
+
 }
