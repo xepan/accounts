@@ -15,7 +15,9 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\base\Epan','epan_id');
 		
 		$this->addField('name')->mandatory(true);
-		$this->addField('ledger_type');
+		$this->addField('related_id'); // user for related like tax/vat
+		$this->addField('ledger_type'); //
+
 		$this->addField('LedgerDisplayName')->caption('Account Displ. Name');
 		$this->addField('is_active')->type('boolean')->defaultValue(true);
 
@@ -85,6 +87,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$ledger['name'] = $contact_for['name'];
 		$ledger['LedgerDisplayName'] = $contact_for['name'];
 		$ledger['updated_at'] =  $this->api->now;
+		$ledger['related_id'] =  $contact_for->id;
 		return $ledger->save();
 	}
 
