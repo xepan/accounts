@@ -1,8 +1,8 @@
 <?php
 namespace xepan\accounts;
 
-class Model_Account extends \xepan\base\Model_Table{
-	public $table="accounts";
+class Model_Ledger extends \xepan\base\Model_Table{
+	public $table="ledger";
 	public $acl=false;	
 	
 	function init(){
@@ -15,8 +15,8 @@ class Model_Account extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\base\Epan','epan_id');
 		
 		$this->addField('name')->mandatory(true);
-		$this->addField('account_type');
-		$this->addField('AccountDisplayName')->caption('Account Displ. Name');
+		$this->addField('ledger_type');
+		$this->addField('LedgerDisplayName')->caption('Account Displ. Name');
 		$this->addField('is_active')->type('boolean')->defaultValue(true);
 
 		$this->addField('OpeningBalanceDr')->type('money')->defaultValue(0);
@@ -29,7 +29,7 @@ class Model_Account extends \xepan\base\Model_Table{
 
 		$this->addField('affectsBalanceSheet')->type('boolean')->defaultValue(true);
 
-		$this->hasMany('xepan\accounts\TransactionRow','account_id',null,'TransactionRows');
+		$this->hasMany('xepan\accounts\TransactionRow','ledger_id',null,'TransactionRows');
 
 		$this->addHook('beforeDelete',$this);
 		

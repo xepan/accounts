@@ -14,7 +14,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		$this->addField('created_at')->type('date')->defaultValue(date('Y-m-d'));
 
 
-		$this->hasMany('xepan\accounts\Account','group_id');
+		$this->hasMany('xepan\accounts\Ledger','group_id');
 
 		$this->is([
 						'name!|to_trim|unique'
@@ -26,7 +26,7 @@ class Model_Group extends \xepan\base\Model_Table{
 	}
 
 	function beforeDelete(){
-		$account = $this->ref('xepan\accounts\Account')->count()->getOne();
+		$account = $this->ref('xepan\accounts\Ledger')->count()->getOne();
 		if($account)
 			throw $this->exception('Cannot Delete, First Delete Accounts');
 	}
