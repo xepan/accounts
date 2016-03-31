@@ -92,33 +92,32 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $ledger->save();
 	}
 
-	function createTaxLedger($app,$tax_for){
+	function createTaxLedger($app,$tax_obj){
 		
-		if(!($tax_for instanceof \xepan\commerce\Model_Taxation))
+		if(!($tax_obj instanceof \xepan\commerce\Model_Taxation))
 			throw new \Exception("must pass taxation model", 1);	
 
-		if(!$tax_for->loaded())
+		if(!$tax_obj->loaded())
 			throw new \Exception("must loaded taxation", 1);	
 
-		$tax = $app->add('xepan\accounts\Model_Group')->loadTax();
+	 	// $tax = $app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes();
 
-		return $app->add('xepan\accounts\Model_Ledger')->createTaxLedger($tax_for,$tax,"VatTax");
+		return $app->add('xepan\accounts\Model_Ledger')->createVatLedger($tax_obj,"VatTax");
 
 	}
 
-	function createVatLedger($tax_for,$group,$ledger_type=null){
-
-		$ledger = $this->add('xepan\accounts\Model_Ledger');
-		$ledger->addCondition('taxation_id',$tax_for->id);
-		$ledger->addCondition('group_id',$group->id);
-		$ledger->addCondition('ledger_type',$ledger_type);
+	function createVatLedger($app,$tax_obj){
+		
+		$ledger = $app->add('xepan\accounts\Model_Ledger');
+		$ledger->addCondition('group_id',$app->app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
+		$ledger->addCondition('ledger_type','VatTax');
 
 		$ledger->tryLoadAny();
 
-		$ledger['name'] = $tax_for['name'];
-		$ledger['LedgerDisplayName'] = $tax_for['name'];
-		$ledger['updated_at'] =  $this->api->now;
-		$ledger['related_id'] =  $tax_for->id;
+		$ledger['name'] = $tax_obj['name'];
+		$ledger['LedgerDisplayName'] = $tax_obj['name'];
+		$ledger['updated_at'] =  $app->api->now;
+		$ledger['related_id'] =  $tax_obj->id;
 		return $ledger->save();
 	}
 
