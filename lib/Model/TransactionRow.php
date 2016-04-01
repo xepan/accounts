@@ -31,7 +31,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 	}
 
 	function account(){
-		return $this->ref('account_id');
+		return $this->ref('ledger_id');
 	}
 
 	/*===TODO This Code Temporary  ====*/

@@ -18,7 +18,7 @@ class Initiator extends \Controller_Addon {
 			$m->addItem('Account Paid','xepan_accounts_amtpaid');
 			$m->addItem('Payment Received','xepan_accounts_amtreceived');
 			$m->addItem('Cash & Bank','xepan_accounts_contra');
-			$m->addItem('Account Statement','xepan_accounts_acstatement');
+			$m->addItem('Account Statement','xepan_accounts_statement');
 			$m->addItem('Cash Book','xepan_accounts_cashbook');
 			$m->addItem('Day Book','xepan_accounts_daybook');
 			$m->addItem('Ledgers','xepan_accounts_ledgers');
@@ -29,7 +29,7 @@ class Initiator extends \Controller_Addon {
 
 		}
 
-		$this->app->addHook('tax_update',['xepan\accounts\Model_Ledger','createVatLedger']);
+		$this->app->addHook('tax_update',['xepan\accounts\Model_Ledger','createTaxLedger']);
 		
 		$this->addAppDateFunctions();
 

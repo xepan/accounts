@@ -142,12 +142,11 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	function executeSingleBranch(){
 
 		$this->save();
-		
+
 		$total_debit_amount = 0;
 		// Foreach Dr add new TransactionRow (Dr wali)
 		foreach ($this->dr_accounts as $accountNumber => $dtl) {			
 			if($dtl['amount'] ==0) continue;
-			
 			$dtl['account']->debitWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate']);
 			$total_debit_amount += $dtl['amount'];
 		}
@@ -155,7 +154,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		
 		$total_debit_amount = $this->round($total_debit_amount);
 
-		$total_credit_amount =0;
+		$total_credit_amount = 0;
 		// Foreach Cr add new Transactionrow (Cr Wala)
 		foreach ($this->cr_accounts as $accountNumber => $dtl) {
 			if($dtl['amount'] ==0) continue;
@@ -164,7 +163,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		}
 		
 		$total_credit_amount = $this->round($total_credit_amount);
-
+		
 	// 	// Credit Sum Must Be Equal to Debit Sum
 	// 	// throw new \Exception($total_credit_amount." = ".$total_debit_amount);
 		if($total_debit_amount != $total_credit_amount)
@@ -243,6 +242,10 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 	function round($amount){
 		return round($amount,3);
+	}
+
+	function deleteTransactionRow(){
+		$this->ref('TransactionRows')->deleteAll();
 	}
 
 }

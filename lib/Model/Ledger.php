@@ -14,7 +14,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\accounts\Group','group_id')->mandatory(true);
 		$this->hasOne('xepan\base\Epan','epan_id');
 		
-		$this->addField('name')->mandatory(true);
+		$this->addField('name');
 		$this->addField('related_id'); // user for related like tax/vat
 		$this->addField('ledger_type'); //
 
@@ -35,9 +35,9 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$this->addHook('beforeDelete',$this);
 		
-		$this->is([
-				'name|required|unique_in_epan'
-			]);
+		// $this->is([
+		// 		'name|required|unique_in_epan'
+		// 	]);
 	}
 
 	function beforeDelete(){
@@ -183,14 +183,22 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$transaction_join=$transaction_row->join('account_transaction.id','transaction_id');
 		$transaction_join->addField('transaction_date','created_at');
 		$transaction_row->addCondition('transaction_date','<',$on_date);
-		$transaction_row->addCondition('account_id',$this->id);
+		$transaction_row->addCondition('ledger_id',$this->id);
 
 		if($forPandL){
 			$financial_start_date = $this->api->getFinancialYear($on_date,'start');
 			$transaction_row->addCondition('created_at','>=',$financial_start_date);
 		}
 
-		$transaction_row->_dsql()->del('fields')->field('SUM(amountDr) sdr')->field('SUM(amountCr) scr');
+		$transaction_row->addExpression('sdr')->set(function($m,$q){
+			return $q->expr('sum([0])',[$m->getField('amountDr')]);
+		});
+
+		$transaction_row->addExpression('scr')->set(function($m,$q){
+			return $q->expr('sum([0])',[$m->getField('amountCr')]);
+		});
+
+		// $transaction_row->_dsql()->del('fields')->field('SUM(amountDr) sdr')->field('SUM(amountCr) scr');
 		$result = $transaction_row->_dsql()->getHash();
 
 		if($this['OpeningBalanceCr'] ==null){
