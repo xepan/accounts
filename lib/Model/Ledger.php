@@ -98,28 +98,35 @@ class Model_Ledger extends \xepan\base\Model_Table{
 			throw new \Exception("must pass taxation model", 1);	
 
 		if(!$tax_obj->loaded())
-			throw new \Exception("must loaded taxation", 1);	
+			throw new \Exception("must loaded taxation", 1);
 
-	 	// $tax = $app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes();
-
-		return $app->add('xepan\accounts\Model_Ledger')->createVatLedger($tax_obj,"VatTax");
-
-	}
-
-	function createVatLedger($app,$tax_obj){
-		
 		$ledger = $app->add('xepan\accounts\Model_Ledger');
-		$ledger->addCondition('group_id',$app->app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
-		$ledger->addCondition('ledger_type','VatTax');
+		$ledger->addCondition('group_id',$app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
+		$ledger->addCondition('ledger_type',$tax_obj['name']);
+		$ledger->addCondition('related_id',$tax_obj->id);
 
 		$ledger->tryLoadAny();
 
 		$ledger['name'] = $tax_obj['name'];
 		$ledger['LedgerDisplayName'] = $tax_obj['name'];
 		$ledger['updated_at'] =  $app->api->now;
-		$ledger['related_id'] =  $tax_obj->id;
 		return $ledger->save();
 	}
+
+	function LoadTaxLedger($tax_obj){
+		if(!($tax_obj instanceof \xepan\commerce\Model_Taxation))
+			throw new \Exception("must pass taxation model", 1);	
+
+		if(!$tax_obj->loaded())
+			throw new \Exception("must loaded taxation", 1);
+
+		$ledger = $this->add('xepan\accounts\Model_Ledger');
+		$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
+		$ledger->addCondition('ledger_type',$tax_obj['name']);
+		$ledger->addCondition('related_id',$tax_obj->id);
+		return $ledger->tryLoadAny();
+	}
+
 
 	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate){
 
