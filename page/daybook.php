@@ -11,7 +11,7 @@ class page_daybook extends \Page{
 
 		$day_transaction_model = $this->add('xepan\accounts\Model_Transaction');
 		$transaction_row=$day_transaction_model->leftjoin('account_transaction_row.transaction_id');
-		$transaction_row->hasOne('xepan\accounts\Account','account_id');
+		$transaction_row->hasOne('xepan\accounts\Ledger','ledger_id');
 		$transaction_row->addField('amountDr');
 		$transaction_row->addField('amountCr');
 		
@@ -27,7 +27,7 @@ class page_daybook extends \Page{
 
 		}
  
-		$daybook_lister_crud->setModel($day_transaction_model,['voucher_no','transaction_type','Narration','account','amountDr','amountCr']);
+		$daybook_lister_crud->setModel($day_transaction_model,['voucher_no','transaction_type','Narration','ledger','amountDr','amountCr']);
 		$daybook_lister_crud->grid->removeColumn('Narration');
 		$daybook_lister_crud->grid->removeColumn('transaction_type');
 

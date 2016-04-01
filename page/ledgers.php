@@ -5,7 +5,7 @@ class page_ledgers extends \Page{
 	function init(){
 		parent::init();
 
-		$group = $this->add('xepan\accounts\Model_Account');
+		$group = $this->add('xepan\accounts\Model_Ledger');
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/ledger-grid']);
 		$crud->setModel($group,['name','group_id','OpeningBalanceCr','OpeningBalanceDr'],['name','group','CurrentBalanceCr','CurrentBalanceDr','OpeningBalanceCr','OpeningBalanceDr']);
 
