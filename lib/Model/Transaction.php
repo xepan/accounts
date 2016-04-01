@@ -44,7 +44,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// $this->addExpression('dr_sum')->set($this->refSQL('xAccount/TransactionRow')->sum('amountDr'));
 
 		// $this->addHook('beforeDelete',[$this,'deleteAllTransactionRow']);
-		$this->addHook('afterSave',[$this,'searchStringAfterSave']);
+		// $this->addHook('afterSave',[$this,'searchStringAfterSave']);
 
 		// $this->add('dynamic_model/Controller_AutoCreator');
 	}
@@ -109,8 +109,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		}
 
 		$amount = $this->round($amount);
-		
+						
 		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate));
+		
 	}
 
 	function addCreditAccount($account, $amount, $Currency=null, $exchange_rate=1.00){
@@ -132,10 +133,6 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		if(($msg=$this->isValidTransaction($this->dr_accounts,$this->cr_accounts, $this['transaction_type_id'])) !== true)
 			throw $this->exception('Transaction is Not Valid ' .  $msg)->addMoreInfo('message',$msg);
 
-		if($this->related_document){
-			$this->relatedDocument($this->related_document);
-		}
-
 		$this->executeSingleBranch();
 
 
@@ -145,15 +142,17 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	function executeSingleBranch(){
 
 		$this->save();
-
-		$total_debit_amount =0;
+		
+		$total_debit_amount = 0;
 		// Foreach Dr add new TransactionRow (Dr wali)
-		foreach ($this->dr_accounts as $accountNumber => $dtl) {
+		foreach ($this->dr_accounts as $accountNumber => $dtl) {			
 			if($dtl['amount'] ==0) continue;
+			
 			$dtl['account']->debitWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate']);
 			$total_debit_amount += $dtl['amount'];
 		}
 
+		
 		$total_debit_amount = $this->round($total_debit_amount);
 
 		$total_credit_amount =0;

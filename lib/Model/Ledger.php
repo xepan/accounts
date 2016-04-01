@@ -98,28 +98,35 @@ class Model_Ledger extends \xepan\base\Model_Table{
 			throw new \Exception("must pass taxation model", 1);	
 
 		if(!$tax_obj->loaded())
-			throw new \Exception("must loaded taxation", 1);	
+			throw new \Exception("must loaded taxation", 1);
 
-	 	// $tax = $app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes();
-
-		return $app->add('xepan\accounts\Model_Ledger')->createVatLedger($tax_obj,"VatTax");
-
-	}
-
-	function createVatLedger($app,$tax_obj){
-		
 		$ledger = $app->add('xepan\accounts\Model_Ledger');
-		$ledger->addCondition('group_id',$app->app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
-		$ledger->addCondition('ledger_type','VatTax');
+		$ledger->addCondition('group_id',$app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
+		$ledger->addCondition('ledger_type',$tax_obj['name']);
+		$ledger->addCondition('related_id',$tax_obj->id);
 
 		$ledger->tryLoadAny();
 
 		$ledger['name'] = $tax_obj['name'];
 		$ledger['LedgerDisplayName'] = $tax_obj['name'];
 		$ledger['updated_at'] =  $app->api->now;
-		$ledger['related_id'] =  $tax_obj->id;
 		return $ledger->save();
 	}
+
+	function LoadTaxLedger($tax_obj){
+		if(!($tax_obj instanceof \xepan\commerce\Model_Taxation))
+			throw new \Exception("must pass taxation model", 1);	
+
+		if(!$tax_obj->loaded())
+			throw new \Exception("must loaded taxation", 1);
+
+		$ledger = $this->add('xepan\accounts\Model_Ledger');
+		$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
+		$ledger->addCondition('ledger_type',$tax_obj['name']);
+		$ledger->addCondition('related_id',$tax_obj->id);
+		return $ledger->tryLoadAny();
+	}
+
 
 	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate){
 
@@ -127,7 +134,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$transaction_row['_amountDr']=$amount;
 		$transaction_row['side']='DR';
 		$transaction_row['transaction_id']=$transaction_id;
-		$transaction_row['account_id']=$this->id;
+		$transaction_row['ledger_id']=$this->id;
 		$transaction_row['currency_id']=$currency_id;
 		$transaction_row['exchange_rate']=$exchange_rate;
 		// $transaction_row['accounts_in_side']=$no_of_accounts_in_side;
@@ -136,19 +143,19 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->debitOnly($amount);
 	}
 
-	function creditWithTransaction($amount,$transaction_id,$only_transaction=null,$currency_id,$exchange_rate){
+	function creditWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate){
 
 		$transaction_row=$this->add('xepan\accounts\Model_TransactionRow');
 		$transaction_row['_amountCr']=$amount;
 		$transaction_row['side']='CR';
 		$transaction_row['transaction_id']=$transaction_id;
-		$transaction_row['account_id']=$this->id;
+		$transaction_row['ledger_id']=$this->id;
 		$transaction_row['currency_id']=$currency_id;
 		$transaction_row['exchange_rate']=$exchange_rate;
 		// $transaction_row['accounts_in_side']=$no_of_accounts_in_side;
 		$transaction_row->save();
 
-		if($only_transaction) return;
+		// if($only_transaction) return;
 		
 		$this->creditOnly($amount);
 	}
