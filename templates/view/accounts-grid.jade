@@ -16,6 +16,9 @@
                     a(href='#')
                         span Account
                 th
+                    a(href='#')
+                        span Group
+                th
                     a.asc(href='#')
                         span Balance
                 th 
@@ -29,6 +32,8 @@
                     {cols}
                     td
                       span.text-muted {$name} 
+                    td
+                      | {$group}
                     td
                       | {balance}0{/}
                     td(style="width: 15%;")

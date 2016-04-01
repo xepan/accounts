@@ -10,6 +10,7 @@
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
         <th><a href="#"><span>Account</span></a></th>
+        <th><a href="#"><span>Group</span></a></th>
         <th><a href="#" class="asc"><span>Balance</span></a></th>
         <th> </th>{/}{/}
       </thead>{/}
@@ -17,6 +18,7 @@
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td><span class="text-muted">{$name} </span></td>
+          <td>{$group}</td>
           <td>{balance}0{/}</td>
           <td style="width: 15%;">
             {$edit}
