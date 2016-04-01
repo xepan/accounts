@@ -1,14 +1,14 @@
 <?php
 namespace xepan\accounts;
-class Model_Currency extends \xepan\hr\Model_Document{
-	// public $table="currency";
+class Model_Currency extends \xepan\base\Model_Table{
+	public $table="currency";
 	public $status=['Active','InActive'];
 	
 	public $actions = [
 		'Active'=>['view','edit','delete','deactivate'],
 		'InActive' => ['view','edit','delete','activate']
 	];
-	
+		
 	function init(){
 		parent::init();
 		$currency_j = $this->join('currency.document_id');
@@ -17,8 +17,8 @@ class Model_Currency extends \xepan\hr\Model_Document{
 		$currency_j->addField('value');
 		$currency_j->hasMany('xepan\commerce\Customer','currency_id','Customers');
 	
-		$this->getElement('status')->enum($this->status)->defaultValue('InActive');
-		$this->addCondition('type','Currency');
+		$this->addField('status')->enum($this->status)->defaultValue('InActive');
+		// $this->addCondition('type','Currency');
 	
 	}
 

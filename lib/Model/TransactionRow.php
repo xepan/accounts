@@ -16,10 +16,10 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addField('_amountCr')->caption('Credit')->type('money');
 		$this->addField('side');
 		$this->addField('accounts_in_side')->type('int');
-		$this->addField('exchang_rate')->type('number');
+		$this->addField('exchange_rate')->type('number');
 
-		$this->addExpression('amountCr')->set($this->dsql()->expr('([0]*[1])',[$tis->getElement('_amountCr'),$this->getElement('exchang_rate')]));
-		$this->addExpression('amountDr')->set($this->dsql()->expr('([0]*[1])',[$tis->getElement('_amountDr'),$this->getElement('exchang_rate')]));
+		$this->addExpression('amountCr')->set($this->dsql()->expr('([0]*[1])',[$this->getElement('_amountCr'),$this->getElement('exchange_rate')]));
+		$this->addExpression('amountDr')->set($this->dsql()->expr('([0]*[1])',[$this->getElement('_amountDr'),$this->getElement('exchange_rate')]));
 
 		$this->addExpression('created_at')->set($this->refSQL('transaction_id')->fieldQuery('created_at'));
 		$this->addExpression('voucher_no')->set($this->refSQL('transaction_id')->fieldQuery('voucher_no'));
