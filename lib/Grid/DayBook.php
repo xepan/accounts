@@ -8,7 +8,7 @@ class Grid_DayBook extends \xepan\base\Grid{
 	function setModel($model,$fields=array()){
 		parent::setModel($model,$fields);
 		$this->addFormatter('voucher_no','Wrap');
-		$this->addFormatter('account','Wrap');
+		$this->addFormatter('ledger','Wrap');
 		// $this->addFormatter('forcedelete','password');
 	}
 
