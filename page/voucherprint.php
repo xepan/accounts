@@ -55,7 +55,13 @@ class page_voucherprint extends \Page{
 			$ld=$d_c->addColumn(8)->addClass('col-md-8');
 			$ld->add('View')->set([$transaction['Narration']])->addClass('fa fa-pencil');
 			$rd=$d_c->addColumn(4)->addClass('col-md-4');
-			$rd->add('Button')->setHTML('<i class="fa fa-trash-o"></i>')->addClass('pull-right');
+
+			$del=$rd->add('Button')->setHTML('<i class="fa fa-trash-o"></i>')->addClass('pull-right');
+
+			$del->on('click',function(){
+				// throw new \Exception($this, 1);
+				$this->js()->univ()->errorMessage('TODO')->execute();
+			});
 	}
 
 	function relatedDocumentLink(){
