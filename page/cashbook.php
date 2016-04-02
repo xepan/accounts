@@ -12,10 +12,10 @@ class page_cashbook extends \Page{
 
 		$grid = $this->add('xepan\accounts\Grid_AccountsBase');
 
-		// $transaction_row = $this->add('xepan\accounts\Model_Transaction');
 		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
-		// $transaction_row->addCondition('root_group_name','Cash Account');
-		// throw new \Exception($transaction_row->count()->getOne());
+		$group=$this->add('xepan\accounts\Model_Group')->loadCashAccount();
+
+		$transaction_row->addCondition('root_group_name',$group['name']);
 		
 		if($_GET['from_date']){
 			$this->api->stickyGET('from_date');
@@ -50,7 +50,7 @@ class page_cashbook extends \Page{
 		$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
 		$grid->addCurrentBalanceInEachRow();
 
-		$grid->setModel($transaction_row,['voucher_no','transaction_type','created_at','Narration','account','amountDr','amountCr','root_group_name','group_name','parent_group_name']);
+		$grid->setModel($transaction_row,['voucher_no','transaction_type','created_at','Narration','account','amountDr','amountCr','root_group_name']);
 		// $grid->addSno();
 		$grid->removeColumn('account');
 
