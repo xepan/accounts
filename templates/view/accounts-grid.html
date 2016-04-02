@@ -18,7 +18,10 @@
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td><span class="text-muted">{$name} </span></td>
-          <td>{$group}</td>
+          <td>
+            {$group}
+            {$root_group}
+          </td>
           <td>{balance}0{/}</td>
           <td style="width: 15%;">
             {$edit}

@@ -7,7 +7,7 @@ class page_ledgers extends \Page{
 
 		$group = $this->add('xepan\accounts\Model_Ledger');
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/ledger-grid']);
-		$crud->setModel($group,['name','group_id','OpeningBalanceCr','OpeningBalanceDr'],['name','group','CurrentBalanceCr','CurrentBalanceDr','OpeningBalanceCr','OpeningBalanceDr']);
+		$crud->setModel($group,['name','group_id','OpeningBalanceCr','OpeningBalanceDr'],['name','group','parent_group','root_group','CurrentBalanceCr','CurrentBalanceDr','OpeningBalanceCr','OpeningBalanceDr']);
 
 		if(!$crud->isEditing()){
 			$crud->grid->addMethod('format_balance',function($g,$f){
