@@ -9,7 +9,7 @@ class page_contra extends \Page {
 		// ============ CASH => BANK =================
 		$cash_to_bank_form = $this->add('Form_Stacked',null,'bank_view');
 
-		$bank_accounts = $this->add('xepan\accounts\Model_Account');
+		$bank_accounts = $this->add('xepan\accounts\Model_Ledger');
 		$bank_accounts->loadBankAccounts();
 		$cash_to_bank_form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
 		$to_bank_field = $cash_to_bank_form->addField('autocomplete/Basic','to_bank_account')->validateNotNull(true);
