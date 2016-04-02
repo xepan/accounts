@@ -50,7 +50,7 @@ class page_voucherprint extends \Page{
 
 			$grid=$this->add('xepan\hr\Grid',null,null,['view/voucher-grid']);
 			$grid->template->tryDel('Pannel');
-			$grid->setModel($transaction->ref('TransactionRows')->setOrder('amountDr desc, amountCr desc'),['account','amountDr','amountCr']);
+			$grid->setModel($transaction->ref('TransactionRows')->setOrder('amountDr desc, amountCr desc'),['ledger','amountDr','amountCr']);
 
 			$this->add('View')->set([$transaction['Narration']])->addClass('fa fa-pencil');
 	}

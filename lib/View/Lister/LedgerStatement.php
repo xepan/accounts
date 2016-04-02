@@ -1,14 +1,14 @@
 <?php
 namespace xepan\accounts;
-class View_Lister_AccountStatement extends \CompleteLister{
+class View_Lister_LedgerStatement extends \CompleteLister{
 	public $sno=1;
-	public $account_id = 0;
+	public $ledger_id = 0;
 	public $from_date = 0;
 	function setModel($model){
 		parent::setModel($model);
 
-		if($this->account_id and $this->from_date){
-			$opening_balance = $this->add('xepan\accounts\Model_Account')->load($this->account_id)->getOpeningBalance($this->from_date);
+		if($this->ledger_id and $this->from_date){
+			$opening_balance = $this->add('xepan\accounts\Model_Ledger')->load($this->ledger_id)->getOpeningBalance($this->from_date);
 			$this->template->set('opening_balance_narration','Opening Balance');			
 			$this->template->set('opening_balance',$opening_balance['cr']);			
 		}else

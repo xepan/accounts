@@ -11,14 +11,14 @@
   <div class="main-box-body clearfix">
     <div class="row">{header}{cols}{col}
       <div class="col-md-12">
-        <div class="col-md-6"><strong>Accounts:</strong></div>
+        <div class="col-md-6"><strong>Ledger:</strong></div>
         <div class="col-md-3"><strong class="pull-right">Debit:</strong></div>
         <div class="col-md-3"><strong class="pull-right">Credit:</strong></div>
       </div>{/}{/}{/}
       {rows}{row}
       <div data-id="{$id}" class="{$odd_even} col-md-{col-width}12{/}">{cols}
         <div class="row">
-          <div class="col-md-6">{$account}</div>
+          <div class="col-md-6">{$ledger}</div>
           <div class="col-md-3 text-right">{$amountDr}</div>
           <div class="col-md-3 text-right">{$amountCr}</div>
         </div>

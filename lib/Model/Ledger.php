@@ -358,6 +358,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function loadCustomerLedger($customer_id){
+		
 		$this->addCondition('contact_id',$customer_id);
 		$this->tryLoadAny();
 		return $this;
