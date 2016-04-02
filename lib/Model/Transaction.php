@@ -248,4 +248,10 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->ref('TransactionRows')->deleteAll();
 	}
 
+	function customer(){
+		if($this['related_id'] and $this['related_type'] ==="xepan\commerce\Model_SalesInvoice")
+			return $this->add('xepan\commerce\Model_SalesInvoice')->load($this['related_id'])->customer();
+		
+		return false;
+	}
 }

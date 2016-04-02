@@ -33,6 +33,14 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$this->hasMany('xepan\accounts\TransactionRow','ledger_id',null,'TransactionRows');
 
+		$this->addExpression('parent_group')->set(function($m,$q){
+			return $m->refSQL('group_id')->fieldQuery('parent_group');
+		});
+
+		$this->addExpression('root_group')->set(function($m,$q){
+			return $m->refSQL('group_id')->fieldQuery('root_group');
+		});
+
 		$this->addHook('beforeDelete',$this);
 		
 		// $this->is([

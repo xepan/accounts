@@ -39,13 +39,14 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function addAppdateFunctions(){
-		$this->app->addMethod('nextDate',function($date=null){
+		$this->app->addMethod('nextDate',function($app,$date=null){
+			
 			if(!$date) $date = $this->api->today;
 	        $date = date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " +1 DAY"));    
 	        return $date;
 		});
 
-		$this->app->addMethod('setDate',function($date){
+		$this->app->addMethod('setDate',function($app,$date){
 	        $this->api->memorize('current_date',$date);
 	        $this->now = date('Y-m-d H:i:s',strtotime($date));
 	        $this->today = date('Y-m-d',strtotime($date));
