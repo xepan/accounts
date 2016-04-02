@@ -26,18 +26,10 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addExpression('Narration')->set($this->refSQL('transaction_id')->fieldQuery('Narration'));
 		$this->addExpression('transaction_type')->set($this->refSQL('transaction_id')->fieldQuery('transaction_type'));
 
-		$this->addExpression('group_name')->set(function($m,$q){
-			return $m->refSQL('ledger_id')->fieldQuery('group');
-		});
-
 		$this->addExpression('root_group_name')->set(function($m,$q){
-			$l = $m->add('xepan\accounts\Model_Group')->addCondition('id',$m->refSQL('ledger_id')->fieldQuery('group_id'));
-			return $l->fieldQuery('root_group');
+			// return ''
+			return $l = $m->refSQL('ledger_id')->fieldQuery('root_group');
 		});
-		
-		// $this->addExpression('root_group_name')->set(function($m,$q){
-		// 	return $m->refSQL('ledger_id')->fieldQuery('root_group');
-		// });
 		
 		$this->addHook('beforeDelete',[$this,'deleteTransactionAndRow']);
 
