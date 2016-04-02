@@ -8,7 +8,9 @@ div(id="{$_name}" class="{$class}")
 					.row.xepan-push
 						.col-md-4.col-lg-4
 							.atk-form-row.atk-form-field{$received_from}
-						.col-md-4.col-lg-4
+						.col-md-2.col-lg-2
+							.atk-form-row.atk-form-field{$date}
+						.col-md-2.col-lg-2
 							.atk-form-row.atk-form-field{$from_amount}
 						.col-md-4.col-lg-4
 							.atk-form-row.atk-form-field{$from_currency}&nbsp;@{$from_exchange_rate}
@@ -18,25 +20,50 @@ div(id="{$_name}" class="{$class}")
 								.col-lg-12
 									h2.xepan-push-small Invoices: 
 									.row.xepan-push
-										.col-md-4.col-lg-4
-											.atk-form-row.atk-form-field{$invoice_no}
-										.col-md-4.col-lg-4
+										.col-md-3.col-lg-4
+											.atk-form-row.atk-form-field{$invoice_no_1}
+										.col-md-2.col-lg-2
 											.atk-form-row.atk-form-field{$invoice_amount_1}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$invoice_adjust_1}
+										.col-md-2.col-lg-4
+											.atk-form-row.atk-form-field{$invoice_currency_1}&nbsp;@{$invoice_exchange_rate_1}
 									.row.xepan-push
-										.col-md-4.col-lg-4
+										.col-md-3.col-lg-4
 											.atk-form-row.atk-form-field{$invoice_no_2}
-										.col-md-4.col-lg-4
+										.col-md-2.col-lg-2
 											.atk-form-row.atk-form-field{$invoice_amount_2}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$invoice_adjust_2}
+										.col-md-2.col-lg-4
+											.atk-form-row.atk-form-field{$invoice_currency_2}&nbsp;@{$invoice_exchange_rate_2}
 									.row.xepan-push
-										.col-md-4.col-lg-4
+										.col-md-3.col-lg-4
 											.atk-form-row.atk-form-field{$invoice_no_3}
-										.col-md-4.col-lg-4
+										.col-md-2.col-lg-2
 											.atk-form-row.atk-form-field{$invoice_amount_3}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$invoice_adjust_3}
+										.col-md-2.col-lg-4
+											.atk-form-row.atk-form-field{$invoice_currency_3}&nbsp;@{$invoice_exchange_rate_3}
 									.row.xepan-push
-										.col-md-4.col-lg-4
+										.col-md-3.col-lg-4
 											.atk-form-row.atk-form-field{$invoice_no_4}
-										.col-md-4.col-lg-4
+										.col-md-2.col-lg-2
 											.atk-form-row.atk-form-field{$invoice_amount_4}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$invoice_adjust_4}
+										.col-md-2.col-lg-4
+											.atk-form-row.atk-form-field{$invoice_currency_4}&nbsp;@{$invoice_exchange_rate_4}
+									.row.xepan-push
+										.col-md-3.col-lg-4
+											.atk-form-row.atk-form-field{$invoice_no_5}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$invoice_amount_5}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$invoice_adjust_5}
+										.col-md-2.col-lg-4
+											.atk-form-row.atk-form-field{$invoice_currency_5}&nbsp;@{$invoice_exchange_rate_5}
 					h2.xepan-push-small To:- 
 					.row.xepan-push
 						.col-md-3.col-lg-3
@@ -53,27 +80,50 @@ div(id="{$_name}" class="{$class}")
 								.col-lg-12
 									h2.xepan-push-small Different Charges:
 									.row.xepan-push 
-										.col-md-4.col-lg-4
+										.col-md-3.col-lg-3
 											.atk-form-row.atk-form-field{$bank_account_1}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$bank_charge_date_1}
+										.col-md-3.col-lg-3
+											.atk-form-row.atk-form-field{$bank_charge_amount_1}
 										.col-md-4.col-lg-4
-											.atk-form-row.atk-form-field{$c_date_1}
-										.col-md-4.col-lg-4
-											.atk-form-row.atk-form-field{$c_amount_1}
+											.atk-form-row.atk-form-field{$bank_currency_1}&nbsp;@{$bank_exchange_rate_1}
 									.row.xepan-push 
-										.col-md-4.col-lg-4
+										.col-md-3.col-lg-3
 											.atk-form-row.atk-form-field{$bank_account_2}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$bank_charge_date_2}
+										.col-md-3.col-lg-3
+											.atk-form-row.atk-form-field{$bank_charge_amount_2}
 										.col-md-4.col-lg-4
-											.atk-form-row.atk-form-field{$c_date_2}
-										.col-md-4.col-lg-4
-											.atk-form-row.atk-form-field{$c_amount_2}
+											.atk-form-row.atk-form-field{$bank_currency_2}&nbsp;@{$bank_exchange_rate_2}
 									.row.xepan-push 
-										.col-md-4.col-lg-4
+										.col-md-3.col-lg-3
 											.atk-form-row.atk-form-field{$bank_account_3}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$bank_charge_date_3}
+										.col-md-3.col-lg-3
+											.atk-form-row.atk-form-field{$bank_charge_amount_3}
 										.col-md-4.col-lg-4
-											.atk-form-row.atk-form-field{$c_date_3}
+											.atk-form-row.atk-form-field{$bank_currency_3}&nbsp;@{$bank_exchange_rate_3}
+									.row.xepan-push 
+										.col-md-3.col-lg-3
+											.atk-form-row.atk-form-field{$bank_account_4}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$bank_charge_date_4}
+										.col-md-3.col-lg-3
+											.atk-form-row.atk-form-field{$bank_charge_amount_4}
 										.col-md-4.col-lg-4
-											.atk-form-row.atk-form-field{$c_amount_3}
-						
+											.atk-form-row.atk-form-field{$bank_currency_4}&nbsp;@{$bank_exchange_rate_4}
+									.row.xepan-push 
+										.col-md-3.col-lg-3
+											.atk-form-row.atk-form-field{$bank_account_5}
+										.col-md-2.col-lg-2
+											.atk-form-row.atk-form-field{$bank_charge_date_5}
+										.col-md-3.col-lg-3
+											.atk-form-row.atk-form-field{$bank_charge_amount_5}
+										.col-md-4.col-lg-4
+											.atk-form-row.atk-form-field{$bank_currency_5}&nbsp;@{$bank_exchange_rate_5}
 					.row
 						.col-md-12.col-lg-12
 							.atk-form-row.atk-form-field{$narration}
