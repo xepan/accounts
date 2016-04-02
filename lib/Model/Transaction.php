@@ -76,7 +76,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return $this->ref('TransactionRows');
 	}
 	
-	function createNewTransaction($transaction_type, $related_document=false, $transaction_date=null, $Narration=null, $Currency=null, $exchange_rate=1.00,$related_id,$related_type){
+	function createNewTransaction($transaction_type, $related_document=false, $transaction_date=null, $Narration=null, $Currency=null, $exchange_rate=1.00,$related_id=null,$related_type=null){
 		if($this->loaded()) throw $this->exception('Use Unloaded Transaction model to create new Transaction');
 		
 		$transaction_type_model = $this->add('xepan\accounts\Model_TransactionType');
