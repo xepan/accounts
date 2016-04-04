@@ -58,9 +58,13 @@ class page_voucherprint extends \Page{
 
 			$del=$rd->add('Button')->setHTML('<i class="fa fa-trash-o"></i>')->addClass('pull-right');
 
-			$del->on('click',function(){
-				// throw new \Exception($this, 1);
-				$this->js()->univ()->errorMessage('TODO')->execute();
+			$del->on('click',function($js,$data){
+				// throw new \Exception($_GET['transaction_id'], 1);
+				$transaction = $this->add('xepan\accounts\Model_Transaction');
+				$transaction->load($_GET['transaction_id']);
+				$transaction->ref('TransactionRows')->deleteAll();
+				$transaction->delete();
+				return $js->univ()->location();
 			});
 	}
 
