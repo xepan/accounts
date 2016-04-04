@@ -41,7 +41,7 @@ class Initiator extends \Controller_Addon {
 					'customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>4],
 					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>9]
 		];
-		$this->setConfig('account_template_data',$data);
+		$this->app->setConfig('account_template_data',$data);
 	}
 
 	function addAppdateFunctions(){

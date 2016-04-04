@@ -11,7 +11,7 @@ class page_accounttemplate extends \Page
 		parent::init();
 
 		$completelister = $this->add('CompleteLister',null,null,['view\accounttemplate']);
-		$completelister->setSource($this->getConfig('account_template_data'));
+		$completelister->setSource($this->app->getConfig('account_template_data'));
 		
 	}
 }
