@@ -121,7 +121,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$ledger['name'] = $tax_obj['name'];
 		$ledger['LedgerDisplayName'] = $tax_obj['name'];
-		$ledger['updated_at'] =  $app->api->now;
+		$ledger['updated_at'] =  $this->api->now;
 		return $ledger->save();
 	}
 
