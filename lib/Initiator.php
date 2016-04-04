@@ -27,13 +27,21 @@ class Initiator extends \Controller_Addon {
 			$m->addItem('Configuration','xepan_accounts_config');
 
 			$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
-
+			$this->addAccountTemplates();
 		}
 		$this->addAppDateFunctions();
 
 		$this->app->addHook('customer_update',['xepan\accounts\Model_Ledger','createCustomerLedger']);
 		$this->app->addHook('supplier_update',['xepan\accounts\Model_Ledger','createSupplierLedger']);
 		
+	}
+
+	function addAccountTemplates(){
+		$data =[
+					'customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>4],
+					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>9]
+		];
+		$this->setConfig('account_template_data',$data);
 	}
 
 	function addAppdateFunctions(){
