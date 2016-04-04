@@ -29,9 +29,6 @@ class Initiator extends \Controller_Addon {
 			$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
 
 		}
-
-		$this->app->addHook('tax_update',['xepan\accounts\Model_Ledger','createTaxLedger']);
-		
 		$this->addAppDateFunctions();
 
 		$this->app->addHook('customer_update',['xepan\accounts\Model_Ledger','createCustomerLedger']);

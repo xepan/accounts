@@ -127,7 +127,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $ledger->save();
 	}
 
-	function createTaxLedger($app,$tax_obj){
+	function createTaxLedger($tax_obj){
 		
 		if(!($tax_obj instanceof \xepan\commerce\Model_Taxation))
 			throw new \Exception("must pass taxation model", 1);	
@@ -135,15 +135,15 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		if(!$tax_obj->loaded())
 			throw new \Exception("must loaded taxation", 1);
 
-		$ledger = $app->add('xepan\accounts\Model_Ledger');
-		$ledger->addCondition('group_id',$app->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
+		$ledger = $this->add('xepan\accounts\Model_Ledger');
+		$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
 		$ledger->addCondition('ledger_type',$tax_obj['name']);
-		$ledger->addCondition('related_id',$tax_obj->id);
 
 		$ledger->tryLoadAny();
 
 		$ledger['name'] = $tax_obj['name'];
 		$ledger['LedgerDisplayName'] = $tax_obj['name'];
+		$ledger['related_id'] = $tax_obj['id'];
 		$ledger['updated_at'] =  $this->api->now;
 		return $ledger->save();
 	}
