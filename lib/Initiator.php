@@ -38,8 +38,8 @@ class Initiator extends \Controller_Addon {
 
 	function addAccountTemplates(){
 		$data =[
-					'customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>4],
-					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>9]
+					'customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>4,'acctype'=>'debtor'],
+					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>9,'acctype'=>'creditor']
 		];
 		$this->app->setConfig('account_template_data',$data);
 	}

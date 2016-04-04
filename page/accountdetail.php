@@ -10,11 +10,11 @@ class page_accountdetail extends \Page
 	{
 		parent::init();
 		
-		$acctypegroup = $this->getConfig('account_template_data');
+		$acctypegroup = $this->app->getConfig('account_template_data');
 
 		$acc_type=$this->app->stickyGET('acc_type');
 		$action = $this->api->stickyGET('action')?:'view';
-		$account = $this->add('xepan\accounts\Model_Account');
+		$account = $this->add('xepan\accounts\Model_Ledger');
 		// throw new \Exception($this->acctypegroup[$acc_type], 1);
 		
 		$account_detail = $this->add('xepan\hr\View_Document',['action'=> $action,'id_field_on_reload'=>'account_id'],null,['view\accountdetail']);
