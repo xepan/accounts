@@ -54,7 +54,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$this->addExpression('balance_signed')->set(function($m,$q){
 			// return '"123"';
-			return $q->expr("(IFNULL([0],0) + IFNULL([1],0)-IFNULL([2],0)+IFNULL([3],0))",[$m->getField('OpeningBalanceDr'),$m->getField('CurrentBalanceDr'),$m->getField('OpeningBalanceCr'),$m->getField('CurrentBalanceCr')]);
+			return $q->expr("((IFNULL([0],0) + IFNULL([1],0))- (IFNULL([2],0)+IFNULL([3],0)))",[$m->getField('OpeningBalanceDr'),$m->getField('CurrentBalanceDr'),$m->getField('OpeningBalanceCr'),$m->getField('CurrentBalanceCr')]);
 		});
 		
 		$this->addExpression('balance_sign')->set(function($m,$q){
