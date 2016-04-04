@@ -146,7 +146,7 @@ class page_amtreceived extends \Page {
 
 
 			$transaction = $this->add('xepan\accounts\Model_Transaction');
-			$transaction->createNewTransaction('BANK RECEIPT', $related_document=false, $form['date'], $form['narration'], $Currency=null, $exchange_rate=1.00);
+			$transaction->createNewTransaction('BANK RECEIPT', $related_document=false, $form['date'], $form['narration'], $Currency=null, $exchange_rate=1.00,$related_id=$form['received_from'],$related_type="xepan\accounts\Model_Ledger");
 
 			//Customer account
 			$from_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form['received_from']);

@@ -399,4 +399,11 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
+	// function contact(){
+	// 	if(!$this->loaded())
+	// 		throw new \Exception("model Ledger must loaded before ", 1);
+
+	// 	return $this->ref('contact_id');
+	// }
+
 }

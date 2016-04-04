@@ -32,7 +32,8 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->addExpression('voucher_no')->set(function ($m,$q){
 			return $q->getField('name');
 		});
-		 
+
+
 		$this->addField('Narration')->type('text');
 		$this->addField('created_at')->type('date');
 		$this->addField('updated_at')->type('date');
@@ -40,8 +41,24 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		$this->hasMany('xepan\accounts\TransactionRow','transaction_id',null,'TransactionRows');
 
-		// $this->addExpression('cr_sum')->set($this->refSQL('xAccount/TransactionRow')->sum('amountCr'));
-		// $this->addExpression('dr_sum')->set($this->refSQL('xAccount/TransactionRow')->sum('amountDr'));
+		$this->addExpression('cr_sum')->set(function($m,$q){
+			return $m->refSQL('TransactionRows')->sum('amountCr');
+		});
+
+		$this->addExpression('dr_sum')->set(function($m,$q){
+			return $m->refSQL('TransactionRows')->sum('amountDr');
+		});
+
+		$this->addExpression('logged_amount')->set(function($m,$q){
+			$lodge_model = $m->add('xepan\commerce\Model_Lodgement')
+						->addCondition('transaction_id',$q->getField('id'));
+			return $lodge_model->sum($q->expr('IFNULL([0],0)',[$lodge_model->getElement('exchange_amount')]));
+		})->type('money');
+
+		$this->addExpression('lodgement_amount')->set(function($m,$q){
+			return $q->expr("([0]-IF([1],[1],0))",[$m->getElement('cr_sum'),$m->getElement('logged_amount')]);
+		})->type('money');
+
 
 		// $this->addHook('beforeDelete',[$this,'deleteAllTransactionRow']);
 		// $this->addHook('afterSave',[$this,'searchStringAfterSave']);
@@ -251,6 +268,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	function customer(){
 		if($this['related_id'] and $this['related_type'] ==="xepan\commerce\Model_SalesInvoice")
 			return $this->add('xepan\commerce\Model_SalesInvoice')->load($this['related_id'])->customer();
+		
+		if($this['related_id'] and $this['related_type'] ==="xepan\accounts\Model_Ledger")
+			return $this->add('xepan\accounts\Model_Ledger')->load($this['related_id'])->contact();
 		
 		return false;
 	}
