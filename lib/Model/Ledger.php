@@ -51,10 +51,22 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->addExpression('CurrentBalanceCr')->set(function($m,$q){
 			return $m->refSQL('TransactionRows')->sum('amountCr');
 		});
-		$this->addExpression('balance')->set(function($m,$q){
+
+		$this->addExpression('balance_signed')->set(function($m,$q){
 			// return '"123"';
 			return $q->expr("(IFNULL([0],0) + IFNULL([1],0)-IFNULL([2],0)+IFNULL([3],0))",[$m->getField('OpeningBalanceDr'),$m->getField('CurrentBalanceDr'),$m->getField('OpeningBalanceCr'),$m->getField('CurrentBalanceCr')]);
 		});
+		
+		$this->addExpression('balance_sign')->set(function($m,$q){
+			return $q->expr("IF([0]>0,'DR','CR')",[$m->getElement('balance_signed')]);
+		});
+
+		$this->addExpression('balance')->set(function($m,$q){
+			return $q->expr("Concat(ABS([0]),' ',[1])",[$m->getElement('balance_signed'),$m->getElement('balance_sign')]);
+		});
+
+
+
 
 		$this->addHook('beforeDelete',$this);
 		
