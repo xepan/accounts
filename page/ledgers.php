@@ -13,10 +13,6 @@ class page_ledgers extends \Page{
 			$ledger->setOrder('name','asc');
 			// $crud->grid->add_sno();
 			$crud->grid->addQuickSearch('name');
-			// $crud->grid->removeColumn('CurrentBalanceDr');
-			// $crud->grid->removeColumn('CurrentBalanceCr');
-			// $crud->grid->removeColumn('OpeningBalanceCr');
-			// $crud->grid->removeColumn('OpeningBalanceDr');
 		}
 
 	}
