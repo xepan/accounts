@@ -6,7 +6,7 @@ class page_group extends \Page{
 		parent::init();
 
 	$group = $this->add('xepan\accounts\Model_Group');
-		$crud = $this->add('xepan\base\CRUD');
+		$crud = $this->add('xepan\hr\CRUD',null,null,['view/group-grid']);
 		$crud->setModel($group);
 	}
 }

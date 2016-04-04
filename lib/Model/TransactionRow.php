@@ -41,10 +41,10 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 
 	/*===TODO This Code Temporary  ====*/
 	function deleteTransactionAndRow(){
-		$tra=$this->add('xepan\accounts\Model_Transaction');
-		$tra->load($this['transaction_id']);
-		$tra->ref('TransactionRows')->deleteAll();
-		$tra->deleteAll();
+		// $tra=$this->add('xepan\accounts\Model_Transaction');
+		// $tra->load($this['transaction_id']);
+		// $tra->ref('TransactionRows')->deleteAll();
+		// $tra->deleteAll();
 	}
 
 	function transaction(){

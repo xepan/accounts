@@ -3,6 +3,7 @@ namespace xepan\accounts;
 
 class Model_Group extends \xepan\base\Model_Table{
 	public $table="account_group";
+	public $acl=false;
 	function init(){
 		parent::init();
 
