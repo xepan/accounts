@@ -342,6 +342,29 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;	
 	}
 
+	function loadDefaultExchangeLoss(){
+		$this->addCondition('name','Exchange Loss');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
+		return $this;	
+	}
+
+	function loadDefaultExchangeGain(){
+		$this->addCondition('name','Exchange Gain');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectIncome()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
+		return $this;	
+	}
 
 	function loadCashAccounts(){
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashAccount()->fieldQuery('id'));

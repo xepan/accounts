@@ -144,13 +144,13 @@ class page_amtreceived extends \Page {
 			//4//
 				//association entry in invoice_transaction_association_table
 
-
-			$transaction = $this->add('xepan\accounts\Model_Transaction');
-			$transaction->createNewTransaction('BANK RECEIPT', $related_document=false, $form['date'], $form['narration'], $Currency=null, $exchange_rate=1.00,$related_id=$form['received_from'],$related_type="xepan\accounts\Model_Ledger");
-
 			//Customer account
 			$from_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form['received_from']);
 			$from_currency = $this->add('xepan\accounts\Model_Currency')->load($form['from_currency']);
+
+			$transaction = $this->add('xepan\accounts\Model_Transaction');
+			$transaction->createNewTransaction('BANK RECEIPT', $related_document=false, $form['date'], $form['narration'], $from_currency, $form['from_exchange_rate'],$related_id=$form['received_from'],$related_type="xepan\accounts\Model_Ledger");
+
 			
 			$transaction->addCreditAccount($from_ledger,$form['from_amount'],$from_currency,$form['from_exchange_rate']);
 			// echo "DR From Account: ".$from_ledger->id." :amount= ".$form['from_amount']." :Currency= ".$from_currency->id." :exchange Rate=".$form['from_exchange_rate']."<br/>";

@@ -42,17 +42,25 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->hasMany('xepan\accounts\TransactionRow','transaction_id',null,'TransactionRows');
 
 		$this->addExpression('cr_sum')->set(function($m,$q){
-			return $m->refSQL('TransactionRows')->sum('amountCr');
+			return $m->refSQL('TransactionRows')->sum('_amountCr');
 		});
 
 		$this->addExpression('dr_sum')->set(function($m,$q){
+			return $m->refSQL('TransactionRows')->sum('_amountDr');
+		});
+
+		$this->addExpression('dr_sum_exchanged')->set(function($m,$q){
 			return $m->refSQL('TransactionRows')->sum('amountDr');
+		});
+
+		$this->addExpression('cr_sum_exchanged')->set(function($m,$q){
+			return $m->refSQL('TransactionRows')->sum('amountCr');
 		});
 
 		$this->addExpression('logged_amount')->set(function($m,$q){
 			$lodge_model = $m->add('xepan\commerce\Model_Lodgement')
 						->addCondition('transaction_id',$q->getField('id'));
-			return $lodge_model->sum($q->expr('IFNULL([0],0)',[$lodge_model->getElement('exchange_amount')]));
+			return $lodge_model->sum($q->expr('IFNULL([0],0)',[$lodge_model->getElement('amount')]));
 		})->type('money');
 
 		$this->addExpression('lodgement_amount')->set(function($m,$q){
