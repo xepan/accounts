@@ -30,8 +30,24 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 			// return ''
 			return $l = $m->refSQL('ledger_id')->fieldQuery('root_group');
 		});
+
+		$this->addExpression('group')->set(function($m,$q){
+			return $m->refSQL('ledger_id')->fieldQuery('group_id');
+		});
+	
+		$this->addExpression('root_group')->set(function($m,$q){
+			return $m->refSQL('ledger_id')->fieldQuery('root_group_id');
+		});
+
+		$this->addExpression('balance_sheet_id')->set(function($m,$q){
+			return  $m->refSQL('ledger_id')->fieldQuery('balance_sheet_id');
+		});
+
+		$this->addExpression('balance_sheet')->set(function($m,$q){
+			return  $m->refSQL('ledger_id')->fieldQuery('balance_sheet');
+		});
 		
-		$this->addHook('beforeDelete',[$this,'deleteTransactionAndRow']);
+		$this->addHook('beforeDelete',[$this,'deleteTransactionAndthis']);
 
 	}
 
@@ -40,10 +56,10 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 	}
 
 	/*===TODO This Code Temporary  ====*/
-	function deleteTransactionAndRow(){
+	function deleteTransactionAndthis(){
 		// $tra=$this->add('xepan\accounts\Model_Transaction');
 		// $tra->load($this['transaction_id']);
-		// $tra->ref('TransactionRows')->deleteAll();
+		// $tra->ref('Transactionthiss')->deleteAll();
 		// $tra->deleteAll();
 	}
 
