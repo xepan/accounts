@@ -23,6 +23,7 @@ class Initiator extends \Controller_Addon {
 			$m->addItem('Day Book','xepan_accounts_daybook');
 			$m->addItem('Ledgers','xepan_accounts_ledgers');
 			$m->addItem('Group','xepan_accounts_group');
+			$m->addItem('Balance Sheet','xepan_accounts_balancesheet');
 			$m->addItem('Debit/Credit Note','xepan_accounts_debitcreditnote');
 			$m->addItem('Configuration','xepan_accounts_config');
 
