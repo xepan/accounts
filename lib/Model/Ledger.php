@@ -33,6 +33,15 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$this->hasMany('xepan\accounts\TransactionRow','ledger_id',null,'TransactionRows');
 
+		$this->addExpression('balance_sheet_id')->set(function($m,$q){
+			return $m->refSQL('group_id')->fieldQuery('balance_sheet_id');
+		});
+
+		$this->addExpression('balance_sheet')->set(function($m,$q){
+			return $m->refSQL('group_id')->fieldQuery('balance_sheet');
+		});
+
+
 		$this->addExpression('parent_group')->set(function($m,$q){
 			return $this->add('xepan\accounts\Model_Group',['table_alias'=>'parent_group'])
 					->addCondition('id',$m->refSQL('group_id')->fieldQuery('parent_group_id'))
@@ -44,6 +53,13 @@ class Model_Ledger extends \xepan\base\Model_Table{
 					->addCondition('id',$m->refSQL('group_id')->fieldQuery('root_group_id'))
 					->fieldQuery('name');
 		});
+
+		$this->addExpression('root_group_id')->set(function($m,$q){
+			return $this->add('xepan\accounts\Model_Group',['table_alias'=>'root_group'])
+					->addCondition('id',$m->refSQL('group_id')->fieldQuery('root_group_id'))
+					->fieldQuery('id');
+		});
+
 
 		$this->addExpression('CurrentBalanceDr')->set(function($m,$q){
 			return $m->refSQL('TransactionRows')->sum('amountDr');
