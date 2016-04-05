@@ -146,20 +146,20 @@ class page_amtreceived extends \Page {
 
 
 			$transaction = $this->add('xepan\accounts\Model_Transaction');
-			$transaction->createNewTransaction('BANK RECEIPT', $related_document=false, $form['date'], $form['narration'], $Currency=null, $exchange_rate=1.00);
+			$transaction->createNewTransaction('BANK RECEIPT', $related_document=false, $form['date'], $form['narration'], $Currency=null, $exchange_rate=1.00,$related_id=$form['received_from'],$related_type="xepan\accounts\Model_Ledger");
 
 			//Customer account
 			$from_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form['received_from']);
 			$from_currency = $this->add('xepan\accounts\Model_Currency')->load($form['from_currency']);
 			
-			$transaction->addDebitAccount($from_ledger,$form['from_amount'],$from_currency,$form['from_exchange_rate']);
+			$transaction->addCreditAccount($from_ledger,$form['from_amount'],$from_currency,$form['from_exchange_rate']);
 			// echo "DR From Account: ".$from_ledger->id." :amount= ".$form['from_amount']." :Currency= ".$from_currency->id." :exchange Rate=".$form['from_exchange_rate']."<br/>";
 
 			//one entry for to bank 
 			$to_bank_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form['to_bank_account']);
 			$to_bank_currency = $this->add('xepan\accounts\Model_Currency')->load($form['to_currency']);
 
-			$transaction->addCreditAccount($to_bank_ledger,$form['to_amount'],$to_bank_currency,$form['to_exchange_rate']);
+			$transaction->addDebitAccount($to_bank_ledger,$form['to_amount'],$to_bank_currency,$form['to_exchange_rate']);
 			// echo "CR To Bank : ".$to_bank_ledger['name']." :amount= ".$form['to_amount']." :Currency= ".$to_bank_currency['name']." :exchange Rate=".$form['to_exchange_rate']."<br/>";
 
 			//entry for to bank other charge
@@ -178,7 +178,7 @@ class page_amtreceived extends \Page {
 				$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form[$bank_field]);
 				$bank_other_charge_currency = $this->add('xepan\accounts\Model_Currency')->load($form[$currency_field]);
 
-				$transaction->addCreditAccount($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
+				$transaction->addDebitAccount($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
 				// echo "CR To Bank Other Charge: ".$bank_other_charge_ledger['name']." :amount= ".$form[$amount_field]." :Currency= ".$bank_other_charge_currency['name']." :exchange Rate=".$form[$exchange_field]."<br/>";
 
 			}

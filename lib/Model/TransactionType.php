@@ -19,4 +19,19 @@ class Model_TransactionType extends \xepan\base\Model_Table{
 		return rand(10000,99999);
 	}	
 
+	function getReceiptIDs(){
+		$type = $this->add('xepan\accounts\Model_TransactionType');
+
+		$type->addCondition(
+					$this->dsql->orExpr()
+							->where('name','BANK RECEIPT')
+							->where('name','CASH RECEIPT')
+					);
+		$array = [];
+		foreach ($type as $junk) {
+			$array[$type->id] = $type->id;
+		}
+
+		return $array;
+	}
 }
