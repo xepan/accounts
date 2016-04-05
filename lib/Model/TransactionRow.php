@@ -26,25 +26,20 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addExpression('Narration')->set($this->refSQL('transaction_id')->fieldQuery('Narration'));
 		$this->addExpression('transaction_type')->set($this->refSQL('transaction_id')->fieldQuery('transaction_type'));
 
-		$this->addExpression('root_group_name')->set(function($m,$q){
-			// return ''
-			return $l = $m->refSQL('ledger_id')->fieldQuery('root_group');
+		$this->addExpression('group_id')->set(function($m,$q){
+			return $m->refSQL('ledger_id')->fieldQuery('group_id');
 		});
 
 		$this->addExpression('group')->set(function($m,$q){
-			return $m->refSQL('ledger_id')->fieldQuery('group_id');
+			return $m->refSQL('ledger_id')->fieldQuery('group');
 		});
-	
-		$this->addExpression('root_group')->set(function($m,$q){
+
+		$this->addExpression('root_group_id')->set(function($m,$q){
 			return $m->refSQL('ledger_id')->fieldQuery('root_group_id');
 		});
 
-		$this->addExpression('balance_sheet_id')->set(function($m,$q){
-			return  $m->refSQL('ledger_id')->fieldQuery('balance_sheet_id');
-		});
-
-		$this->addExpression('balance_sheet')->set(function($m,$q){
-			return  $m->refSQL('ledger_id')->fieldQuery('balance_sheet');
+		$this->addExpression('root_group')->set(function($m,$q){
+			return $l = $m->refSQL('ledger_id')->fieldQuery('root_group');
 		});
 		
 		$this->addHook('beforeDelete',[$this,'deleteTransactionAndthis']);
