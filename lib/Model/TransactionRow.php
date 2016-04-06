@@ -41,6 +41,32 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addExpression('root_group')->set(function($m,$q){
 			return $l = $m->refSQL('ledger_id')->fieldQuery('root_group');
 		});
+
+		$this->addExpression('balance_sheet_id')->set(function($m,$q){
+			return  $m->refSQL('ledger_id')->fieldQuery('balance_sheet_id');
+		});
+
+		$this->addExpression('balance_sheet')->set(function($m,$q){
+			return  $m->refSQL('ledger_id')->fieldQuery('balance_sheet');
+		});
+
+		$this->addExpression('is_pandl')->set(function($m,$q){
+			return  $m->add('xepan\accounts\Model_BalanceSheet',['pandl_check'])
+						->addCondition('id',$m->getElement('balance_sheet_id'))
+						->fieldQuery('is_pandl');
+		});
+
+		$this->addExpression('subtract_from')->set(function($m,$q){
+			return  $m->add('xepan\accounts\Model_BalanceSheet',['pandl_check'])
+						->addCondition('id',$m->getElement('balance_sheet_id'))
+						->fieldQuery('subtract_from');
+		});
+
+		$this->addExpression('positive_side')->set(function($m,$q){
+			return  $m->add('xepan\accounts\Model_BalanceSheet',['pandl_check'])
+						->addCondition('id',$m->getElement('balance_sheet_id'))
+						->fieldQuery('positive_side');
+		});
 		
 		$this->addHook('beforeDelete',[$this,'deleteTransactionAndthis']);
 

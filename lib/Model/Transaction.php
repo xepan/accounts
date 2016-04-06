@@ -57,15 +57,15 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			return $m->refSQL('TransactionRows')->sum('amountCr');
 		});
 
-		$this->addExpression('logged_amount')->set(function($m,$q){
-			$lodge_model = $m->add('xepan\commerce\Model_Lodgement')
-						->addCondition('transaction_id',$q->getField('id'));
-			return $lodge_model->sum($q->expr('IFNULL([0],0)',[$lodge_model->getElement('amount')]));
-		})->type('money');
+		// $this->addExpression('logged_amount')->set(function($m,$q){
+		// 	$lodge_model = $m->add('xepan\commerce\Model_Lodgement')
+		// 				->addCondition('transaction_id',$q->getField('id'));
+		// 	return $lodge_model->sum($q->expr('IFNULL([0],0)',[$lodge_model->getElement('amount')]));
+		// })->type('money');
 
-		$this->addExpression('lodgement_amount')->set(function($m,$q){
-			return $q->expr("([0]-IF([1],[1],0))",[$m->getElement('cr_sum'),$m->getElement('logged_amount')]);
-		})->type('money');
+		// $this->addExpression('lodgement_amount')->set(function($m,$q){
+		// 	return $q->expr("([0]-IF([1],[1],0))",[$m->getElement('cr_sum'),$m->getElement('logged_amount')]);
+		// })->type('money');
 
 
 		// $this->addHook('beforeDelete',[$this,'deleteAllTransactionRow']);

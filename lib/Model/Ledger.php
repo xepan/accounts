@@ -269,8 +269,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return array('CR'=>$cr,'DR'=>$dr,'cr'=>$cr,'dr'=>$dr,'Cr'=>$cr,'Dr'=>$dr);
 	}
 
-	function loadDefaultSalesAccount(){
-		$this->addCondition('name','Sales Account');
+	function loadDefaultAccountsReceivable(){
+		$this->addCondition('name','Accounts Receivable');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectIncome()->fieldQuery('id'));
 		$this->tryLoadAny();
 
