@@ -280,6 +280,18 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
+	function loadDefaultSalesAccount(){
+		$this->addCondition('name','Sales Account');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadSalesGroup()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
+		return $this;
+	}
+
 	function loadDefaultPurchaseAccount(){
 		$this->addCondition('name','Purchase Account');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectExpenses()->fieldQuery('id'));

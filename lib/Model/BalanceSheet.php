@@ -80,6 +80,30 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		return $this['name'] == 'Income';
 	}
 
+	function loadSales(){
+			if($this->loaded())
+				$this->unload();
+			$this->addCondition('name','Sales')
+				->loadAny();
+				return $this;
+		}
+
+	function isSales(){
+		return $this['name'] == 'Sales';
+	}
+
+	function loadPurchase(){
+			if($this->loaded())
+				$this->unload();
+			$this->addCondition('name','Purchase')
+				->loadAny();
+				return $this;
+		}
+
+	function isPurchase(){
+		return $this['name'] == 'Purchase';
+	}
+
 	function loadDutiesAndTaxes(){
 			if($this->loaded())
 				$this->unload();
