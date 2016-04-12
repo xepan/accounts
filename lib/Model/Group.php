@@ -384,11 +384,23 @@ class Model_Group extends \xepan\base\Model_Table{
 		return $this['name'] == "Suspense Account";
 	}
 
-	function loadSalesAccount(){
+	function loadSalesGroup(){
 		if($this->loaded())
 			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadIncome()->fieldquery('id'));
-		$this->addCondition('name','Sale Invoice')
+		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadSales()->fieldquery('id'));
+		$this->addCondition('name','Sales')
+			->tryLoadAny();
+		
+		if(!$this->loaded()) $this->save();
+		
+		return $this;	
+	}
+
+	function loadPurchaseGroup(){
+		if($this->loaded())
+			$this->unload();
+		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadPurchase()->fieldquery('id'));
+		$this->addCondition('name','Purchase')
 			->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
