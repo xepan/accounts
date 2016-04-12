@@ -14,7 +14,7 @@ class Initiator extends \Controller_Addon {
 
 		if($this->app->is_admin){
 			$m = $this->app->top_menu->addMenu('Account');
-
+<<<<<<< HEAD
 			$m->addItem(['Create Account','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
 			$m->addItem(['Account Paid','icon'=>'fa fa-keyboard-o'],'xepan_accounts_amtpaid');
 			$m->addItem(['Payment Received','icon'=>'fa fa-money'],'xepan_accounts_amtreceived');
@@ -28,8 +28,20 @@ class Initiator extends \Controller_Addon {
 			$m->addItem(['Debit/Credit Note','icon'=>'fa fa-credit-card'],'xepan_accounts_debitcreditnote');
 			$m->addItem(['Configuration','icon'=>'fa fa-cog'],'xepan_accounts_config');
 
-			
-
+=======
+			$m->addItem(['Create Account','icon'=>'fa fa-edit'],'xepan_accounts_accounts');
+			$m->addItem(['Account Paid','icon'=>'fa fa-credit-card'],'xepan_accounts_amtpaid');
+			$m->addItem(['Payment Received','icon'=>'fa fa-check'],'xepan_accounts_amtreceived');
+			$m->addItem(['Cash <=> Bank','icon'=>'fa fa-money'],'xepan_accounts_contra');
+			$m->addItem(['Account Statement','icon'=>'fa fa-qrcode'],'xepan_accounts_statement');
+			$m->addItem(['Cash Book','icon'=>'fa fa-list'],'xepan_accounts_cashbook');
+			$m->addItem(['Day Book','icon'=>'fa fa-th'],'xepan_accounts_daybook');
+			$m->addItem(['Group','icon'=>'fa fa-list'],'xepan_accounts_group');
+			$m->addItem(['Balance Sheet','icon'=>'fa fa-list-alt'],'xepan_accounts_balancesheet');
+			$m->addItem(['Profit & Loss','icon'=>'fa fa-columns'],'xepan_accounts_pandl');
+			$m->addItem(['Debit/Credit Note','icon'=>'fa fa-credit-card'],'xepan_accounts_debitcreditnote');
+			$m->addItem(['Configuration','icon'=>'fa fa-anchor'],'xepan_accounts_config');
+>>>>>>> c88e0e93fdfe23142d8cad1e91d1a2a4b1e65db9
 			$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
 			$this->addAccountTemplates();
 		}
