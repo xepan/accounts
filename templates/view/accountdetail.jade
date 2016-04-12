@@ -1,28 +1,33 @@
 .row
-	.col-md-12
-		.panel.panel-default
-			.panel-body
+	.col-lg-12
+		.main-box.clearfix
+			header.main-box-header.clearfix
+				h2 Create Ledger
+			.main-box-body.clearfix
 				{account_info}
 				.row.xepan-push
-					.col-md-4
+					.col-md-3
 						strong Name:
 						.row
 							cite {$name}
-					.col-md-4
+					.col-md-1
+					.col-md-3
 						strong Display Name:
 						.row
 							cite {$LedgerDisplayName}
-					.col-md-4
+					.col-md-1
+					.col-md-3
 						strong Group:
 						.row
-							cite {$group_id}{$group_id}
+							cite {$group}{$group_id}
 				.row
-					.col-md-4
+					.col-md-3
 						strong OpeningBalanceDr:
 						.row
 							cite {$OpeningBalanceDr}
-					.col-md-4
+					.col-md-1
+					.col-md-3
 						strong OpeningBalanceCr:
-						.row
+						.row.xepan-push
 							cite {$OpeningBalanceCr}
 				{/}		
