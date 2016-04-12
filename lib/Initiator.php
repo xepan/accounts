@@ -14,18 +14,18 @@ class Initiator extends \Controller_Addon {
 
 		if($this->app->is_admin){
 			$m = $this->app->top_menu->addMenu('Account');
-			$m->addItem('Create Account','xepan_accounts_accounts');
-			$m->addItem('Account Paid','xepan_accounts_amtpaid');
-			$m->addItem('Payment Received','xepan_accounts_amtreceived');
-			$m->addItem('Cash <=> Bank','xepan_accounts_contra');
-			$m->addItem('Account Statement','xepan_accounts_statement');
-			$m->addItem('Cash Book','xepan_accounts_cashbook');
-			$m->addItem('Day Book','xepan_accounts_daybook');
-			$m->addItem('Group','xepan_accounts_group');
-			$m->addItem('Balance Sheet','xepan_accounts_balancesheet');
-			$m->addItem('Profit & Loss','xepan_accounts_pandl');
-			$m->addItem('Debit/Credit Note','xepan_accounts_debitcreditnote');
-			$m->addItem('Configuration','xepan_accounts_config');
+			$m->addItem(['Create Account','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
+			$m->addItem(['Account Paid','icon'=>'fa fa-keyboard-o'],'xepan_accounts_amtpaid');
+			$m->addItem(['Payment Received','icon'=>'fa fa-money'],'xepan_accounts_amtreceived');
+			$m->addItem(['Cash <=> Bank','icon'=>'fa fa-bank'],'xepan_accounts_contra');
+			$m->addItem(['Account Statement','icon'=>'fa fa-tags'],'xepan_accounts_statement');
+			$m->addItem(['Cash Book','icon'=>'fa fa-book'],'xepan_accounts_cashbook');
+			$m->addItem(['Day Book','icon'=>'fa fa-bookmark'],'xepan_accounts_daybook');
+			$m->addItem(['Group','icon'=>'fa fa-group'],'xepan_accounts_group');
+			$m->addItem(['Balance Sheet','icon'=>'fa fa-file-excel-o'],'xepan_accounts_balancesheet');
+			$m->addItem(['Profit & Loss','icon'=>'fa fa-clipboard'],'xepan_accounts_pandl');
+			$m->addItem(['Debit/Credit Note','icon'=>'fa fa-credit-card'],'xepan_accounts_debitcreditnote');
+			$m->addItem(['Configuration','icon'=>'fa fa-cog'],'xepan_accounts_config');
 
 			$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
 			$this->addAccountTemplates();
