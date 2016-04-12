@@ -125,6 +125,21 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	}
 
+	function createOutsourcePartyLedger($app,$outsource_party_for){	
+		
+		if(!($outsource_party_for instanceof \xepan\production\Model_OutsourceParty))
+			throw new \Exception("must pass outsourceparty model", 1);	
+
+		if(!$outsource_party_for->loaded())
+			throw new \Exception("must pass loaded outsourceparty", 1);	
+
+		$outsource = $app->add('xepan\accounts\Model_Group')->loadSundryCreditor();
+
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for,$outsource,"OutsourceParty");
+
+	}
+
+
 
 	function createNewLedger($contact_for,$group,$ledger_type=null){
 
@@ -449,6 +464,12 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
+	function loadOutsourcePartyLedger($outsource_party_id){
+		
+		$this->addCondition('contact_id',$outsource_party_id);
+		$this->tryLoadAny();
+		return $this;
+	}
 	// function contact(){
 	// 	if(!$this->loaded())
 	// 		throw new \Exception("model Ledger must loaded before ", 1);
