@@ -35,6 +35,7 @@ class Initiator extends \Controller_Addon {
 		$ledger = $this->add('xepan\accounts\Model_Ledger');
 		$this->app->addHook('customer_update',[$ledger,'createCustomerLedger']);
 		$this->app->addHook('supplier_update',[$ledger,'createSupplierLedger']);
+		$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
 		
 	}
 
