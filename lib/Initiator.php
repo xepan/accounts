@@ -21,7 +21,6 @@ class Initiator extends \Controller_Addon {
 			$m->addItem('Account Statement','xepan_accounts_statement');
 			$m->addItem('Cash Book','xepan_accounts_cashbook');
 			$m->addItem('Day Book','xepan_accounts_daybook');
-			$m->addItem('Ledgers','xepan_accounts_ledgers');
 			$m->addItem('Group','xepan_accounts_group');
 			$m->addItem('Balance Sheet','xepan_accounts_balancesheet');
 			$m->addItem('Profit & Loss','xepan_accounts_pandl');
@@ -43,7 +42,10 @@ class Initiator extends \Controller_Addon {
 	function addAccountTemplates(){
 		$data =[
 					'customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>4,'acctype'=>'debtor'],
-					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>9,'acctype'=>'creditor']
+					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>9,'acctype'=>'creditor'],
+					'outsourceparty' => ['name'=>'OutsourceParty', 'description'=>'Entries related to OutsourceParty','group_id'=>9,'acctype'=>'outsourceparty'],
+					'dutiesandtaxes' => ['name'=>'DutiesAndTaxes', 'description'=>'Entries related to DutiesAndTaxes','group_id'=>9,'acctype'=>'dutiesandtaxes']
+					
 		];
 		$this->app->setConfig('account_template_data',$data);
 	}

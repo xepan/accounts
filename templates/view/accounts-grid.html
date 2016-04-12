@@ -9,20 +9,19 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th><a href="#"><span>Account</span></a></th>
-        <th>Group</th>
-        <th><a href="#" class="asc"><span>Balance</span></a></th>
+        <th><a href="#"><span>Name</span></a></th>
+        <th class="text-left"><a href="#" class="asc"><span>Group</span></a></th>
+        <th class="text-center"><a href="#" class="asc"><span>Balance</span></a></th>
         <th> </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td><span class="text-muted">{$name} </span></td>
-          <td>
-            {$group}
-            {$root_group}
-          </td>
-          <td>{balance}0{/}</td>
+          <td>{avatar} {/}<a href="{url}?page=xepan_accounts_accountdetail&amp;ledger_id={$id}{/}" class="user-link">
+               
+              {$name} </a></td>
+          <td class="text-left">{$group}, {$parent_group}, {$root_group}</td>
+          <td style="width: 15%;">{$balance}</td>
           <td style="width: 15%;">
             {$edit}
             {$delete}

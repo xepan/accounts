@@ -2,7 +2,7 @@
 <div class="row">
   <div class="col-md-12">
     <div class="panel panel-default">
-      <div class="panel-body">
+      <div class="panel-body">{account_info}
         <div class="row xepan-push">
           <div class="col-md-4"><strong>Name:</strong>
             <div class="row">
@@ -11,12 +11,12 @@
           </div>
           <div class="col-md-4"><strong>Display Name:</strong>
             <div class="row">
-              <cite>{$AccountDisplayName}</cite>
+              <cite>{$LedgerDisplayName}</cite>
             </div>
           </div>
           <div class="col-md-4"><strong>Group:</strong>
             <div class="row">
-              <cite>{$group}{$group_id}</cite>
+              <cite>{$group_id}{$group_id}</cite>
             </div>
           </div>
         </div>
@@ -28,10 +28,10 @@
           </div>
           <div class="col-md-4"><strong>OpeningBalanceCr:</strong>
             <div class="row">
-              <cite>{$OpeningBalanceCr}		</cite>
+              <cite>{$OpeningBalanceCr}</cite>
             </div>
           </div>
-        </div>
+        </div>{/}		
       </div>
     </div>
   </div>

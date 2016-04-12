@@ -2,6 +2,7 @@
 	.col-md-12
 		.panel.panel-default
 			.panel-body
+				{account_info}
 				.row.xepan-push
 					.col-md-4
 						strong Name:
@@ -10,11 +11,11 @@
 					.col-md-4
 						strong Display Name:
 						.row
-							cite {$AccountDisplayName}
+							cite {$LedgerDisplayName}
 					.col-md-4
 						strong Group:
 						.row
-							cite {$group}{$group_id}
+							cite {$group_id}{$group_id}
 				.row
 					.col-md-4
 						strong OpeningBalanceDr:
@@ -23,4 +24,5 @@
 					.col-md-4
 						strong OpeningBalanceCr:
 						.row
-							cite {$OpeningBalanceCr}		
+							cite {$OpeningBalanceCr}
+				{/}		
