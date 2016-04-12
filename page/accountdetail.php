@@ -2,10 +2,9 @@
 
 namespace xepan\accounts;
 
-class page_accountdetail extends \Page
-{
+class page_accountdetail extends \xepan\base\Page{
 	public $title = "Account Detail";
-
+	public $breadcrumb=['Home'=>'index','ACCOUNT'=>'xepan_accounts_account','Detail'=>'#'];
 	function init()
 	{
 		parent::init();
