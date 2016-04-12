@@ -99,7 +99,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	//creating customer ledger
 	function createCustomerLedger($app,$customer_for){
-		
 		if(!($customer_for instanceof \xepan\commerce\Model_Customer))
 			throw new \Exception("must pass customer model", 1);	
 		
@@ -112,7 +111,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	//creating supplier ledger
-	function createSupplierLedger($app,$supplier_for){
+	function createSupplierLedger($app,$supplier_for){	
 		
 		if(!($supplier_for instanceof \xepan\commerce\Model_Supplier))
 			throw new \Exception("must pass supplier model", 1);	
