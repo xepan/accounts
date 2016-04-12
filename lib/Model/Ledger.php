@@ -189,7 +189,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
 		$ledger->addCondition('ledger_type',$tax_obj['name']);
 		$ledger->addCondition('related_id',$tax_obj->id);
-		return $ledger->tryLoadAny();
+		return $ledger->loadAny();
 	}
 
 

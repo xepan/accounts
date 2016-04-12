@@ -21,7 +21,6 @@ class Initiator extends \Controller_Addon {
 			$m->addItem('Account Statement','xepan_accounts_statement');
 			$m->addItem('Cash Book','xepan_accounts_cashbook');
 			$m->addItem('Day Book','xepan_accounts_daybook');
-			$m->addItem('Ledgers','xepan_accounts_ledgers');
 			$m->addItem('Group','xepan_accounts_group');
 			$m->addItem('Balance Sheet','xepan_accounts_balancesheet');
 			$m->addItem('Profit & Loss','xepan_accounts_pandl');
@@ -43,8 +42,13 @@ class Initiator extends \Controller_Addon {
 
 	function addAccountTemplates(){
 		$data =[
-					'customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>4,'acctype'=>'debtor'],
-					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>9,'acctype'=>'creditor']
+					'customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>37,'ledger_type'=>'SundryDebtor'],
+					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>38,'ledger_type'=>'SundryCreditor'],
+					'outsourceparty' => ['name'=>'OutsourceParty', 'description'=>'Entries related to OutsourceParty','group_id'=>9,'ledger_type'=>'outsourceparty'],
+					'dutiesandtaxes' => ['name'=>'DutiesAndTaxes', 'description'=>'Entries related to DutiesAndTaxes','group_id'=>0,'ledger_type'=>'dutiesandtaxes'],
+					'directexpenses' => ['name'=>'DirectExpenses', 'description'=>'Entries related to Expenses','group_id'=>32,'ledger_type'=>'Direct Expenses'],
+					'indirectincome' => ['name'=>'IndirectIncome', 'description'=>'Entries related to Income','group_id'=>33,'ledger_type'=>'Indirect Income']
+					
 		];
 		$this->app->setConfig('account_template_data',$data);
 	}
