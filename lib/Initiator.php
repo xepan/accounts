@@ -36,6 +36,7 @@ class Initiator extends \Controller_Addon {
 		$this->addAppDateFunctions();
 
 		$ledger = $this->add('xepan\accounts\Model_Ledger');
+		$this->app->addHook('employee_update',[$ledger,'createEmployeeLedger']);
 		$this->app->addHook('customer_update',[$ledger,'createCustomerLedger']);
 		$this->app->addHook('supplier_update',[$ledger,'createSupplierLedger']);
 		$this->app->addHook('outsource_party_update',[$ledger,'createOutsourcePartyLedger']);
