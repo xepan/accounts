@@ -457,19 +457,19 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this->group()->isSundryCreditor();
 	}
 
-	function loadCustomerLedger($customer_id){
+	// function loadCustomerLedger($customer_id){
 		
-		$this->addCondition('contact_id',$customer_id);
-		$this->tryLoadAny();
-		return $this;
-	}
+	// 	$this->addCondition('contact_id',$customer_id);
+	// 	$this->tryLoadAny();
+	// 	return $this;
+	// }
 
-	function loadOutsourcePartyLedger($outsource_party_id){
+	// function loadOutsourcePartyLedger($outsource_party_id){
 		
-		$this->addCondition('contact_id',$outsource_party_id);
-		$this->tryLoadAny();
-		return $this;
-	}
+	// 	$this->addCondition('contact_id',$outsource_party_id);
+	// 	$this->tryLoadAny();
+	// 	return $this;
+	// }
 	// function contact(){
 	// 	if(!$this->loaded())
 	// 		throw new \Exception("model Ledger must loaded before ", 1);
