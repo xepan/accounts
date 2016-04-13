@@ -470,12 +470,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this->group()->isSundryCreditor();
 	}
 
-	// function loadCustomerLedger($customer_id){
-		
-	// 	$this->addCondition('contact_id',$customer_id);
-	// 	$this->tryLoadAny();
-	// 	return $this;
-	// }
 
 	// function loadOutsourcePartyLedger($outsource_party_id){
 		

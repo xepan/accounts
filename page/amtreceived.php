@@ -76,45 +76,45 @@ class page_amtreceived extends \Page {
 		$form->addField('line','to_exchange_rate')->validateNotNull(true);
 		
 		/*Different Charges*/
-		$bank_field_1 = $form->addField('autocomplete/Basic','bank_account_1');//->validateNotNull(true);
-		$bank_field_1->setModel($bank_accounts);
-		$bank_field_1->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankAccount()->get('id'));
+		$bank_field_1 = $form->addField('autocomplete/Basic','bank_account_charges_1');//->validateNotNull(true);
+		$bank_field_1->setModel('xepan\accounts\Model_Ledger');
+		$bank_field_1->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankChargesAccount()->get('id'));
 		$bank_field_1_charge_date = $form->addField('DatePicker','bank_charge_date_1')->set($this->api->now);//->validateNotNull(true);
 		$bank_field_1_charge_amount = $form->addField('Money','bank_charge_amount_1');//->validateNotNull(true);
 		$bank_field_1_currency = $form->addField('Dropdown','bank_currency_1');//->validateNotNull(true);
 		$bank_field_1_currency->setModel('xepan\accounts\Currency');
 		$bank_field_1_exchange_rate = $form->addField('line','bank_exchange_rate_1');
 
-		$bank_field_2 = $form->addField('autocomplete/Basic','bank_account_2');//->validateNotNull(true);
-		$bank_field_2->setModel($bank_accounts);
-		$bank_field_2->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankAccount()->get('id'));	
+		$bank_field_2 = $form->addField('autocomplete/Basic','bank_account_charges_2');//->validateNotNull(true);
+		$bank_field_2->setModel('xepan\accounts\Model_Ledger');
+		$bank_field_2->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankChargesAccount()->get('id'));	
 		$bank_field_2_charge_date = $form->addField('DatePicker','bank_charge_date_2')->set($this->api->now);//->validateNotNull(true);
 		$bank_field_2_charge_amount = $form->addField('Money','bank_charge_amount_2');//->validateNotNull(true);
 		$bank_field_2_currency = $form->addField('Dropdown','bank_currency_2');//->validateNotNull(true);
 		$bank_field_2_currency->setModel('xepan\accounts\Currency');
 		$bank_field_2_exchange_rate = $form->addField('line','bank_exchange_rate_2');
 
-		$bank_field_3 = $form->addField('autocomplete/Basic','bank_account_3');//->validateNotNull(true);
-		$bank_field_3->setModel($bank_accounts);
-		$bank_field_3->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankAccount()->get('id'));	
+		$bank_field_3 = $form->addField('autocomplete/Basic','bank_account_charges_3');//->validateNotNull(true);
+		$bank_field_3->setModel('xepan\accounts\Model_Ledger');
+		$bank_field_3->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankChargesAccount()->get('id'));	
 		$bank_field_3_charge_date = $form->addField('DatePicker','bank_charge_date_3')->set($this->api->now);//->validateNotNull(true);
 		$bank_field_3_charge_amount = $form->addField('Money','bank_charge_amount_3');//->validateNotNull(true);
 		$bank_field_3_currency = $form->addField('Dropdown','bank_currency_3');//->validateNotNull(true);
 		$bank_field_3_currency->setModel('xepan\accounts\Currency');
 		$bank_field_3_exchange_rate = $form->addField('line','bank_exchange_rate_3');
 
-		$bank_field_4 = $form->addField('autocomplete/Basic','bank_account_4');//->validateNotNull(true);
-		$bank_field_4->setModel($bank_accounts);
-		$bank_field_4->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankAccount()->get('id'));	
+		$bank_field_4 = $form->addField('autocomplete/Basic','bank_account_charges_4');//->validateNotNull(true);
+		$bank_field_4->setModel('xepan\accounts\Model_Ledger');
+		$bank_field_4->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankChargesAccount()->get('id'));	
 		$bank_field_4_charge_date = $form->addField('DatePicker','bank_charge_date_4')->set($this->api->now);//->validateNotNull(true);
 		$bank_field_4_charge_amount = $form->addField('Money','bank_charge_amount_4');//->validateNotNull(true);
 		$bank_field_4_currency = $form->addField('Dropdown','bank_currency_4');//->validateNotNull(true);
 		$bank_field_4_currency->setModel('xepan\accounts\Currency');
 		$bank_field_4_exchange_rate = $form->addField('line','bank_exchange_rate_4');
 
-		$bank_field_5 = $form->addField('autocomplete/Basic','bank_account_5');//->validateNotNull(true);
-		$bank_field_5->setModel($bank_accounts);
-		$bank_field_5->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankAccount()->get('id'));
+		$bank_field_5 = $form->addField('autocomplete/Basic','bank_account_charges_5');//->validateNotNull(true);
+		$bank_field_5->setModel('xepan\accounts\Model_Ledger');
+		$bank_field_5->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankChargesAccount()->get('id'));
 		$bank_field_5_charge_date = $form->addField('DatePicker','bank_charge_date_5')->set($this->api->now);//->validateNotNull(true);
 		$bank_field_5_charge_amount = $form->addField('Money','bank_charge_amount_5');//->validateNotNull(true);
 		$bank_field_5_currency = $form->addField('Dropdown','bank_currency_5');//->validateNotNull(true);
