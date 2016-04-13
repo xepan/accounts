@@ -13,7 +13,7 @@ class page_cashbook extends \Page{
 		$grid = $this->add('xepan\accounts\Grid_AccountsBase');
 
 		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
-		$group=$this->add('xepan\accounts\Model_Group')->loadCashAccount();
+		$group=$this->add('xepan\accounts\Model_Group')->loadCashLedger();
 
 		$transaction_row->addCondition('root_group_name',$group['name']);
 		
@@ -22,14 +22,14 @@ class page_cashbook extends \Page{
 			$this->api->stickyGET('to_date');
 			$transaction_row->addCondition('created_at','>=',$_GET['from_date']);
 			$transaction_row->addCondition('created_at','<',$this->api->nextDate($_GET['to_date']));
-			$cash_account = $this->add('xepan\accounts\Model_Ledger')->loadDefaultCashAccount();
+			$cash_account = $this->add('xepan\accounts\Model_Ledger')->loadDefaultCashLedger();
 			$opening_balance = $cash_account->getOpeningBalance($_GET['from_date']);
 		}else{			
 			$transaction_row->addCondition('created_at','>=',$this->api->today);
 			$transaction_row->addCondition('created_at','<',$this->app->nextDate($this->api->today));
 			// throw new \Exception($transaction_row->count()->getOne());
 			// throw new \Exception($this->api->nextDate($this->api->today));
-			$cash_account = $this->add('xepan\accounts\Model_Ledger')->loadDefaultCashAccount();
+			$cash_account = $this->add('xepan\accounts\Model_Ledger')->loadDefaultCashLedger();
 			$opening_balance = $cash_account->getOpeningBalance($this->api->today);
 		}
 			

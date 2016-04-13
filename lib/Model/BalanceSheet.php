@@ -116,7 +116,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		return $this['name'] == 'Duties & Taxes';
 	}
 
-	function loadSuspenceAccount(){
+	function loadSuspenseLedger(){
 			if($this->loaded())
 				$this->unload();
 			$this->addCondition('name','Suspence Account')
@@ -124,7 +124,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 				return $this;
 		}
 
-	function isSuspenceAccount(){
+	function isSuspenseLedger(){
 		return $this['name'] == 'Suspence Account';
 	}
 

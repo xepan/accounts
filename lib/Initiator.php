@@ -15,7 +15,7 @@ class Initiator extends \Controller_Addon {
 		if($this->app->is_admin){
 			$m = $this->app->top_menu->addMenu('Account');
 
-			$m->addItem(['Create Account','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
+			$m->addItem(['Account','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
 			$m->addItem(['Account Paid','icon'=>'fa fa-keyboard-o'],'xepan_accounts_amtpaid');
 			$m->addItem(['Payment Received','icon'=>'fa fa-money'],'xepan_accounts_amtreceived');
 			$m->addItem(['Cash <=> Bank','icon'=>'fa fa-bank'],'xepan_accounts_contra');
@@ -50,8 +50,8 @@ class Initiator extends \Controller_Addon {
 					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>38,'ledger_type'=>'SundryCreditor'],
 					'outsourceparty' => ['name'=>'OutsourceParty', 'description'=>'Entries related to OutsourceParty','group_id'=>9,'ledger_type'=>'outsourceparty'],
 					'dutiesandtaxes' => ['name'=>'DutiesAndTaxes', 'description'=>'Entries related to DutiesAndTaxes','group_id'=>0,'ledger_type'=>'dutiesandtaxes'],
-					'directexpenses' => ['name'=>'DirectExpenses', 'description'=>'Entries related to Expenses','group_id'=>32,'ledger_type'=>'Direct Expenses'],
-					'indirectincome' => ['name'=>'IndirectIncome', 'description'=>'Entries related to Income','group_id'=>33,'ledger_type'=>'Indirect Income']
+					'directexpenses' => ['name'=>'DirectExpenses', 'description'=>'Entries related to Expenses','group_id'=>32,'ledger_type'=>'DirectExpenses'],
+					'indirectincome' => ['name'=>'IndirectIncome', 'description'=>'Entries related to Income','group_id'=>33,'ledger_type'=>'IndirectIncome']
 					
 		];
 		$this->app->setConfig('account_template_data',$data);

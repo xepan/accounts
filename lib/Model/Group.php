@@ -35,7 +35,7 @@ class Model_Group extends \xepan\base\Model_Table{
 	function beforeDelete(){
 		$account = $this->ref('xepan\accounts\Ledger')->count()->getOne();
 		if($account)
-			throw $this->exception('Cannot Delete, First Delete Accounts');
+			throw $this->exception('Cannot Delete, First Delete Ledgers');
 	}
 
 		
@@ -50,7 +50,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		$this->save();
 	}
 
-	function loadCashAccount(){
+	function loadCashLedger(){
 		if($this->loaded())
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
@@ -62,11 +62,11 @@ class Model_Group extends \xepan\base\Model_Table{
 		return $this;	
 	}
 
-	function isCashAccount(){
+	function isCashLedger(){
 		return $this['name'] == "Cash Account";
 	}
 
-	function loadBankAccounts(){
+	function loadBankLedgers(){
 		if($this->loaded())
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
@@ -78,7 +78,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		return $this;	
 	}
 
-	function isBankAccounts(){
+	function isBankLedgers(){
 		return $this['name'] == "Bank Accounts";
 	}
 
@@ -367,7 +367,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		return $this['name'] == "Sundry Debtor";
 	}
 
-	function loadSuspenceAccount(){
+	function loadSuspenseLedger(){
 		if($this->loaded())
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
@@ -380,7 +380,7 @@ class Model_Group extends \xepan\base\Model_Table{
 	}
 
 
-	function isSuspenceAccount(){
+	function isSuspenseLedger(){
 		return $this['name'] == "Suspense Account";
 	}
 

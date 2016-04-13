@@ -13,7 +13,7 @@ class page_daybook extends \Page{
 		// $grid = $this->add('xepan\accounts\Grid_AccountsBase');
 
 		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
-		$group=$this->add('xepan\accounts\Model_Group')->loadCashAccount();
+		$group=$this->add('xepan\accounts\Model_Group')->loadCashLedger();
 		
 		$transaction_row->addCondition('root_group_name','<>',$group['name']);
 		

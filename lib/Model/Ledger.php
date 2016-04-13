@@ -18,7 +18,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->addField('related_id'); // user for related like tax/vat
 		$this->addField('ledger_type'); //
 
-		$this->addField('LedgerDisplayName')->caption('Account Displ. Name');
+		$this->addField('LedgerDisplayName')->caption('Ledger Displ. Name');
 		$this->addField('is_active')->type('boolean')->defaultValue(true);
 
 		$this->addField('OpeningBalanceDr')->type('money')->defaultValue(0);
@@ -202,7 +202,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
 		$ledger->addCondition('ledger_type',$tax_obj['name']);
 		$ledger->addCondition('related_id',$tax_obj->id);
-		return $ledger->loadAny();
+		return $ledger->tryLoadAny();
 	}
 
 
@@ -239,17 +239,17 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function debitOnly($amount){ 
-		$this->hook('beforeAccountDebited',array($amount));
+		$this->hook('beforeLedgerDebited',array($amount));
 		$this['CurrentBalanceDr']=$this['CurrentBalanceDr']+$amount;
 		$this->save();
-		$this->hook('afterAccountDebited',array($amount));
+		$this->hook('afterLedgerDebited',array($amount));
 	}
 
 	function creditOnly($amount){
-		$this->hook('beforeAccountCredited',array($amount));
+		$this->hook('beforeLedgerCredited',array($amount));
 		$this['CurrentBalanceCr']=$this['CurrentBalanceCr']+$amount;
 		$this->save();
-		$this->hook('afterAccountCredited',array($amount));
+		$this->hook('afterLedgerCredited',array($amount));
 	}
 
 	function getOpeningBalance($on_date=null,$side='both',$forPandL=false) {
@@ -280,7 +280,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$result = $transaction_row->_dsql()->getHash();
 
 		if($this['OpeningBalanceCr'] ==null){
-			$temp_account = $this->add('xepan\accounts\Model_Account')->load($this->id);
+			$temp_account = $this->add('xepan\accounts\Model_Ledger')->load($this->id);
 			$this['OpeningBalanceCr'] = $temp_account['OpeningBalanceCr'];
 			$this['OpeningBalanceDr'] = $temp_account['OpeningBalanceDr'];
 		}
@@ -308,7 +308,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
-	function loadDefaultSalesAccount(){
+	function loadDefaultSalesLedger(){
 		$this->addCondition('name','Sales Account');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadSalesGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -320,7 +320,20 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
-	function loadDefaultPurchaseAccount(){
+	function filterSalesLedger(){
+		$this->addCondition('name','Sales Account');
+		$this->addCondition('ledger_type','SalesAccount');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
+		return $this;
+	}
+
+	function loadDefaultPurchaseLedger(){
 		$this->addCondition('name','Purchase Account');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectExpenses()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -332,7 +345,20 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;	
 	}
 
-	function loadDefaultRoundAccount(){
+	function filterPurchaseLedger(){
+		$this->addCondition('name','Purchase Account');
+		$this->addCondition('ledger_type','PurchaseAccount');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
+		return $this;
+	}
+
+	function loadDefaultRoundLedger(){
 		$this->addCondition('name','Round Account');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectIncome()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -344,7 +370,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
-	function loadDefaultTaxAccount(){
+	function loadDefaultTaxLedger(){
 		$this->addCondition('name','Tax Account');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -357,7 +383,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 
-	function loadDefaultDiscountAccount(){
+	function loadDefaultDiscountLedger(){
 		$this->addCondition('name','Discount Given');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectExpenses()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -369,7 +395,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
-	function loadDefaultShippingAccount(){
+	function loadDefaultShippingLedger(){
 		$this->addCondition('name','Shipping Account');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -405,14 +431,14 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;	
 	}
 
-	function loadCashAccounts(){
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashAccount()->fieldQuery('id'));
+	function loadCashLedgers(){
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
 		return $this;
 	}
 
-	function loadDefaultCashAccount(){
+	function loadDefaultCashLedger(){
 		$this->addCondition('name','Cash Account');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashAccount()->fieldQuery('id'));
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
@@ -422,13 +448,26 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
-	function loadBankAccounts(){
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankAccounts()->fieldQuery('id'));
+	function filterCashLedger(){
+		$this->addCondition('name','Cash Account');
+		$this->addCondition('ledger_type','CashAccount');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
 		return $this;
 	}
 
-	function loadDefaultBankAccount(){
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankAccounts()->fieldQuery('id'));
+	function loadBankLedgers(){
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankLedgers()->fieldQuery('id'));
+		return $this;
+	}
+
+	function loadDefaultBankLedger(){
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankLedgers()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
@@ -439,8 +478,34 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this;
 	}
 
-	function loadDefaultBankChargesAccount(){
+	function filterBankLedger(){
+		$this->addCondition('name','Your Default Bank Account');
+		$this->addCondition('ledger_type','BankAccount');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankAccounts()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
+		return $this;
+	}
+
+	function loadDefaultBankChargesLedger(){
 		$this->addCondition('name','Bank Charges');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
+		return $this;
+	}
+
+	function filterBankCharges(){
+		$this->addCondition('name','Bank Charges');
+		$this->addCondition('ledger_type','BankCharges');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
 		$this->tryLoadAny();
 
@@ -471,17 +536,4 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	
-	// function loadOutsourcePartyLedger($outsource_party_id){
-		
-	// 	$this->addCondition('contact_id',$outsource_party_id);
-	// 	$this->tryLoadAny();
-	// 	return $this;
-	// }
-	// function contact(){
-	// 	if(!$this->loaded())
-	// 		throw new \Exception("model Ledger must loaded before ", 1);
-
-	// 	return $this->ref('contact_id');
-	// }
-
 }

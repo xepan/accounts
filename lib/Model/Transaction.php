@@ -128,9 +128,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->create_called=true;
 	}
 
-	function addDebitAccount($account, $amount, $Currency=null, $exchange_rate=1.00){
+	function addDebitLedger($account, $amount, $Currency=null, $exchange_rate=1.00){
 		if(is_string($account)){
-			$account = $this->add('xepan\accounts\Model_Account')->load($account->id);
+			$account = $this->add('xepan\accounts\Model_Ledger')->load($account->id);
 		}
 
 		$amount = $this->round($amount);
@@ -139,9 +139,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		
 	}
 
-	function addCreditAccount($account, $amount, $Currency=null, $exchange_rate=1.00){
+	function addCreditLedger($account, $amount, $Currency=null, $exchange_rate=1.00){
 		if(is_string($account)){
-			$account = $this->add('xepan\accounts\Model_Account')->load($account->id);
+			$account = $this->add('xepan\accounts\Model_Ledger')->load($account->id);
 		}
 
 		$amount = $this->round($amount);
@@ -229,7 +229,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$email_body = str_replace('{{voucher_no}}', $this['name'], $email_body);
 		$email_body = str_replace('{{order_no}}', $order['name'], $email_body);
 		$email_body = str_replace('{{date}}', $this['created_at'], $email_body);
-		$email_body = str_replace('{{amount}}', $this->ref('xAccount/TransactionRow')->sum('amountCr'), $email_body);
+		$email_body = str_replace('{{amount}}', $this->ref('xepan/accounts/TransactionRow')->sum('amountCr'), $email_body);
 		$email_body = str_replace('{{pay_to}}', $order->customer()->get('customer_name'), $email_body);
 		$email_body = str_replace('{{approve_by}}', $order->searchActivity('approved'), $email_body);
 		$email_body = str_replace('{{transaction_type}}', $this['transaction_type'], $email_body);
