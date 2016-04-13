@@ -20,7 +20,7 @@ class page_accounts extends \Page
 		$crud->setModel($accounts);
 
 		$crud->grid->addPaginator(10);
-		$frm=$crud->grid->addQuickSearch(['accounts']);
+		$frm=$crud->grid->addQuickSearch(['name']);
 		$crud->add('xepan\base\Controller_Avatar');
 
 	}

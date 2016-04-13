@@ -97,6 +97,19 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 
+	//creating Employee ledger
+	function createEmployeeLedger($app,$employee_for){
+		if(!($employee_for instanceof \xepan\hr\Model_Employee))
+			throw new \Exception("must pass Employee model", 1);	
+		
+		if(!$employee_for->loaded())
+			throw new \Exception("must pass Employee loaded model", 1);	
+
+		$creditor = $app->add('xepan\accounts\Model_Group')->loadSundryCreditor();
+		
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for,$creditor,"Employee");
+	}
+
 	//creating customer ledger
 	function createCustomerLedger($app,$customer_for){
 		if(!($customer_for instanceof \xepan\commerce\Model_Customer))
