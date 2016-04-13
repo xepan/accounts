@@ -470,7 +470,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this->group()->isSundryCreditor();
 	}
 
-
+	
 	// function loadOutsourcePartyLedger($outsource_party_id){
 		
 	// 	$this->addCondition('contact_id',$outsource_party_id);
