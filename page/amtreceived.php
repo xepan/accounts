@@ -49,7 +49,6 @@ class page_amtreceived extends \Page {
 
 		$form = $this->add('Form_Stacked',null,'bank_view');
 		$form->setLayout('view/form/payment-received-bank');
-		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
 		
 		/*Received From*/
 		$received_from_field = $form->addField('autocomplete/Basic','received_from')->validateNotNull(true);
@@ -61,6 +60,7 @@ class page_amtreceived extends \Page {
 		$from_curreny_field->set($this->app->epan->default_currency->id);
 		$form->addField('line','from_exchange_rate')->validateNotNull(true);
 
+		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
 
 		$bank_ledgers = $this->add('xepan\accounts\Model_Ledger')->loadBankLedgers();
 		/*To Details*/
@@ -152,7 +152,7 @@ class page_amtreceived extends \Page {
 
 			//entry for to bank other charge
 			for ($i=1; $i < 6; $i++) {
-				$bank_field = "bank_account_charges".$i;
+				$bank_field = "bank_account_charges_".$i;
 				$amount_field = "bank_charge_amount_".$i;
 				$currency_field = "bank_currency_".$i;
 				$exchange_field = "bank_exchange_rate_".$i;

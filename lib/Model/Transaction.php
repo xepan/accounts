@@ -158,7 +158,18 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		if(($msg=$this->isValidTransaction($this->dr_accounts,$this->cr_accounts, $this['transaction_type_id'])) !== true)
 			throw $this->exception('Transaction is Not Valid ' .  $msg)->addMoreInfo('message',$msg);
 
-		$this->executeSingleBranch();
+
+		try{
+				$this->api->db->beginTransaction();
+					$this->executeSingleBranch();
+				$this->api->db->commit();
+			}catch(\Exception_StopInit $e){
+
+			}catch(\Exception $e){
+				$this->api->db->rollback();
+				throw $e;
+				
+			}
 
 
 		$this->executed=true;
