@@ -49,9 +49,10 @@ class Initiator extends \Controller_Addon {
 					'customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>37,'ledger_type'=>'SundryDebtor'],
 					'supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>38,'ledger_type'=>'SundryCreditor'],
 					'outsourceparty' => ['name'=>'OutsourceParty', 'description'=>'Entries related to OutsourceParty','group_id'=>9,'ledger_type'=>'outsourceparty'],
+					'BankCharges' => ['name'=>'Bank Charges', 'description'=>'Any sort of bank chanrges','group_id'=>$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->get('id'),'ledger_type'=>'BankCharges'],
 					'dutiesandtaxes' => ['name'=>'DutiesAndTaxes', 'description'=>'Entries related to DutiesAndTaxes','group_id'=>0,'ledger_type'=>'dutiesandtaxes'],
 					'directexpenses' => ['name'=>'DirectExpenses', 'description'=>'Entries related to Expenses','group_id'=>32,'ledger_type'=>'DirectExpenses'],
-					'indirectincome' => ['name'=>'IndirectIncome', 'description'=>'Entries related to Income','group_id'=>33,'ledger_type'=>'IndirectIncome']
+					'indirectincome' => ['name'=>'IndirectIncome', 'description'=>'Entries related to Income','group_id'=>33,'ledger_type'=>'IndirectIncome'],
 					
 		];
 		$this->app->setConfig('account_template_data',$data);

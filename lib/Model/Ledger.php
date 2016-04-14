@@ -321,7 +321,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function filterSalesLedger(){
-		$this->addCondition('name','Sales Account');
 		$this->addCondition('ledger_type','SalesAccount');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -449,7 +448,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function filterCashLedger(){
-		$this->addCondition('name','Cash Account');
 		$this->addCondition('ledger_type','CashAccount');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -479,7 +477,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function filterBankLedger(){
-		$this->addCondition('name','Your Default Bank Account');
 		$this->addCondition('ledger_type','BankAccount');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankAccounts()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -504,7 +501,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function filterBankCharges(){
-		$this->addCondition('name','Bank Charges');
 		$this->addCondition('ledger_type','BankCharges');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
 		$this->tryLoadAny();

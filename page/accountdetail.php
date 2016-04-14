@@ -17,11 +17,13 @@ class page_accountdetail extends \xepan\base\Page{
 
 		$account_detail = $this->add('xepan\base\View_Document',['action'=> $action],'account_info',['view/accountdetail','account_info']);
 		$account_detail->setIdField('ledger_id');
-		$account_detail->setModel($account,['name','LedgerDisplayName','group_id','OpeningBalanceDr','OpeningBalanceCr'],
-											['name','LedgerDisplayName','group_id','OpeningBalanceDr','OpeningBalanceCr']);
+		$account_detail->setModel($account,['name','LedgerDisplayName','group_id','OpeningBalanceDr','OpeningBalanceCr','ledger_type'],
+											['name','LedgerDisplayName','group_id','OpeningBalanceDr','OpeningBalanceCr','ledger_type']);
 		
 		if($action=='add'){
 			$account_detail->form->getElement('group_id')->set($acctypegroup[$ledger_type]['group_id']);
+			$account_detail->form->getElement('ledger_type')->set($acctypegroup[$ledger_type]['ledger_type']);
+
 		}
 	}
 

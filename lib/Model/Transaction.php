@@ -133,8 +133,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			$account = $this->add('xepan\accounts\Model_Ledger')->load($account->id);
 		}
 
-		$amount = $this->round($amount);
-						
+		$amount = $this->round($amount);						
 		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate));
 		
 	}
@@ -184,7 +183,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		foreach ($this->dr_accounts as $accountNumber => $dtl) {			
 			if($dtl['amount'] ==0) continue;
 			$dtl['account']->debitWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate']);
-			$total_debit_amount += $dtl['amount'];
+			$total_debit_amount += ($dtl['amount']*$dtl['exchange_rate']);
 		}
 
 		
@@ -195,7 +194,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		foreach ($this->cr_accounts as $accountNumber => $dtl) {
 			if($dtl['amount'] ==0) continue;
 			$dtl['account']->creditWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate']);
-			$total_credit_amount += $dtl['amount'];
+			$total_credit_amount += ($dtl['amount']*$dtl['exchange_rate']);
 		}
 		
 		$total_credit_amount = $this->round($total_credit_amount);

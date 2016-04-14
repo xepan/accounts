@@ -75,62 +75,21 @@ class page_amtreceived extends \Page {
 		$form->addField('line','to_exchange_rate')->validateNotNull(true);
 		
 		/*Different Charges*/
-		$bank_field_1 = $form->addField('autocomplete/Basic','bank_account_charges_1');//->validateNotNull(true);
-		$bank_field_1->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
-		$bank_field_1_charge_amount = $form->addField('Money','bank_charge_amount_1');//->validateNotNull(true);
-		$bank_field_1_currency = $form->addField('Dropdown','bank_currency_1');//->validateNotNull(true);
-		$bank_field_1_currency->setModel('xepan\accounts\Currency');
-		$bank_field_1_exchange_rate = $form->addField('line','bank_exchange_rate_1');
+		for ($i=1; $i < 6; $i++) {
+			$bank_field_1 = $form->addField('autocomplete/Basic','bank_account_charges_'.$i);//->validateNotNull(true);
+			$bank_field_1->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
+			$bank_field_1_charge_amount = $form->addField('Money','bank_charge_amount_'.$i);//->validateNotNull(true);
+			$bank_field_1_currency = $form->addField('Dropdown','bank_currency_'.$i);//->validateNotNull(true);
+			$bank_field_1_currency->setModel('xepan\accounts\Currency');
+			$bank_field_1_exchange_rate = $form->addField('line','bank_exchange_rate_'.$i);
 
-		$bank_field_2 = $form->addField('autocomplete/Basic','bank_account_charges_2');//->validateNotNull(true);
-		$bank_field_2->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
-		$bank_field_2_charge_amount = $form->addField('Money','bank_charge_amount_2');//->validateNotNull(true);
-		$bank_field_2_currency = $form->addField('Dropdown','bank_currency_2');//->validateNotNull(true);
-		$bank_field_2_currency->setModel('xepan\accounts\Currency');
-		$bank_field_2_exchange_rate = $form->addField('line','bank_exchange_rate_2');
-
-		$bank_field_3 = $form->addField('autocomplete/Basic','bank_account_charges_3');//->validateNotNull(true);
-		$bank_field_3->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
-		$bank_field_3_charge_amount = $form->addField('Money','bank_charge_amount_3');//->validateNotNull(true);
-		$bank_field_3_currency = $form->addField('Dropdown','bank_currency_3');//->validateNotNull(true);
-		$bank_field_3_currency->setModel('xepan\accounts\Currency');
-		$bank_field_3_exchange_rate = $form->addField('line','bank_exchange_rate_3');
-
-		$bank_field_4 = $form->addField('autocomplete/Basic','bank_account_charges_4');//->validateNotNull(true);
-		$bank_field_4->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
-		$bank_field_4_charge_amount = $form->addField('Money','bank_charge_amount_4');//->validateNotNull(true);
-		$bank_field_4_currency = $form->addField('Dropdown','bank_currency_4');//->validateNotNull(true);
-		$bank_field_4_currency->setModel('xepan\accounts\Currency');
-		$bank_field_4_exchange_rate = $form->addField('line','bank_exchange_rate_4');
-
-		$bank_field_5 = $form->addField('autocomplete/Basic','bank_account_charges_5');//->validateNotNull(true);
-		$bank_field_5->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
-		$bank_field_5_charge_amount = $form->addField('Money','bank_charge_amount_5');//->validateNotNull(true);
-		$bank_field_5_currency = $form->addField('Dropdown','bank_currency_5');//->validateNotNull(true);
-		$bank_field_5_currency->setModel('xepan\accounts\Currency');
-		$bank_field_5_exchange_rate = $form->addField('line','bank_exchange_rate_5');
+		}
 
 		$form->addField('Text','narration');
 		$form->addSubmit('Receive Now');
 
 		if($form->isSubmitted()){
-			
-			//from customer
-			//1// amount with currency and exchange rate
-				// CR (customer amount deposite the money) transaction
-			//2//
-				//Dr in To Bank Account with 
-				//Dr in Bank Other change 1 
-				//Dr in Bank Other change 2 
-				//Dr in Bank Other change 3 
-
-			// 3 or 4 not come here because accounts don't know invoices
-			//3// it's just for managing how many and which one invoice are paid using this payment received transaction using invoive transaction association we calculate the you are in profit or loss
-				//marke one or more invoice complete
-				//invoice currency must be same as currency invoice send
-				//each invoice has check box about adjust profit/loss amount
-			//4//
-				//association entry in invoice_transaction_association_table
+		
 
 			//Customer account
 			$from_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form['received_from']);
@@ -152,6 +111,7 @@ class page_amtreceived extends \Page {
 
 			//entry for to bank other charge
 			for ($i=1; $i < 6; $i++) {
+				
 				$bank_field = "bank_account_charges_".$i;
 				$amount_field = "bank_charge_amount_".$i;
 				$currency_field = "bank_currency_".$i;
@@ -162,7 +122,7 @@ class page_amtreceived extends \Page {
 
 				//TODO :: check for date, charge_amount, Currency, Exchange_rate
 
-				$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form[$bank_field]);
+				$r=$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form[$bank_field]);
 				$bank_other_charge_currency = $this->add('xepan\accounts\Model_Currency')->load($form[$currency_field]);
 
 				$transaction->addDebitLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
