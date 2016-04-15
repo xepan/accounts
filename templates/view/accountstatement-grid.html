@@ -27,8 +27,16 @@
           <td class="text-right">{$transaction_type}</td>
           <td>{$created_at}</td>
           <td>{$Narration}</td>
-          <td>{$amountDr}</td>
-          <td>{$amountCr}</td>
+          <td>{$amountDr}
+            <div class="xepan-push"><small>
+                {$currency}
+                {$original_amount_dr}</small></div>
+          </td>
+          <td>{$amountCr}
+            <div class="xepan-push"><small>
+                {$currency}
+                {$original_amount_cr}</small></div>
+          </td>
           <td></td>
           <td style="width: 15%;">
             {$edit}

@@ -21,6 +21,30 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addExpression('amountCr')->set($this->dsql()->expr('([0]*[1])',[$this->getElement('_amountCr'),$this->getElement('exchange_rate')]));
 		$this->addExpression('amountDr')->set($this->dsql()->expr('([0]*[1])',[$this->getElement('_amountDr'),$this->getElement('exchange_rate')]));
 
+		$this->addExpression('original_amount_dr')->set(function($m,$q){
+				return $q->expr('(
+						IF(
+							IFNULL([0],1)<>1,
+							CONCAT([1]," ",[2]),
+							" "
+						)
+					)',[$m->getElement('exchange_rate'), $m->getElement('_amountDr'),$m->getElement('currency_id')]);
+				
+		})->type('money');
+
+
+		$this->addExpression('original_amount_cr')->set(function($m,$q){
+				return $q->expr('(
+						IF(
+							IFNULL([0],1)<>1,
+							CONCAT([1]," ",[2]),
+							" "
+						)
+					)',[$m->getElement('exchange_rate'), $m->getElement('_amountCr'),$m->getElement('currency_id')]);
+				
+		})->type('money');
+
+
 		$this->addExpression('created_at')->set($this->refSQL('transaction_id')->fieldQuery('created_at'));
 		$this->addExpression('voucher_no')->set($this->refSQL('transaction_id')->fieldQuery('voucher_no'));
 		$this->addExpression('Narration')->set($this->refSQL('transaction_id')->fieldQuery('Narration'));

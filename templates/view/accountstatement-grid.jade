@@ -57,8 +57,16 @@
                       {$Narration}
                     td
                       {$amountDr}
+                      .xepan-push
+                        small
+                            {$currency}
+                            {$original_amount_dr}
                     td
                       {$amountCr}
+                      .xepan-push
+                        small
+                            {$currency}
+                            {$original_amount_cr}
                     td
                     td(style="width: 15%;")
                         {$edit}
