@@ -345,7 +345,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function filterPurchaseLedger(){
-		$this->addCondition('name','Purchase Account');
 		$this->addCondition('ledger_type','PurchaseAccount');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
 		$this->tryLoadAny();

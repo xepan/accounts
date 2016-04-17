@@ -52,7 +52,6 @@ class page_statement extends \Page {
 			$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
 			$grid->addCurrentBalanceInEachRow();
 
-
 			$send_email_btn = $grid->addButton('Send E-mail');
 
 	/*Send Account Statement In mail to Customer*/
@@ -86,7 +85,7 @@ class page_statement extends \Page {
 		}
 
 		$transactions->setOrder('created_at');
-		$grid->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr']);
+		$grid->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr']);
 		// $grid->addPaginator(10);
 		$grid->addSno();
 		
