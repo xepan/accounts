@@ -78,4 +78,22 @@ class Initiator extends \Controller_Addon {
 
 	}
 
+	function generateInstaller(){
+		// Clear DB
+		$this->app->epan=$this->app->old_epan;
+        $truncate_tables = ['TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
+        foreach ($truncate_tables as $t) {
+            $m=$this->add('xepan\accounts\Model_'.$t);
+            foreach ($m as $mt) {
+                $mt->delete();
+            }
+        }
+		$this->app->epan=$this->app->new_epan;
+
+       	$this->add('xepan\accounts\Model_Currency')
+       			->set('name','Currency')
+       			->set('value',1)
+       			->save();
+	}
+
 }

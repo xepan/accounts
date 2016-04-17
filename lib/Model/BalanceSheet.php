@@ -13,9 +13,9 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		$this->addField('positive_side')->enum(array('LT','RT'))->mandatory(true);
 		$this->addField('is_pandl')->type('boolean')->mandatory(true);
 		$this->addField('show_sub')->enum(array('SchemeGroup','SchemeName','Accounts'))->mandatory(true);
-		$this->addField('subtract_from')->enum(array('Cr','Dr'))->mandatory(true);
+		$this->addField('subtract_from')->enum(array('CR','DR'))->mandatory(true);
 		$this->addField('order');
-		$this->addField('created_at')->type('date');
+		$this->addField('created_at')->type('date')->defaultValue($this->app->today);
 
 	}
 
@@ -23,8 +23,14 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	function loadDepositeLibilities(){
 		if($this->loaded())
 			$this->unload();
-		$this->addCondition('name','Deposits - Liabilities')
-			->loadAny();
+		$this
+			->addCondition('name','Deposits - Liabilities')
+			->addCondition('positive_side','LT')
+			->addCondition('is_pandl',false)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',6)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
 		return $this;
 	}
 
@@ -35,9 +41,15 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	function loadCurrentAssets(){
 		if($this->loaded())
 			$this->unload();
-		$this->addCondition('name','Current Assets')
-			->loadAny();
-		return $this;	
+		$this
+			->addCondition('name','Current Assets')
+			->addCondition('positive_side','LT')
+			->addCondition('is_pandl',false)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
 	}
 
 	function isCurrentAssets(){
@@ -47,9 +59,15 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	function loadCapitalAccount(){
 		if($this->loaded())
 			$this->unload();
-		$this->addCondition('name','Capital Account')
-			->loadAny();
-			return $this;
+		$this
+			->addCondition('name','Capital Account')
+			->addCondition('positive_side','LT')
+			->addCondition('is_pandl',false)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
 	}
 	
 	function isCapitalAccount(){
@@ -57,84 +75,127 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	}
 
 	function loadExpenses(){
-			if($this->loaded())
-				$this->unload();
-			$this->addCondition('name','Expenses')
-				->loadAny();
-				return $this;
-		}
+		if($this->loaded())
+			$this->unload();
+		$this
+			->addCondition('name','Expenses')
+			->addCondition('positive_side','LT')
+			->addCondition('is_pandl',true)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
+	}
 
 	function isExpenses(){
 		return $this['name'] == 'Expenses';
 	}
 
 	function loadIncome(){
-			if($this->loaded())
-				$this->unload();
-			$this->addCondition('name','Income')
-				->loadAny();
-				return $this;
+		if($this->loaded())
+			$this->unload();
+		$this
+			->addCondition('name','Income')
+			->addCondition('positive_side','LT')
+			->addCondition('is_pandl',true)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
 		}
 
 	function isIncome(){
 		return $this['name'] == 'Income';
 	}
+	function loadSuspenseLedger(){
+		if($this->loaded())
+			$this->unload();
+		$this
+			->addCondition('name','Suspence Account')
+			->addCondition('positive_side','LT')
+			->addCondition('is_pandl',false)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
+	}
+
+	function isSuspenseLedger(){
+		return $this['name'] == 'Suspence Account';
+	}
 
 	function loadSales(){
-			if($this->loaded())
-				$this->unload();
-			$this->addCondition('name','Sales')
-				->loadAny();
-				return $this;
-		}
+		if($this->loaded())
+			$this->unload();
+		$this
+			->addCondition('name','Sales')
+			->addCondition('positive_side','RT')
+			->addCondition('is_pandl',true)
+			->addCondition('subtract_from','DR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
+	}
 
 	function isSales(){
 		return $this['name'] == 'Sales';
 	}
 
 	function loadPurchase(){
-			if($this->loaded())
-				$this->unload();
-			$this->addCondition('name','Purchase')
-				->loadAny();
-				return $this;
-		}
+		if($this->loaded())
+			$this->unload();
+		$this
+			->addCondition('name','Purchase')
+			->addCondition('positive_side','RT')
+			->addCondition('is_pandl',true)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
+	}
 
 	function isPurchase(){
 		return $this['name'] == 'Purchase';
 	}
 
 	function loadDutiesAndTaxes(){
-			if($this->loaded())
-				$this->unload();
-			$this->addCondition('name','Duties & Taxes')
-				->loadAny();
-				return $this;
-		}
+		if($this->loaded())
+			$this->unload();
+		$this
+			->addCondition('name','Duties & Taxes')
+			->addCondition('positive_side','LT')
+			->addCondition('is_pandl',false)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
+	}
 
 	function isDutiesAndTaxes(){
 		return $this['name'] == 'Duties & Taxes';
 	}
 
-	function loadSuspenseLedger(){
-			if($this->loaded())
-				$this->unload();
-			$this->addCondition('name','Suspence Account')
-				->loadAny();
-				return $this;
-		}
-
-	function isSuspenseLedger(){
-		return $this['name'] == 'Suspence Account';
-	}
+	
 
 	function loadFixedAssets(){
-			if($this->loaded())
-				$this->unload();
-			$this->addCondition('name','Fixed Assets')
-				->loadAny();
-				return $this;
-		}
+		if($this->loaded())
+			$this->unload();
+		$this
+			->addCondition('name','Fixed Assets')
+			->addCondition('positive_side','LT')
+			->addCondition('is_pandl',false)
+			->addCondition('subtract_from','CR')
+			->addCondition('order',5)
+			->tryLoadAny();
+		if(!$this->loaded()) $this->save();
+		return $this;
+	}
 
 	function isFixedAssets(){
 		return $this['name'] == 'Fixed Assets';
@@ -143,9 +204,15 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	function loadBranchDivisions(){
 			if($this->loaded())
 				$this->unload();
-			$this->addCondition('name','Branch/Divisions')
-				->loadAny();
-				return $this;
+			$this
+				->addCondition('name','Branch/Divisions')
+				->addCondition('positive_side','RT')
+				->addCondition('is_pandl',false)
+				->addCondition('subtract_from','DR')
+				->addCondition('order',6)
+				->tryLoadAny();
+			if(!$this->loaded()) $this->save();
+			return $this;
 		}
 
 	function isBranchDivisions(){
@@ -155,9 +222,15 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	function loadCurrentLiabilities(){
 			if($this->loaded())
 				$this->unload();
-			$this->addCondition('name','Current Liabilities')
-				->loadAny();
-				return $this;
+			$this
+				->addCondition('name','Current Liabilities')
+				->addCondition('positive_side','RT')
+				->addCondition('is_pandl',false)
+				->addCondition('subtract_from','DR')
+				->addCondition('order',3)
+				->tryLoadAny();
+			if(!$this->loaded()) $this->save();
+			return $this;
 		}
 
 	function isCurrentLiabilities(){

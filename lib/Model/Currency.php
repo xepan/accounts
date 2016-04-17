@@ -11,13 +11,12 @@ class Model_Currency extends \xepan\base\Model_Table{
 		
 	function init(){
 		parent::init();
-		$currency_j = $this->join('currency.document_id');
-		$currency_j->addField('icon');
-		$currency_j->addField('name');
-		$currency_j->addField('value');
-		$currency_j->hasMany('xepan\commerce\Customer','currency_id','Customers');
+		$this->addField('icon');
+		$this->addField('name');
+		$this->addField('value');
+		$this->hasMany('xepan\commerce\Customer','currency_id','Customers');
 	
-		$this->addField('status')->enum($this->status)->defaultValue('InActive');
+		$this->addField('status')->enum($this->status)->defaultValue('Active');
 		// $this->addCondition('type','Currency');
 	
 	}
