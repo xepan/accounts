@@ -81,8 +81,8 @@ class Initiator extends \Controller_Addon {
 	function generateInstaller(){
 		// Clear DB
 		$this->app->epan=$this->app->old_epan;
-        $truncate_tables = ['TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
-        foreach ($truncate_tables as $t) {
+        $truncate_models = ['TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
+        foreach ($truncate_models as $t) {
             $m=$this->add('xepan\accounts\Model_'.$t);
             foreach ($m as $mt) {
                 $mt->delete();
