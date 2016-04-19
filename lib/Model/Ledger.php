@@ -296,7 +296,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return array('CR'=>$cr,'DR'=>$dr,'cr'=>$cr,'dr'=>$dr,'Cr'=>$cr,'Dr'=>$dr);
 	}
 
-	function loadDefaultAccountsReceivable(){
+	function loadDefaultLedgersReceivable(){
 		$this->addCondition('name','Accounts Receivable');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectIncome()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -468,7 +468,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
-			$this['name']='Your Default Bank Account';
+			$this['name']='Bank Account';
 			$this->save();
 		}
 
@@ -477,7 +477,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function filterBankLedger(){
 		$this->addCondition('ledger_type','BankAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankAccounts()->fieldQuery('id'));
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankLedgers()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){

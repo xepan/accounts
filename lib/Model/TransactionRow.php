@@ -20,7 +20,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 
 		$this->addExpression('amountCr')->set($this->dsql()->expr('([0]*[1])',[$this->getElement('_amountCr'),$this->getElement('exchange_rate')]));
 		$this->addExpression('amountDr')->set($this->dsql()->expr('([0]*[1])',[$this->getElement('_amountDr'),$this->getElement('exchange_rate')]));
-
+		
 		$this->addExpression('original_amount_dr')->set(function($m,$q){
 				return $q->expr('(
 						IF(
