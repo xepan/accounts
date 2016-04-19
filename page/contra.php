@@ -20,25 +20,45 @@ class page_contra extends \Page {
 		// $cash_to_bank_form->addField('Checkbox','allow_negative');
 		$cash_to_bank_form->addField('Text','narration');
 
-		$cash_to_bank_form->addField('Money','bank_charges')->setFieldHint('Any Charges due to cash submission or out city submission');
+		for ($i=1; $i < 4; $i++) {
+			$bank_field_1 = $cash_to_bank_form->addField('autocomplete/Basic','bank_account_charges_'.$i);
+			$bank_field_1->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
+			$bank_field_1_charge_amount = $cash_to_bank_form->addField('Money','bank_charge_amount_'.$i);
+		}
+		// $cash_to_bank_form->addField('Money','bank_charges')->setFieldHint('Any Charges due to cash submission or out city submission');
+		
 		$cash_to_bank_form->addSubmit('Execute');
 
-		if($cash_to_bank_form->isSUbmitted()){
+		if($cash_to_bank_form->isSubmitted()){
 			$transaction = $this->add('xepan\accounts\Model_Transaction');
 			$transaction->createNewTransaction('CASH TO BANK', null , $cash_to_bank_form['date'], $Narration=null);
 
-			$bank_account_model = $this->add('xepan\accounts\Model_Ledger')->load($cash_to_bank_form['to_bank_account']);
+			$bank_ledger = $this->add('xepan\accounts\Model_Ledger')
+							->load($cash_to_bank_form['to_bank_account']);
 
-			$transaction->addCreditLedger($this->add('xepan\accounts\Model_Ledger')->loadDefaultCashLedger(),$cash_to_bank_form['amount_submitted']);
+			$cash_ledger = $this->add('xepan\accounts\Model_Ledger')->loadDefaultCashLedger();
+			$transaction->addCreditLedger($cash_ledger,$cash_to_bank_form['amount_submitted']);
 
-			$amount_submitted = $cash_to_bank_form['amount_submitted'];
-			if($cash_to_bank_form['bank_charges']){
-				$transaction->addDebitLedger($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankChargesLedger(),$cash_to_bank_form['bank_charges']);
-				$amount_submitted = $cash_to_bank_form['amount_submitted'] - $cash_to_bank_form['bank_charges'];
+			$charges = 0;
+
+			for ($i=1; $i < 4; $i++) {
+				
+				$bank_field = "bank_account_charges_".$i;
+				$amount_field = "bank_charge_amount_".$i;
+				
+				if(!$cash_to_bank_form[$bank_field])
+					continue;
+
+				$charges +=  $cash_to_bank_form[$amount_field];
+				$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($cash_to_bank_form[$bank_field]);
+				$transaction->addDebitLedger($bank_other_charge_ledger,$cash_to_bank_form[$amount_field]);
+				
 			}
 			
-			$transaction->addDebitLedger($bank_account_model,$amount_submitted);
+			$amount_submitted = $cash_to_bank_form['amount_submitted'];
 
+			$transaction->addDebitLedger($bank_ledger,$amount_submitted - $charges);
+			
 			$transaction->execute();
 
 			$cash_to_bank_form->js(null, $cash_to_bank_form->js()->reload())->univ()->successMessage('Done')->execute();
@@ -59,25 +79,44 @@ class page_contra extends \Page {
 		// $cash_to_bank_form->addField('Checkbox','allow_negative');
 		$bank_to_cash_form->addField('Text','narration');
 
-		$bank_to_cash_form->addField('Money','bank_charges')->setFieldHint('Any Charges due to cash withdraw or out city withdraw');
+		for ($i=1; $i < 4; $i++) {
+			$bank_field_1 = $bank_to_cash_form->addField('autocomplete/Basic','bank_account_charges_'.$i);
+			$bank_field_1->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
+			$bank_field_1_charge_amount = $bank_to_cash_form->addField('Money','bank_charge_amount_'.$i);
+		}
+		
+		// $bank_to_cash_form->addField('Money','bank_charges')->setFieldHint('Any Charges due to cash withdraw or out city withdraw');
 		$bank_to_cash_form->addSubmit('Execute');
 
 		if($bank_to_cash_form->isSUbmitted()){
 			$transaction = $this->add('xepan\accounts\Model_Transaction');
 			$transaction->createNewTransaction('CASH WITHDRAW', null , $transaction_date=$bank_to_cash_form['date'], $Narration=null);
 
-			$bank_account_model = $this->add('xepan\accounts\Model_Ledger')->load($bank_to_cash_form['from_bank_account']);
+			$bank_ledger = $this->add('xepan\accounts\Model_Ledger')->load($bank_to_cash_form['from_bank_account']);
 
 			$transaction->addDebitLedger($this->add('xepan\accounts\Model_Ledger')->loadDefaultCashLedger(),$bank_to_cash_form['amount_withdraw']);
 
-			$amount_credited = $bank_to_cash_form['amount_withdraw'];
-			if($bank_to_cash_form['bank_charges']){
-				$amount_credited = $bank_to_cash_form['amount_withdraw'] + $bank_to_cash_form['bank_charges'];
+			$charges = 0;
+
+			for ($i=1; $i < 4; $i++) {
+				
+				$bank_field = "bank_account_charges_".$i;
+				$amount_field = "bank_charge_amount_".$i;
+				
+				if(!$bank_to_cash_form[$bank_field])
+					continue;
+
+				$charges +=  $bank_to_cash_form[$amount_field];
+
+				$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($bank_to_cash_form[$bank_field]);
+				$transaction->addDebitLedger($bank_other_charge_ledger,$bank_to_cash_form[$amount_field]);
+				
 			}
 			
-			$transaction->addDebitLedger($this->add('xepan\accounts\Model_Ledger')->loadDefaultBankChargesLedger(),$bank_to_cash_form['bank_charges']);
-			$transaction->addCreditLedger($bank_account_model,$amount_credited);
-
+			$amount_credited = $bank_to_cash_form['amount_withdraw'];
+			
+			$transaction->addCreditLedger($bank_ledger,$amount_credited  + $charges);
+			
 			$transaction->execute();
 
 			$bank_to_cash_form->js(null, $bank_to_cash_form->js()->reload())->univ()->successMessage('Done')->execute();

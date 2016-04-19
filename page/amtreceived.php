@@ -10,7 +10,7 @@ class page_amtreceived extends \Page {
 		$received_from_model = $this->add('xepan\accounts\Model_Ledger');
 
 		$cash_ledgers = $this->add('xepan\accounts\Model_Ledger')->loadCashLedgers();
-		// $cash_ledgers->filterCashLedger();
+		$cash_ledgers->filterCashLedger();
 
 		$form = $this->add('Form_Stacked',null,'cash_view');
 		$form->setLayout('view/form/payment-received-cash');
@@ -123,7 +123,7 @@ class page_amtreceived extends \Page {
 
 				//TODO :: check for date, charge_amount, Currency, Exchange_rate
 
-				$r=$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form[$bank_field]);
+				$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form[$bank_field]);
 				$bank_other_charge_currency = $this->add('xepan\accounts\Model_Currency')->load($form[$currency_field]);
 
 				$transaction->addDebitLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);

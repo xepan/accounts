@@ -460,7 +460,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function loadDefaultBankLedger(){
-		$this->addCondition('name','Bank Account');
+		$this->addCondition('name','You Default Bank Account');
 		$this->addCondition('ledger_type','BankAccount');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
@@ -474,7 +474,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function filterBankLedger(){
 		$this->addCondition('ledger_type','BankAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
+		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
 
 		return $this;
 	}

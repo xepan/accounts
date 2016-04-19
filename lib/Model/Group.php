@@ -55,10 +55,13 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Cash Account');
-		$this->addCondition('root_group_id',null);
 		if($load){
 			$this->tryLoadAny();
-			if(!$this->loaded()) $this->save();
+			if(!$this->loaded()){
+				$this->save();
+				$this['root_group_id'] = $this->id;
+				$this->save();
+			}
 		}
 
 		return $this;	
@@ -81,11 +84,14 @@ class Model_Group extends \xepan\base\Model_Table{
 		if($this->loaded())
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Bank Accounts');
-		$this->addCondition('root_group_id',null);
+		$this->addCondition('name','Bank Account');
 		if($load){
 			$this->tryLoadAny();
-			if(!$this->loaded()) $this->save();
+			if(!$this->loaded()){
+				$this->save();
+				$this['root_group_id'] = $this->id;
+				$this->save();
+			}
 		}
 
 		return $this;	
