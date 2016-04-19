@@ -322,7 +322,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function filterSalesLedger(){
 		$this->addCondition('ledger_type','SalesAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadSalesGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
@@ -346,7 +346,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function filterPurchaseLedger(){
 		$this->addCondition('ledger_type','PurchaseAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadPurchaseGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
@@ -430,13 +430,14 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function loadCashLedgers(){
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootCashGroup()->fieldQuery('id'));
 		return $this;
 	}
 
 	function loadDefaultCashLedger(){
 		$this->addCondition('name','Cash Account');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
+		$this->addCondition('ledger_type','CashAccount');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootCashGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
@@ -448,27 +449,23 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function filterCashLedger(){
 		$this->addCondition('ledger_type','CashAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadCashLedger()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
+		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootCashGroup()->fieldQuery('id'));
 
 		return $this;
 	}
 
 	function loadBankLedgers(){
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankLedgers()->fieldQuery('id'));
+		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
 		return $this;
 	}
 
 	function loadDefaultBankLedger(){
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankLedgers()->fieldQuery('id'));
+		$this->addCondition('name','Bank Account');
+		$this->addCondition('ledger_type','BankAccount');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
-			$this['name']='Bank Account';
 			$this->save();
 		}
 
@@ -477,12 +474,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function filterBankLedger(){
 		$this->addCondition('ledger_type','BankAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadBankLedgers()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
 
 		return $this;
 	}

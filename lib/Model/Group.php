@@ -50,15 +50,26 @@ class Model_Group extends \xepan\base\Model_Table{
 		$this->save();
 	}
 
-	function loadCashLedger(){
+	function loadRootCashGroup($load=true){
 		if($this->loaded())
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Cash Account')
-			->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
+		$this->addCondition('name','Cash Account');
+		$this->addCondition('root_group_id',null);
+		if($load){
+			$this->tryLoadAny();
+			if(!$this->loaded()) $this->save();
+		}
 
+		return $this;	
+	}
+
+	function filterCashGroup(){
+		if($this->loaded())
+			$this->unload();
+		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
+		$this->addCondition('root_group_id',$this->loadRootCashGroup()->fieldQuery('id'));
+		
 		return $this;	
 	}
 
@@ -66,15 +77,26 @@ class Model_Group extends \xepan\base\Model_Table{
 		return $this['name'] == "Cash Account";
 	}
 
-	function loadBankLedgers(){
+	function loadRootBankGroup($load=true){
 		if($this->loaded())
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Bank Accounts')
-			->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
+		$this->addCondition('name','Bank Accounts');
+		$this->addCondition('root_group_id',null);
+		if($load){
+			$this->tryLoadAny();
+			if(!$this->loaded()) $this->save();
+		}
 
+		return $this;	
+	}
+
+	function filterBankGroup(){
+		if($this->loaded())
+			$this->unload();
+		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
+		$this->addCondition('root_group_id',$this->loadRootBankGroup()->fieldQuery('id'));
+		
 		return $this;	
 	}
 

@@ -10,6 +10,7 @@ class page_amtreceived extends \Page {
 		$received_from_model = $this->add('xepan\accounts\Model_Ledger');
 
 		$cash_ledgers = $this->add('xepan\accounts\Model_Ledger')->loadCashLedgers();
+		// $cash_ledgers->filterCashLedger();
 
 		$form = $this->add('Form_Stacked',null,'cash_view');
 		$form->setLayout('view/form/payment-received-cash');
