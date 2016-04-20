@@ -13,9 +13,9 @@ class page_cashbook extends \Page{
 		$grid = $this->add('xepan\accounts\Grid_AccountsBase');
 
 		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
-		$group=$this->add('xepan\accounts\Model_Group')->loadCashLedger();
+		$group=$this->add('xepan\accounts\Model_Group')->loadRootCashGroup();
 
-		$transaction_row->addCondition('root_group_name',$group['name']);
+		$transaction_row->addCondition('root_group_id',$group['id']);
 		
 		if($_GET['from_date']){
 			$this->api->stickyGET('from_date');
