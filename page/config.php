@@ -18,6 +18,6 @@ class page_config extends \Page{
 	}
 
 	function defaultTemplate(){
-		return['page\configuration'];
+		return['page/account-configuration'];
 	}
 }

@@ -32,7 +32,7 @@ class page_cashbook extends \Page{
 			$cash_account = $this->add('xepan\accounts\Model_Ledger')->loadDefaultCashLedger();
 			$opening_balance = $cash_account->getOpeningBalance($this->api->today);
 		}
-			
+		
 		
 		// throw new \Exception("Error Processing Request", 1);
 		if(($opening_balance['DR'] - $opening_balance['CR']) > 0){
@@ -58,17 +58,17 @@ class page_cashbook extends \Page{
 			if($g->model->transaction()->customer()){
 				$g->current_row_html[$f]=$g->model['transaction_type']."::".$g->model->transaction()->customer()->get('organization_name');
 			}else
-				$g->current_row_html[$f]=$g->model['transaction_type'];
+			$g->current_row_html[$f]=$g->model['transaction_type'];
 		});
 		$grid->addFormatter('transaction_type','transaction_type');
 
 		$js=[
-			$this->js()->_selector('.atk-cells-gutter-large')->parent()->parent()->toggle(),
-			$this->js()->_selector('.atk-box')->toggle(),
-			$this->js()->_selector('.navbar1')->toggle(),
+		$this->js()->_selector('.atk-cells-gutter-large')->parent()->parent()->toggle(),
+		$this->js()->_selector('.atk-box')->toggle(),
+		$this->js()->_selector('.navbar1')->toggle(),
 			// $this->js()->_selector('.atk-text-nowrap')->toggle(),
-			$this->js()->_selector('.atk-form')->toggle(),
-			];
+		$this->js()->_selector('.atk-form')->toggle(),
+		];
 
 		$grid->js('click',$js);
 

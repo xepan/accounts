@@ -94,7 +94,7 @@ class Initiator extends \Controller_Addon {
 		$this->app->epan=$this->app->new_epan;
 
        	$this->add('xepan\accounts\Model_Currency')
-       			->set('name','Currency')
+       			->set('name','Default Currency')
        			->set('value',1)
        			->save();
 	}

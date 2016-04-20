@@ -27,7 +27,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		// $this->addField('CurrentBalanceCr')->type('money')->defaultValue(0);
 		
 		$this->addField('created_at')->type('date')->defaultValue($this->app->now);
-		$this->addField('updated_at')->type('date');
+		$this->addField('updated_at')->type('date')->defaultValue($this->app->now);
 
 		$this->addField('affectsBalanceSheet')->type('boolean')->defaultValue(true);
 
@@ -310,7 +310,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function loadDefaultSalesLedger(){
 		$this->addCondition('name','Sales Account');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadSalesGroup()->fieldQuery('id'));
+		$this->addCondition('ledger_type','SalesAccount');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootSalesGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
@@ -322,19 +323,16 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function filterSalesLedger(){
 		$this->addCondition('ledger_type','SalesAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadSalesGroup()->fieldQuery('id'));
+		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootSalesGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
 
 		return $this;
 	}
 
 	function loadDefaultPurchaseLedger(){
 		$this->addCondition('name','Purchase Account');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectExpenses()->fieldQuery('id'));
+		$this->addCondition('ledger_type','PurchaseAccount');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootPurchaseGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
@@ -346,12 +344,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function filterPurchaseLedger(){
 		$this->addCondition('ledger_type','PurchaseAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadPurchaseGroup()->fieldQuery('id'));
+		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootPurchaseGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
 
 		return $this;
 	}
@@ -451,7 +445,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 
 	function loadDefaultBankLedger(){
-		$this->addCondition('name','You Default Bank Account');
+		$this->addCondition('name','Your Default Bank Account');
 		$this->addCondition('ledger_type','BankAccount');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
 		$this->tryLoadAny();

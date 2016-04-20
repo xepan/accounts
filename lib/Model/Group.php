@@ -21,9 +21,9 @@ class Model_Group extends \xepan\base\Model_Table{
 		$this->hasMany('xepan\accounts\Ledger','group_id');
 
 		$this->is([
-						'name!|to_trim|unique'
-					]
-				);
+			'name!|to_trim|unique'
+			]
+			);
 		
 		$this->hasMany('xepan\accounts\Group','parent_group_id',null,'ParentGroup');
 		$this->hasMany('xepan\accounts\Group','root_group_id',null,'RootGroup');
@@ -38,7 +38,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			throw $this->exception('Cannot Delete, First Delete Ledgers');
 	}
 
-		
+	
 	function createNewGroup($name,$balance_sheet_id,$other_values=array()){
 		
 		$this['name'] = $name;
@@ -115,7 +115,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Bank OD')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -131,7 +131,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','F.D. Assets')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -147,7 +147,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Share Capital')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -163,7 +163,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadExpenses()->fieldquery('id'));
 		$this->addCondition('name','Direct Expenses')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 		
@@ -179,7 +179,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadIncome()->fieldquery('id'));
 		$this->addCondition('name','Direct Income')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -195,7 +195,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadDutiesAndTaxes()->fieldquery('id'));
 		$this->addCondition('name','Duties & Taxes')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -211,7 +211,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadFixedAssets()->fieldquery('id'));
 		$this->addCondition('name','Fixed Assets')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -227,7 +227,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadExpenses()->fieldquery('id'));
 		$this->addCondition('name','Indirect Expenses')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -243,7 +243,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadIncome()->fieldquery('id'));
 		$this->addCondition('name','Indirect Income')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -259,7 +259,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Loan Advances (Assets)')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -275,7 +275,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentLiabilities()->fieldquery('id'));
 		$this->addCondition('name','Loan (Liabilities)')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -291,7 +291,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Misc Expenses (Assets)')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -320,7 +320,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Reserve Surpuls')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -336,7 +336,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Retained Earnings')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -352,7 +352,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Secured (Loan)')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -368,7 +368,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentLiabilities()->fieldquery('id'));
 		$this->addCondition('name','Sundry Creditor')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -384,7 +384,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Sundry Debtor')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 
@@ -400,7 +400,7 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
 		$this->addCondition('name','Suspense Account')
-			->tryLoadAny();
+		->tryLoadAny();
 		
 		if(!$this->loaded()) $this->save();
 		
@@ -412,27 +412,35 @@ class Model_Group extends \xepan\base\Model_Table{
 		return $this['name'] == "Suspense Account";
 	}
 
-	function loadSalesGroup(){
+	function loadRootSalesGroup($load=true){
 		if($this->loaded())
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadSales()->fieldquery('id'));
-		$this->addCondition('name','Sales')
-			->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-		
+		$this->addCondition('name','Sales');
+		if($load){
+			$this->tryLoadAny();
+			if(!$this->loaded()){
+				$this->save();
+				$this['root_group_id'] = $this->id;
+				$this->save();
+			}
+		}
 		return $this;	
 	}
 
-	function loadPurchaseGroup(){
+	function loadRootPurchaseGroup($load=true){
 		if($this->loaded())
 			$this->unload();
 		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadPurchase()->fieldquery('id'));
-		$this->addCondition('name','Purchase')
-			->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-		
+		$this->addCondition('name','Purchase');
+		if($load){
+			$this->tryLoadAny();
+			if(!$this->loaded()){
+				$this->save();
+				$this['root_group_id'] = $this->id;
+				$this->save();
+			}
+		}
 		return $this;	
 	}
 
