@@ -28,14 +28,23 @@ class Model_Group extends \xepan\base\Model_Table{
 		$this->hasMany('xepan\accounts\Group','parent_group_id',null,'ParentGroup');
 		$this->hasMany('xepan\accounts\Group','root_group_id',null,'RootGroup');
 
-		$this->addHook('beforeDelete',$this);
+		$this->addHook('beforeDelete',[$this,'checkLedgerExistance']);
+		$this->addHook('afterSave',[$this,'manageRootGroupId']);
 		//$this->add('dynamic_model/Controller_AutoCreator');
 	}
 
-	function beforeDelete(){
+	function checkLedgerExistance(){
 		$account = $this->ref('xepan\accounts\Ledger')->count()->getOne();
 		if($account)
 			throw $this->exception('Cannot Delete, First Delete Ledgers');
+	}
+
+	function manageRootGroupId(){
+		if(!$this['parent_group_id']) 
+			$this['root_group_id']= $this->id;
+		else
+			$this['root_group_id']= $this->ref('parent_group_id')->get('root_group_id');
+		$this->save();
 	}
 
 	
@@ -58,8 +67,6 @@ class Model_Group extends \xepan\base\Model_Table{
 		if($load){
 			$this->tryLoadAny();
 			if(!$this->loaded()){
-				$this->save();
-				$this['root_group_id'] = $this->id;
 				$this->save();
 			}
 		}
@@ -88,8 +95,6 @@ class Model_Group extends \xepan\base\Model_Table{
 		if($load){
 			$this->tryLoadAny();
 			if(!$this->loaded()){
-				$this->save();
-				$this['root_group_id'] = $this->id;
 				$this->save();
 			}
 		}
@@ -421,8 +426,6 @@ class Model_Group extends \xepan\base\Model_Table{
 			$this->tryLoadAny();
 			if(!$this->loaded()){
 				$this->save();
-				$this['root_group_id'] = $this->id;
-				$this->save();
 			}
 		}
 		return $this;	
@@ -436,8 +439,6 @@ class Model_Group extends \xepan\base\Model_Table{
 		if($load){
 			$this->tryLoadAny();
 			if(!$this->loaded()){
-				$this->save();
-				$this['root_group_id'] = $this->id;
 				$this->save();
 			}
 		}

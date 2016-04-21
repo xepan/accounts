@@ -375,9 +375,21 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 
-	function loadDefaultDiscountLedger(){
+	function loadDefaultDiscountGivenLedger(){
 		$this->addCondition('name','Discount Given');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectExpenses()->fieldQuery('id'));
+		$this->tryLoadAny();
+
+		if(!$this->loaded()){
+			$this->save();
+		}
+
+		return $this;
+	}
+
+	function loadDefaultDiscountRecieveLedger(){
+		$this->addCondition('name','Discount Recieve');
+		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectIncome()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
