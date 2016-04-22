@@ -16,17 +16,17 @@ class Initiator extends \Controller_Addon {
 			$m = $this->app->top_menu->addMenu('Account');
 
 			$m->addItem(['Account','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
-			$m->addItem(['Account Paid','icon'=>'fa fa-keyboard-o'],'xepan_accounts_amtpaid');
-			$m->addItem(['Payment Received','icon'=>'fa fa-money'],'xepan_accounts_amtreceived');
-			$m->addItem(['Cash <=> Bank','icon'=>'fa fa-bank'],'xepan_accounts_contra');
-			$m->addItem(['Account Statement','icon'=>'fa fa-tags'],'xepan_accounts_statement');
+			$m->addItem(['Account Paid','icon'=>'fa fa-cc-visa'],'xepan_accounts_amtpaid');
+			$m->addItem(['Payment Received','icon'=>'fa fa-cc-paypal'],'xepan_accounts_amtreceived');
+			$m->addItem(['Cash <=> Bank','icon'=>'fa fa-exchange'],'xepan_accounts_contra');
+			$m->addItem(['Account Statement','icon'=>'fa fa-file-excel-o'],'xepan_accounts_statement');
 			$m->addItem(['Cash Book','icon'=>'fa fa-book'],'xepan_accounts_cashbook');
 			$m->addItem(['Day Book','icon'=>'fa fa-bookmark'],'xepan_accounts_daybook');
 			$m->addItem(['Group','icon'=>'fa fa-group'],'xepan_accounts_group');
-			$m->addItem(['Balance Sheet','icon'=>'fa fa-file-excel-o'],'xepan_accounts_balancesheet');
-			$m->addItem(['Profit & Loss','icon'=>'fa fa-clipboard'],'xepan_accounts_pandl');
-			$m->addItem(['Debit/Credit Note','icon'=>'fa fa-credit-card'],'xepan_accounts_debitcreditnote');
-			$m->addItem(['Configuration','icon'=>'fa fa-cog'],'xepan_accounts_config');
+			$m->addItem(['Balance Sheet','icon'=>'fa fa-balance-scale'],'xepan_accounts_balancesheet');
+			$m->addItem(['Profit & Loss','icon'=>'fa  fa-database'],'xepan_accounts_pandl');
+			$m->addItem(['Debit/Credit Note','icon'=>'fa fa-sticky-note-o'],'xepan_accounts_debitcreditnote');
+			$m->addItem(['Configuration','icon'=>'fa fa-cog fa-spin'],'xepan_accounts_config');
 
 			
 
