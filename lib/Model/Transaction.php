@@ -201,8 +201,23 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		
 	// 	// Credit Sum Must Be Equal to Debit Sum
 	// 	// throw new \Exception($total_credit_amount." = ".$total_debit_amount);
-		if($total_debit_amount != $total_credit_amount)
-			throw $this->exception('Debit and Credit Must be Same')->addMoreInfo('DebitSum',$total_debit_amount)->addMoreInfo('CreditSum',$total_credit_amount);
+		if($total_debit_amount != $total_credit_amount){
+
+			$e = $this->exception('Debit and Credit Must be Same');
+
+			foreach ($this->dr_accounts as $accountNumber => $dtl) {
+				$e->addMoreInfo('Debit: '.$accountNumber,$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].']');
+			}
+
+			$e->addMoreInfo('DebitSum',$total_debit_amount);
+
+			foreach ($this->cr_accounts as $accountNumber => $dtl) {
+				$e->addMoreInfo('Credit: '.$accountNumber,$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].']');
+			}
+			$e->addMoreInfo('CreditSum',$total_credit_amount);
+
+			throw $e;
+		}
 
 
 	}
