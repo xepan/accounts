@@ -77,12 +77,13 @@ class page_amtreceived extends \Page {
 		
 		/*Different Charges*/
 		for ($i=1; $i < 6; $i++) {
-			$bank_field_1 = $form->addField('autocomplete/Basic','bank_account_charges_'.$i);//->validateNotNull(true);
-			$bank_field_1->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
-			$bank_field_1_charge_amount = $form->addField('Money','bank_charge_amount_'.$i);//->validateNotNull(true);
-			$bank_field_1_currency = $form->addField('Dropdown','bank_currency_'.$i);//->validateNotNull(true);
-			$bank_field_1_currency->setModel('xepan\accounts\Currency');
-			$bank_field_1_exchange_rate = $form->addField('line','bank_exchange_rate_'.$i);
+			$bank_field = $form->addField('autocomplete/Basic','bank_account_charges_'.$i);//->validateNotNull(true);
+			$bank_field->setModel('xepan\accounts\Model_Ledger')->filterBankCharges();
+			$bank_field_charge_amount = $form->addField('Money','bank_charge_amount_'.$i);//->validateNotNull(true);
+			$bank_field_currency = $form->addField('Dropdown','bank_currency_'.$i);//->validateNotNull(true);
+			$bank_field_currency->setModel('xepan\accounts\Currency');
+			$bank_field_exchange_rate = $form->addField('line','bank_exchange_rate_'.$i);
+			$bank_field_is_external_charge = $form->addField('checkbox','is_external_charge_'.$i);
 
 		}
 
@@ -95,47 +96,61 @@ class page_amtreceived extends \Page {
 			$from_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form['received_from']);
 			$from_currency = $this->add('xepan\accounts\Model_Currency')->load($form['from_currency']);
 
-			$transaction = $this->add('xepan\accounts\Model_Transaction');
-			$transaction->createNewTransaction('BANK RECEIPT', $related_document=false, $form['date'], $form['narration'], $from_currency, $form['from_exchange_rate'],$related_id=$form['received_from'],$related_type="xepan\accounts\Model_Ledger");
+			$transaction1 = $this->add('xepan\accounts\Model_Transaction');
+			$transaction1->createNewTransaction('BANK RECEIPT', $related_document=false, $form['date'], $form['narration'], $from_currency, $form['from_exchange_rate'],$related_id=$form['received_from'],$related_type="xepan\accounts\Model_Ledger");
 
-			
-			$transaction->addCreditLedger($from_ledger,$form['from_amount'],$from_currency,$form['from_exchange_rate']);
+			$transaction1->addCreditLedger($from_ledger,$form['from_amount'],$from_currency,$form['from_exchange_rate']);
 				// echo "DR From Account: ".$from_ledger->id." :amount= ".$form['from_amount']." :Currency= ".$from_currency->id." :exchange Rate=".$form['from_exchange_rate']."<br/>";
 
-				//one entry for to bank 
+			//one entry for to bank 
 			$to_bank_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form['to_bank_account']);
 			$to_bank_currency = $this->add('xepan\accounts\Model_Currency')->load($form['to_currency']);
 
-			$transaction->addDebitLedger($to_bank_ledger,$form['to_amount'],$to_bank_currency,$form['to_exchange_rate']);
-				// echo "CR To Bank : ".$to_bank_ledger['name']." :amount= ".$form['to_amount']." :Currency= ".$to_bank_currency['name']." :exchange Rate=".$form['to_exchange_rate']."<br/>";
+			$transaction2 = $this->add('xepan\accounts\Model_Transaction');
+			$transaction2->createNewTransaction('BANK  CHARGES RECEIPT', $related_document=false, $form['date'], $form['narration'], $from_currency, $form['from_exchange_rate'],$related_id=$form['received_from'],$related_type="xepan\accounts\Model_Ledger");
 
-				//entry for to bank other charge
+			$charges = 0;
+
 			for ($i=1; $i < 6; $i++) {
 				
 				$bank_field = "bank_account_charges_".$i;
 				$amount_field = "bank_charge_amount_".$i;
 				$currency_field = "bank_currency_".$i;
 				$exchange_field = "bank_exchange_rate_".$i;
+				$external_charge_field = "is_external_charge_".$i;
 
 				if(!$form[$bank_field])
 					continue;
 
 					//TODO :: check for date, charge_amount, Currency, Exchange_rate
-
-				$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form[$bank_field]);
-				$bank_other_charge_currency = $this->add('xepan\accounts\Model_Currency')->load($form[$currency_field]);
-
-				$transaction->addDebitLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
-					// echo "CR To Bank Other Charge: ".$bank_other_charge_ledger['name']." :amount= ".$form[$amount_field]." :Currency= ".$bank_other_charge_currency['name']." :exchange Rate=".$form[$exchange_field]."<br/>";
-
+				if(!$form[$external_charge_field]){
+					$charges +=  $form[$amount_field];
+				}
+				
 			}
 			
-			$transaction->execute();
+			$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form[$bank_field]);
+			$bank_other_charge_currency = $this->add('xepan\accounts\Model_Currency')->load($form[$currency_field]);
+
+				// $transaction1->addDebitLedger($bank_other_charge_ledger,$form[$amount_field]);
+			if($form[$external_charge_field]){
+				$transaction1->addDebitLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
+			}
+			if(!$form[$external_charge_field]){
+				$transaction2->addDebitCreditLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
+			}
 			
-			
+				// echo "CR To Bank Other Charge: ".$bank_other_charge_ledger['name']." :amount= ".$form[$amount_field]." :Currency= ".$bank_other_charge_currency['name']." :exchange Rate=".$form[$exchange_field]."<br/>";
+			$transaction1->addDebitLedger($to_bank_ledger,$form['to_amount'] + $charges);
+			$transaction2->addDebitLedger($to_bank_ledger,$charges);
+
+			$transaction1->execute();
+
+			$transaction2->execute();
+
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Done')->execute();
 		}
-
+		
 	}
 	function defaultTemplate(){
 		return ['page/amtrecevied'];
