@@ -70,8 +70,13 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		// $this->addHook('beforeDelete',[$this,'deleteAllTransactionRow']);
 		// $this->addHook('afterSave',[$this,'searchStringAfterSave']);
-
 		// $this->add('dynamic_model/Controller_AutoCreator');
+
+		$this->addHook('beforeDelete',$this);
+	}
+
+	function beforeDelete(){
+		$this->app->hook('deleteTransactionRow',[$this]);
 	}
 
 	function searchStringAfterSave(){
