@@ -15,8 +15,8 @@ class page_amtreceived extends \Page {
 		$form = $this->add('Form_Stacked',null,'cash_view');
 		$form->setLayout('view/form/payment-received-cash');
 
-		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
-		$cash_field = $form->addField('autocomplete/Basic','cash_account')->validateNotNull(true);
+		$form->addField('DatePicker','date')->set($this->api->now)->validate('required');
+		$cash_field = $form->addField('autocomplete/Basic','cash_account')->validate('required');
 		$cash_field->setModel($cash_ledgers);
 
 		$cash_field->set($this->add('xepan\accounts\Model_Ledger')->loadDefaultCashLedger()->get('id'));
@@ -24,7 +24,7 @@ class page_amtreceived extends \Page {
 		$received_from_field = $form->addField('autocomplete/Basic','received_from')->validateNotNull(true);
 		$received_from_field->setModel($received_from_model);
 
-		$form->addField('Money','amount')->validateNotNull(true);
+		$form->addField('Money','amount')->validate('required');
 		$form->addField('Text','narration');
 		$form->addSubmit('Receive Now');
 
@@ -42,8 +42,6 @@ class page_amtreceived extends \Page {
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Done')->execute();
 		}
 
-
-
 		// ==== BANK PAYMENT ===========
 		$received_from_model = $this->add('xepan\accounts\Model_Ledger');
 
@@ -52,16 +50,16 @@ class page_amtreceived extends \Page {
 		$form->setLayout('view/form/payment-received-bank');
 		
 		/*Received From*/
-		$received_from_field = $form->addField('autocomplete/Basic','received_from')->validateNotNull(true);
+		$received_from_field = $form->addField('autocomplete/Basic','received_from')->validate('required');
 		$received_from_field->setModel($received_from_model);
 		$form->addField('Money','from_amount')->validateNotNull(true);
 
-		$from_curreny_field=$form->addField('Dropdown','from_currency')->validateNotNull(true);
+		$from_curreny_field=$form->addField('Dropdown','from_currency')->validate('required');
 		$from_curreny_field->setModel('xepan\accounts\Currency');
 		$from_curreny_field->set($this->app->epan->default_currency->id);
-		$form->addField('line','from_exchange_rate')->validateNotNull(true);
+		$form->addField('line','from_exchange_rate')->validate('required');
 
-		$form->addField('DatePicker','date')->set($this->api->now)->validateNotNull(true);
+		$form->addField('DatePicker','date')->set($this->api->now)->validate('required');
 
 		$bank_ledgers = $this->add('xepan\accounts\Model_Ledger')->filterBankLedgers();
 		/*To Details*/
