@@ -72,12 +72,12 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// $this->addHook('afterSave',[$this,'searchStringAfterSave']);
 		// $this->add('dynamic_model/Controller_AutoCreator');
 
-		$this->addHook('beforeDelete',$this);
+		// $this->addHook('beforeDelete',$this);
 	}
 
-	function beforeDelete(){
-		$this->app->hook('deleteTransactionRow',[$this]);
-	}
+	// function beforeDelete(){
+	// 	$this->app->hook('deleteTransactionRow',[$this]);
+	// }
 
 	function searchStringAfterSave(){
 		$str = "Transaction: ".$this['name']." ".

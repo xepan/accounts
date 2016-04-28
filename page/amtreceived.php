@@ -120,8 +120,8 @@ class page_amtreceived extends \Page {
 
 				if(!$form[$bank_field])
 					continue;
+				//TODO :: check for date, charge_amount, Currency, Exchange_rate
 
-					//TODO :: check for date, charge_amount, Currency, Exchange_rate
 				if(!$form[$external_charge_field]){
 					$charges +=  $form[$amount_field];
 				}
@@ -129,23 +129,28 @@ class page_amtreceived extends \Page {
 				$bank_other_charge_ledger = $this->add('xepan\accounts\Model_Ledger')->load($form[$bank_field]);
 				$bank_other_charge_currency = $this->add('xepan\accounts\Model_Currency')->load($form[$currency_field]);
 
-				if($form[$external_charge_field]){
-					$transaction1->addDebitLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
-				}
-				if(!$form[$external_charge_field]){
-					$transaction2->addDebitLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
+				if($charges){
+					if($form[$external_charge_field]){
+						$transaction1->addDebitLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
+					}
+					if(!$form[$external_charge_field]){
+						$transaction2->addDebitLedger($bank_other_charge_ledger,$form[$amount_field],$bank_other_charge_currency,$form[$exchange_field]);
+					}
 				}
 			}
 			
 			// $transaction1->addDebitLedger($bank_other_charge_ledger,$form[$amount_field]);
+			if(!$charges){
+				$transaction1->addDebitLedger($to_bank_ledger,$form['to_amount'],$to_bank_currency,$form['to_exchange_rate']);
+			}else{
+				$transaction1->addDebitLedger($to_bank_ledger,$form['to_amount'] + $charges);
+				$transaction2->addCreditLedger($to_bank_ledger,$charges);
+				$transaction2->execute();
+			}
+				$transaction1->execute();
 			
-				// echo "CR To Bank Other Charge: ".$bank_other_charge_ledger['name']." :amount= ".$form[$amount_field]." :Currency= ".$bank_other_charge_currency['name']." :exchange Rate=".$form[$exchange_field]."<br/>";
-			$transaction1->addDebitLedger($to_bank_ledger,$form['to_amount'] + $charges);
-			$transaction2->addCreditLedger($to_bank_ledger,$charges);
 
-			$transaction1->execute();
 
-			$transaction2->execute();
 
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Done')->execute();
 		}
