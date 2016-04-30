@@ -3,13 +3,15 @@ div(id="{$_name}")
 		.col-md-6
 			.row
 				.col-md-6
-					{$assets_name}
+					a.user-link(href='{url}?page=xepan_accounts_balancesheetdetail&account_balance_sheet_id={$id}{/}')
+						{$assets_name}
 				.col-md-6
 					{$assets_amount}
 		.col-md-6
 			.row
 				.col-md-6
-					{$liabilities_name}
+					a.user-link(href='{url}?page=xepan_accounts_balancesheetdetail&account_balance_sheet_id={$id}{/}')
+						{$liabilities_name}
 				.col-md-6
 					{$liabilities_amount}
 					

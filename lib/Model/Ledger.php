@@ -7,8 +7,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	
 	function init(){
 		parent::init();
-
-
 		
 		$this->hasOne('xepan\base\Contact','contact_id');
 		$this->hasOne('xepan\accounts\Group','group_id')->mandatory(true);

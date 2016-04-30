@@ -20,7 +20,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	}
 
 
-	function loadDepositeLibilities(){
+	function loadDepositLiabilities(){
 		if($this->loaded())
 			$this->unload();
 		$this
@@ -34,7 +34,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		return $this;
 	}
 
-	function isDepositeLibilities(){
+	function isDepositLiabilities(){
 		return $this['name'] =='Deposits - Liabilities';
 	}
 
