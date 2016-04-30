@@ -6,8 +6,7 @@ class Initiator extends \Controller_Addon {
 	
 	public $addon_name = 'xepan_accounts';
 
-	function init(){
-		parent::init();
+	function setup_admin(){
 		
 		$this->routePages('xepan_accounts');
 		$this->addLocation(array('template'=>'templates'));
@@ -42,6 +41,9 @@ class Initiator extends \Controller_Addon {
 		$this->app->addHook('outsource_party_update',[$ledger,'createOutsourcePartyLedger']);
 		$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
 		
+	}
+
+	function setup_frontend(){
 	}
 
 	function addAccountTemplates(){
