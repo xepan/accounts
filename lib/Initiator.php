@@ -99,10 +99,14 @@ class Initiator extends \Controller_Addon {
         }
 		$this->app->epan=$this->app->new_epan;
 
-       	$this->add('xepan\accounts\Model_Currency')
+       	$default_currency = $this->add('xepan\accounts\Model_Currency')
        			->set('name','Default Currency')
        			->set('value',1)
        			->save();
+
+       	$config = $this->app->epan->ref('Configurations')->tryLoadAny();
+       	$config->setConfig('DEFAULT_CURRENCY_ID',$default_currency->id,'accounts');
+       	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config->getConfig('DEFAULT_CURRENCY_ID'));
 	}
 
 }

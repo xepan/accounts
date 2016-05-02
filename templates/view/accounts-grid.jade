@@ -12,9 +12,8 @@
             {header}
             thead
                 {cols}{col}
-                th
-                    a(href='#')
-                        span Name
+                th(id="{$name_sortid}")
+                    span Name {$name_sort}
                 th.text-left
                     a.asc(href='#')
                         span Group
