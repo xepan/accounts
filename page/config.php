@@ -4,6 +4,7 @@ class page_config extends \Page{
 	public $title="Accounts Configuration";
 	function init(){
 		parent::init();
+
 		$config=$this->app->epan->config;
 		$default_currency=$config->getConfig('DEFAULT_CURRENCY_ID','accounts');
 		$form=$this->add('Form',null,'currency');

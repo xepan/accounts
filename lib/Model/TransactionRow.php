@@ -10,7 +10,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\accounts\Transaction','transaction_id');
 		$this->hasOne('xepan\accounts\Ledger','ledger_id');
-		$this->hasOne('xepan\accounts\Currency');
+		$this->hasOne('xepan\accounts\Currency','currency_id');
 
 		$this->addField('_amountDr')->caption('Debit')->type('money');
 		$this->addField('_amountCr')->caption('Credit')->type('money');

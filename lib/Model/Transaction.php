@@ -23,7 +23,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\base\Epan','epan_id');
 		$this->hasOne('xepan\accounts\TransactionType','transaction_type_id');
-		$this->hasOne('xepan\accounts\Currency');
+		$this->hasOne('xepan\accounts\Currency','currency_id');
 
 		$this->addField('related_id'); // used for sale invoice/purchase invoice
 		$this->addField('related_type'); // Sale or Purchase

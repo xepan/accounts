@@ -25,6 +25,7 @@ class Initiator extends \Controller_Addon {
 			$m->addItem(['Balance Sheet','icon'=>'fa fa-balance-scale'],'xepan_accounts_balancesheet');
 			$m->addItem(['Profit & Loss','icon'=>'fa  fa-database'],'xepan_accounts_pandl');
 			$m->addItem(['Debit/Credit Note','icon'=>'fa fa-sticky-note-o'],'xepan_accounts_debitcreditnote');
+			$m->addItem(['Currency Management','icon'=>'fa fa-money'],'xepan_accounts_currency');
 			$m->addItem(['Configuration','icon'=>'fa fa-cog fa-spin'],'xepan_accounts_config');
 
 			

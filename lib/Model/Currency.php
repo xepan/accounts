@@ -1,7 +1,6 @@
 <?php
 namespace xepan\accounts;
-class Model_Currency extends \xepan\base\Model_Table{
-	public $table="currency";
+class Model_Currency extends \xepan\base\Model_Document{
 	public $status=['Active','InActive'];
 	
 	public $actions = [
@@ -11,14 +10,18 @@ class Model_Currency extends \xepan\base\Model_Table{
 		
 	function init(){
 		parent::init();
-		$this->addField('icon');
-		$this->addField('name');
-		$this->addField('value');
-		$this->hasMany('xepan\commerce\Customer','currency_id','Customers');
-	
-		$this->addField('status')->enum($this->status)->defaultValue('Active');
-		// $this->addCondition('type','Currency');
-	
+		
+		$currency_j = $this->join('currency.document_id');
+		
+		$this->getElement('created_by_id')->defaultValue($this->app->employee->id);
+		$this->getElement('status')->defaultValue('Active');
+
+		$currency_j->addField('icon');
+		$currency_j->addField('name');
+		$currency_j->addField('value');
+		
+		$this->addCondition('type','Currency');
+		// $this->hasMany('xepan\commerce\Customer','currency_id','Customers');
 	}
 
 	function activate(){
