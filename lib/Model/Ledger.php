@@ -12,7 +12,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\accounts\Group','group_id')->mandatory(true);
 		$this->hasOne('xepan\base\Epan','epan_id');
 		
-		$this->addField('name');
+		$this->addField('name')->sortable(true);
 		$this->addField('related_id'); // user for related like tax/vat
 		$this->addField('ledger_type'); //
 

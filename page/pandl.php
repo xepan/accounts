@@ -74,6 +74,6 @@ class page_pandl extends \Page{
 	}
 
 	function defaultTemplate(){
-		return ['page/balancesheet'];
+		return ['page/pandl'];
 	}
 }
