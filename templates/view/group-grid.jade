@@ -12,21 +12,21 @@
             {header}
             thead
                 {cols}{col}
-                th
-                    a(href='#')
-                        span Balance Sheet
-                th.text-right
-                    a.asc(href='#')
-                        span Group
-                th.text-right
-                    a.asc(href='#')
-                        span Parent Group
-                th.text-right
-                    a.asc(href='#')
-                        span Root Group
-                th.text-right
-                    a.asc(href='#')
-                        span Created Date
+                th(id="{$balance_sheet_sortid}")
+                    span Balance Sheet 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$balance_sheet_sort}
+                th(id="{$name_sortid}")
+                    span Group
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$name_sort}
+                th(id="{$parent_group_sortid}")
+                    span Parent Group
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$parent_group_sort}
+                th(id="{$root_group_sortid}")
+                    span Root Group
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$root_group_sort}
+                th(id="{$created_at_sortid}")
+                    span Created Date
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$created_at_sort}
                 th 
                 {/}{/}
             {/}
@@ -38,13 +38,13 @@
                     {cols}
                     td
                       | {$balance_sheet}
-                    td.text-right
+                    td
                       | {$name}
-                    td.text-right
+                    td
                       | {$parent_group}
-                    td.text-right
+                    td
                       | {$root_group}
-                    td.text-right
+                    td
                       | {$created_at}
                     //- td
                     //-     | {$action}

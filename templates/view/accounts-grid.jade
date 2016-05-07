@@ -13,13 +13,12 @@
             thead
                 {cols}{col}
                 th(id="{$name_sortid}")
-                    span Name {$name_sort}
-                th.text-left
-                    a.asc(href='#')
-                        span Group
-                th.text-center
-                    a.asc(href='#')
-                        span Balance
+                    span Name 
+                    span(style= "cursor:pointer; cursor: hand; max-width:600px;"){$name_sort}
+                th
+                    span Group
+                th
+                    span Balance
                 th 
                 {/}{/}
             {/}
@@ -33,7 +32,7 @@
                         {avatar} {/}
                         a.user-link(href='{url}?page=xepan_accounts_accountdetail&ledger_id={$id}{/}') 
                             {$name} 
-                    td.text-left
+                    td
                       | {$group}, {$parent_group}, {$root_group}
                     td(style="width: 15%;")
                         {$balance}

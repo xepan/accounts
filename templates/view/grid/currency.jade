@@ -13,10 +13,12 @@
             thead
                 tr
                     {cols}
-                    th
-                      span Name
-                    th
+                    th(id="{$name_sortid}")
+                      span Name 
+                      span(style= "cursor:pointer; cursor: hand; max-width:600px;") {$name_sort}
+                    th(id="{$value_sortid}")
                       span Value
+                      span(style= "cursor:pointer; cursor: hand; max-width:600px;") {$value_sort}
                     th
                       span Icon
                     th

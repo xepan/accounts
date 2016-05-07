@@ -9,9 +9,9 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th id="{$name_sortid}"><span>Name {$name_sort}</span></th>
-        <th class="text-left"><a href="#" class="asc"><span>Group</span></a></th>
-        <th class="text-center"><a href="#" class="asc"><span>Balance</span></a></th>
+        <th id="{$name_sortid}"><span>Name </span><span style="cursor:pointer; cursor: hand; max-width:600px;">{$name_sort}</span></th>
+        <th><span>Group</span></th>
+        <th><span>Balance</span></th>
         <th> </th>{/}{/}
       </thead>{/}
       {$subheader}
@@ -20,7 +20,7 @@
           <td>{avatar} {/}<a href="{url}?page=xepan_accounts_accountdetail&amp;ledger_id={$id}{/}" class="user-link">
                
               {$name} </a></td>
-          <td class="text-left">{$group}, {$parent_group}, {$root_group}</td>
+          <td>{$group}, {$parent_group}, {$root_group}</td>
           <td style="width: 15%;">{$balance}</td>
           <td style="width: 15%;">
             {$edit}

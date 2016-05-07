@@ -17,8 +17,8 @@ class Model_Currency extends \xepan\base\Model_Document{
 		$this->getElement('status')->defaultValue('Active');
 
 		$currency_j->addField('icon');
-		$currency_j->addField('name');
-		$currency_j->addField('value');
+		$currency_j->addField('name')->sortable(true);
+		$currency_j->addField('value')->sortable(true);
 		
 		$this->addCondition('type','Currency');
 		// $this->hasMany('xepan\commerce\Customer','currency_id','Customers');

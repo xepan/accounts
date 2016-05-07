@@ -6,8 +6,10 @@ class page_currency extends \Page{
 		parent::init();
 
 	$currency = $this->add('xepan\accounts\Model_Currency');
+	if($status = $this->app->stickyGET('status'))
+			$currency->addCondition('status',$status);
+	$currency->add('xepan\hr\Controller_SideBarStatusFilter');
 	$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/currency']);
 	$crud->setModel($currency,['name','value','icon']);
-	
 	}
 }

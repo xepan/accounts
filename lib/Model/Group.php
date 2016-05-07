@@ -9,13 +9,13 @@ class Model_Group extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\base\Epan','epan_id');
 
-		$this->hasOne('xepan\accounts\BalanceSheet','balance_sheet_id');
+		$this->hasOne('xepan\accounts\BalanceSheet','balance_sheet_id')->sortable(true);
 
-		$this->hasOne('xepan\accounts\ParentGroup','parent_group_id');
-		$this->hasOne('xepan\accounts\RootGroup','root_group_id');
+		$this->hasOne('xepan\accounts\ParentGroup','parent_group_id')->sortable(true);
+		$this->hasOne('xepan\accounts\RootGroup','root_group_id')->sortable(true);
 
-		$this->addField('name')->caption('Group Name')->mandatory(true);
-		$this->addField('created_at')->type('date')->defaultValue(date('Y-m-d'));
+		$this->addField('name')->caption('Group Name')->mandatory(true)->sortable(true);
+		$this->addField('created_at')->type('date')->defaultValue(date('Y-m-d'))->sortable(true);
 
 
 		$this->hasMany('xepan\accounts\Ledger','group_id');
