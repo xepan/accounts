@@ -11,7 +11,14 @@ class Initiator extends \Controller_Addon {
 		$this->routePages('xepan_accounts');
 		$this->addLocation(array('template'=>'templates'));
 
-		if($this->app->is_admin){
+		$this->app->epan->default_currency = $this->recall(
+										$this->app->epan->id.'_defaultCurrency',
+										$this->memorize(
+											$this->app->epan->id.'_defaultCurrency',
+											$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'))
+											)
+										);
+		if(!$this->app->isAjaxOutput()){
 			$m = $this->app->top_menu->addMenu('Account');
 
 			$m->addItem(['Account','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
@@ -27,12 +34,9 @@ class Initiator extends \Controller_Addon {
 			$m->addItem(['Debit/Credit Note','icon'=>'fa fa-sticky-note-o'],'xepan_accounts_debitcreditnote');
 			$m->addItem(['Currency Management','icon'=>'fa fa-money'],$this->app->url('xepan_accounts_currency',['status'=>'Active']));
 			$m->addItem(['Configuration','icon'=>'fa fa-cog fa-spin'],'xepan_accounts_config');
-
 			
-
-			$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
-			$this->addAccountTemplates();
 		}
+
 		$this->addAppDateFunctions();
 
 		$ledger = $this->add('xepan\accounts\Model_Ledger');
@@ -40,7 +44,6 @@ class Initiator extends \Controller_Addon {
 		$this->app->addHook('customer_update',[$ledger,'createCustomerLedger']);
 		$this->app->addHook('supplier_update',[$ledger,'createSupplierLedger']);
 		$this->app->addHook('outsource_party_update',[$ledger,'createOutsourcePartyLedger']);
-		$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'));
 		
 		return $this;
 
@@ -48,23 +51,6 @@ class Initiator extends \Controller_Addon {
 
 	function setup_frontend(){
 		return $this;
-	}
-
-	function addAccountTemplates(){
-		$data =[
-					'Customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>$this->add('xepan\accounts\Model_Group')->loadSundryDebtor()->get('id'),'ledger_type'=>'Customer'],
-					'Supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>$this->add('xepan\accounts\Model_Group')->loadSundryCreditor()->get('id'),'ledger_type'=>'Supplier'],
-					'outsourceparty' => ['name'=>'Outsource Party', 'description'=>'Entries related to OutsourceParty','group_id'=>$this->add('xepan\accounts\Model_Group')->loadSundryCreditor()->get('id'),'ledger_type'=>'OutsourceParty'],
-					'BankCharges' => ['name'=>'Bank Charges', 'description'=>'Any sort of bank chanrges','group_id'=>$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->get('id'),'ledger_type'=>'BankCharges'],
-					'DutiesAndTaxes' => ['name'=>'Duties And Taxes', 'description'=>'Entries related to DutiesAndTaxes','group_id'=>$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'),'ledger_type'=>'DutiesAndTaxes'],
-					// 'DirectExpenses' => ['name'=>'Direct Expenses', 'description'=>'Entries related to Expenses','group_id'=>$this->add('xepan\accounts\Model_Group')->loadDirectExpenses->get('id'),'ledger_type'=>'DirectExpenses'],
-					'IndirectIncome' => ['name'=>'Indirect Income', 'description'=>'Entries related to Income','group_id'=>$this->add('xepan\accounts\Model_Group')->loadIndirectIncome()->get('id'),'ledger_type'=>'IndirectIncome'],
-					'SuspenseLedger' => ['name'=>'Suspense', 'description'=>'Entries related to Income','group_id'=>$this->add('xepan\accounts\Model_Group')->loadSuspenseLedger()->get('id'),'ledger_type'=>'Suspense'],
-					'SecuredLoan' => ['name'=>'Loan', 'description'=>'Entries related to Income','group_id'=>$this->add('xepan\accounts\Model_Group')->loadSecuredLoan()->get('id'),'ledger_type'=>'Loan'],
-					'FixedAssets' => ['name'=>'Furniture', 'description'=>'Entries related to Income','group_id'=>$this->add('xepan\accounts\Model_Group')->loadFixedAssets()->get('id'),'ledger_type'=>'FixedAssets']
-					
-		];
-		$this->app->setConfig('account_template_data',$data);
 	}
 
 	function addAppdateFunctions(){
@@ -80,6 +66,72 @@ class Initiator extends \Controller_Addon {
 	        $this->now = date('Y-m-d H:i:s',strtotime($date));
 	        $this->today = date('Y-m-d',strtotime($date));
     	
+    	});
+
+		$this->app->addMethod('previousDate',function($app,$date=null){
+	        if(!$date) $date = $this->api->today;
+	        $date = date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " -1 DAY"));    
+	        return $date;
+	    });
+
+		$this->app->addMethod('monthFirstDate',function($app,$date=null){
+	        if(!$date) $date = $this->api->now;
+	        return date('Y-m-01',strtotime($date));
+	    });
+
+		$this->app->addMethod('monthLastDate',function($app,$date=null){
+	        if(!$date) $date = $this->api->now;
+	        return date('Y-m-t',strtotime($date));
+	    });
+
+		$this->app->addMethod('isMonthLastDate',function($app,$date=null){
+	        if(!$date) $date = $this->api->now;
+	        $date = date('Y-m-d',strtotime($date));
+	        return strtotime($date) == strtotime($this->monthLastDate());
+
+	    });
+
+		$this->app->addMethod('nextMonth',function($app,$date=null){
+	        if(!$date) $date=$this->api->today;
+	        return date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " +1 MONTH"));
+	    });
+
+		$this->app->addMethod('previousMonth',function($app,$date=null){
+	        if(!$date) $date=$this->api->today;
+	        return date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " -1 MONTH"));
+	    });
+
+		$this->app->addMethod('nextYear',function($app,$date=null){
+	        if(!$date) $date=$this->api->today;
+	        return date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " +1 YEAR"));
+	    });
+
+		$this->app->addMethod('previousYear',function($app,$date=null){
+	        if(!$date) $date=$this->api->today;
+	        return date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " -1 YEAR"));
+	    });
+
+		$this->app->addMethod('my_date_diff',function($app,$d1,$d2){
+	        $d1 = (is_string($d1) ? strtotime($d1) : $d1);
+	        $d2 = (is_string($d2) ? strtotime($d2) : $d2);
+
+	        $diff_secs = abs($d1 - $d2);
+	        $base_year = min(date("Y", $d1), date("Y", $d2));
+
+	        $diff = mktime(0, 0, $diff_secs, 1, 1, $base_year);
+	        return [
+			        "years" => date("Y", $diff) - $base_year,
+			        "months_total" => (date("Y", $diff) - $base_year) * 12 + date("n", $diff) - 1,
+			        "months" => date("n", $diff) - 1,
+			        "days_total" => floor($diff_secs / (3600 * 24)),
+			        "days" => date("j", $diff) - 1,
+			        "hours_total" => floor($diff_secs / 3600),
+			        "hours" => date("G", $diff),
+			        "minutes_total" => floor($diff_secs / 60),
+			        "minutes" => (int) date("i", $diff),
+			        "seconds_total" => $diff_secs,
+			        "seconds" => (int) date("s", $diff)
+	        	];
     	});
 
 	}
@@ -98,6 +150,11 @@ class Initiator extends \Controller_Addon {
             }
         }
 		$this->app->epan=$this->app->new_epan;
+
+		// Orphan currencies
+		$d = $this->app->db->dsql();
+        $d->sql_templates['delete'] = "delete [table] from  [table] [join] [where]";
+        $d->table('currency')->where('document.id is null')->join('document',null,'left')->delete();
 
        	$default_currency = $this->add('xepan\accounts\Model_Currency')
        			->set('name','Default Currency')
