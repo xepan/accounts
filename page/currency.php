@@ -10,6 +10,8 @@ class page_currency extends \Page{
 			$currency->addCondition('status',$status);
 	$currency->add('xepan\hr\Controller_SideBarStatusFilter');
 	$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/currency']);
+	$crud->grid->addQuickSearch(['name']);
+	$crud->grid->addPaginator(10);
 	$crud->setModel($currency,['name','value','icon']);
 	}
 }
