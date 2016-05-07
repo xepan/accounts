@@ -68,6 +68,49 @@ class Initiator extends \Controller_Addon {
     	
     	});
 
+		$this->app->addMethod('previousDate',function($app,$date=null){
+	        if(!$date) $date = $this->api->today;
+	        $date = date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " -1 DAY"));    
+	        return $date;
+	    });
+
+		$this->app->addMethod('monthFirstDate',function($app,$date=null){
+	        if(!$date) $date = $this->api->now;
+	        return date('Y-m-01',strtotime($date));
+	    });
+
+		$this->app->addMethod('monthLastDate',function($app,$date=null){
+	        if(!$date) $date = $this->api->now;
+	        return date('Y-m-t',strtotime($date));
+	    });
+
+		$this->app->addMethod('isMonthLastDate',function($app,$date=null){
+	        if(!$date) $date = $this->api->now;
+	        $date = date('Y-m-d',strtotime($date));
+	        return strtotime($date) == strtotime($this->monthLastDate());
+
+	    });
+
+		$this->app->addMethod('nextMonth',function($app,$date=null){
+	        if(!$date) $date=$this->api->today;
+	        return date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " +1 MONTH"));
+	    });
+
+		$this->app->addMethod('previousMonth',function($app,$date=null){
+	        if(!$date) $date=$this->api->today;
+	        return date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " -1 MONTH"));
+	    });
+
+		$this->app->addMethod('nextYear',function($app,$date=null){
+	        if(!$date) $date=$this->api->today;
+	        return date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " +1 YEAR"));
+	    });
+
+		$this->app->addMethod('previousYear',function($app,$date=null){
+	        if(!$date) $date=$this->api->today;
+	        return date("Y-m-d", strtotime(date("Y-m-d", strtotime($date)) . " -1 YEAR"));
+	    });
+
 	}
 
 	function resetDB(){
