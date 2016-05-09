@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_pandl extends \Page{
+class page_pandl extends \xepan\base\Page{
 	public $title="Account Profit & Loss";
 	function init(){
 		parent::init();

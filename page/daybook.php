@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_daybook extends \Page{
+class page_daybook extends \xepan\base\Page{
 	public $title="Account DayBook";
 	function init(){
 		parent::init();

@@ -26,11 +26,17 @@ class Model_Currency extends \xepan\base\Model_Document{
 
 	function activate(){
 		$this['status']='Active';
+		$this->app->employee
+            ->addActivity("Currency '".$this['name']."' is available for use", null/* Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->notifyWhoCan('activate','InActive',$this);
 		$this->saveAndUnload();
 	}
 
 	function deactivate(){
 		$this['status']='InActive';
+		$this->app->employee
+            ->addActivity("Currency '". $this['name'] ."' not available for use", null /*Related Document ID*/, $this->id /*Related Contact ID*/)
+            ->notifyWhoCan('deactivate','Active',$this);
 		$this->saveAndUnload();
 	}
 }

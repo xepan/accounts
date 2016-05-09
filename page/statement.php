@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_statement extends \Page {
+class page_statement extends \xepan\base\Page {
 	public $title="Account Statement";
 	public $acl=false;
 	function init(){

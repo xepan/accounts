@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_group extends \Page{
+class page_group extends \xepan\base\Page{
 	public $title="Account Group";
 	function init(){
 		parent::init();

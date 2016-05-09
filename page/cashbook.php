@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_cashbook extends \Page{
+class page_cashbook extends \xepan\base\Page{
 	public $title="Account CashBook";
 	function init(){
 		parent::init();
