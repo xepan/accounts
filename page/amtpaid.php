@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_amtpaid extends \Page {
+class page_amtpaid extends \xepan\base\Page {
 	public $title="Account Payment";
 	function init(){
 		parent::init();

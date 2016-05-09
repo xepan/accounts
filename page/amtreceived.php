@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_amtreceived extends \Page {
+class page_amtreceived extends \xepan\base\Page {
 	public $title="Account Receipt";
 	function init(){
 		parent::init();

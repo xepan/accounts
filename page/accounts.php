@@ -2,7 +2,7 @@
 
 namespace xepan\accounts;
 
-class page_accounts extends \Page
+class page_accounts extends \xepan\base\Page
 {
 	public $title = "Accounts/Ledgers";
 	

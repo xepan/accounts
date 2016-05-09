@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_currency extends \Page{
+class page_currency extends \xepan\base\Page{
 	public $title="Currency Management";
 	function init(){
 		parent::init();

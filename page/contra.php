@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_contra extends \Page {
+class page_contra extends \xepan\base\Page {
 	public $title="Account Cash & Bank" ;
 	function init(){
 		parent::init();
