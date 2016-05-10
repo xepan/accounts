@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_groupdetail extends \Page{
+class page_groupdetail extends \xepan\base\Page{
 	public $title="Group's Ledger";
 	function init(){
 		parent::init();

@@ -11,7 +11,7 @@ class page_config extends \xepan\base\Page{
 
 		$currency_field=$form->addField('Dropdown','currency_id')->set($default_currency);
 		$currency_field->setModel('xepan\accounts\Model_Currency');
-		$form->addSubmit('Update');
+		$form->addSubmit('Update')->addClass('btn btn-primary');
 		if($form->isSubmitted()){
 			$config->setConfig('DEFAULT_CURRENCY_ID',$form['currency_id'],'accounts');
 			$form->js(null,$form->js()->reload())->univ()->successMessage('Update Information')->execute();	

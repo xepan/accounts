@@ -7,7 +7,7 @@ class page_daybook extends \xepan\base\Page{
 
 		$form = $this->add('Form');
 		$form->addField('DatePicker','date')->validateNotNull();
-		$form->addSubmit('Open Day Book');
+		$form->addSubmit('Open Day Book')->addClass('btn btn-primary');
 
 		$daybook_crud = $this->add('xepan\hr\CRUD',['grid_class'=>'xepan\accounts\Grid_DayBook']);
 		// $grid = $this->add('xepan\accounts\Grid_AccountsBase');

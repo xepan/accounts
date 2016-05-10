@@ -8,7 +8,7 @@ class page_cashbook extends \xepan\base\Page{
 		$form = $this->add('Form');
 		$form->addField('DatePicker','from_date')->validateNotNull();
 		$form->addField('DatePicker','to_date')->validateNotNull();
-		$form->addSubmit('Open Cash Book');
+		$form->addSubmit('Open Cash Book')->addClass('btn btn-primary');
 
 		$grid = $this->add('xepan\accounts\Grid_AccountsBase');
 

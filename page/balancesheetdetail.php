@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class page_balancesheetdetail extends \Page{
+class page_balancesheetdetail extends \xepan\base\Page{
 	public $title="Balance Sheet's Groups ";
 	function init(){
 		parent::init();

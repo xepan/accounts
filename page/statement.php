@@ -13,7 +13,7 @@ class page_statement extends \xepan\base\Page {
 
 		$form->addField('DatePicker','from_date');
 		$form->addField('DatePicker','to_date');
-		$form->addSubmit('Get Statement');
+		$form->addSubmit('Get Statement')->addClass('btn btn-primary');
 
 		$grid = $this->add('xepan\accounts\Grid_AccountsBase',null,null,['view/accountstatement-grid']);
 
@@ -52,7 +52,7 @@ class page_statement extends \xepan\base\Page {
 			$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
 			$grid->addCurrentBalanceInEachRow();
 
-			$send_email_btn = $grid->addButton('Send E-mail');
+			$send_email_btn = $grid->addButton('Send E-mail')->addClass('btn btn-primary');
 
 	/*Send Account Statement In mail to Customer*/
 			$mail_vp = $this->add('VirtualPage');
@@ -69,7 +69,7 @@ class page_statement extends \xepan\base\Page {
 				$ledger_lister_view=$p->add('xepan\accounts\View_Lister_LedgerStatement',['ledger_id'=>$ledger_id,'from_date'=>$_GET['from_date']]);
 				$ledger_lister_view->setModel($transactions);
 								
-				$vp_form->addSubmit('send');
+				$vp_form->addSubmit('send')->addClass('btn btn-primary');
 				if($vp_form->isSubmitted()){
 					$ledger_model->sendEmail($vp_form['email_to'],$vp_form['subject'],$ledger_lister_view->getHtml(),$vp_form['message'],$ccs=[],$bccs=[]);
 					$vp_form->js(null,$vp_form->js()->univ()->closeDialog())->univ()->successMessage('Mail Send Successfully')->execute();

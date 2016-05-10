@@ -9,7 +9,7 @@ class page_pandl extends \xepan\base\Page{
 		$f=$this->add('Form');
 		$f->addField('DatePicker','from_date');
 		$f->addField('DatePicker','to_date');
-		$f->addSubmit('Go');
+		$f->addSubmit('Go')->addClass('btn btn-primary');
 
 
 		$pandl = $this->add('xepan\accounts\Model_TransactionRow');

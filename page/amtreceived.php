@@ -26,7 +26,7 @@ class page_amtreceived extends \xepan\base\Page {
 
 		$form->addField('Money','amount')->validate('required');
 		$form->addField('Text','narration');
-		$form->addSubmit('Receive Now');
+		$form->addSubmit('Receive Now')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
 			
@@ -86,7 +86,7 @@ class page_amtreceived extends \xepan\base\Page {
 		}
 
 		$form->addField('Text','narration');
-		$form->addSubmit('Receive Now');
+		$form->addSubmit('Receive Now')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
 			

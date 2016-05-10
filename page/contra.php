@@ -27,7 +27,7 @@ class page_contra extends \xepan\base\Page {
 		}
 		// $cash_to_bank_form->addField('Money','bank_charges')->setFieldHint('Any Charges due to cash submission or out city submission');
 		
-		$cash_to_bank_form->addSubmit('Execute');
+		$cash_to_bank_form->addSubmit('Execute')->addClass('btn btn-primary');
 
 		if($cash_to_bank_form->isSubmitted()){
 			try{
@@ -94,7 +94,7 @@ class page_contra extends \xepan\base\Page {
 			$bank_field_1_charge_amount = $bank_to_cash_form->addField('Money','bank_charge_amount_'.$i);
 		}
 		
-		$bank_to_cash_form->addSubmit('Execute');
+		$bank_to_cash_form->addSubmit('Execute')->addClass('btn btn-primary');
 
 		if($bank_to_cash_form->isSUbmitted()){
 			try{	

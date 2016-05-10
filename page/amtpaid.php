@@ -23,7 +23,7 @@ class page_amtpaid extends \xepan\base\Page {
 
 		$form->addField('Money','amount')->validate('required');
 		$form->addField('Text','narration');
-		$form->addSubmit('Pay Now');
+		$form->addSubmit('Pay Now')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
 			
@@ -85,7 +85,7 @@ class page_amtpaid extends \xepan\base\Page {
 		}
 
 		$form->addField('Text','narration');
-		$form->addSubmit('Pay Now');
+		$form->addSubmit('Pay Now')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
 		
