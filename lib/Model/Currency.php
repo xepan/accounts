@@ -21,6 +21,7 @@ class Model_Currency extends \xepan\base\Model_Document{
 		$currency_j->addField('value')->sortable(true);
 		
 		$this->addCondition('type','Currency');
+		$this->addHook('beforeSave',[$this,'updateSearchString']);
 	}
 
 	function activate(){
@@ -38,4 +39,13 @@ class Model_Currency extends \xepan\base\Model_Document{
             ->notifyWhoCan('deactivate','Active',$this);
 		$this->saveAndUnload();
 	}
+
+	function updateSearchString($m){		
+		$search_string = ' ';
+		$search_string .=" ". $this['name'];
+		$search_string .=" ". $this['value'];
+		$search_string .=" ". $this['type'];
+		$search_string .=" ". $this['status'];
+		$this['search_string'] = $search_string;
+	} 
 }

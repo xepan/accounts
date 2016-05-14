@@ -321,15 +321,14 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		}
 
 		$currency = $this->add('xepan\accounts\Model_Currency');
-		$currency->addExpression('Relevance')->set('MATCH(name, value) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
+		$currency->addExpression('Relevance')->set('MATCH(search_string) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
 		$currency->addCondition('Relevance','>',0);
  		$currency->setOrder('Relevance','Desc');
  		if($currency->count()->getOne()){
  			$cc = $view->add('Completelister',null,null,['view/quicksearch-accounts-grid']);
  			$cc->setModel($currency);
     		$cc->addHook('formatRow',function($g){
-    			// $g->current_row_html['type'] = "Account Group";	
-    			// $g->current_row_html['url'] = $this->app->url('xepan_accounts_group');	
+    			$g->current_row_html['url'] = $this->app->url('xepan_accounts_currency',['status'=>$g->model['status']]);	
      		});	
 		}
 	}
