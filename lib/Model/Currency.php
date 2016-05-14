@@ -21,7 +21,6 @@ class Model_Currency extends \xepan\base\Model_Document{
 		$currency_j->addField('value')->sortable(true);
 		
 		$this->addCondition('type','Currency');
-		// $this->hasMany('xepan\commerce\Customer','currency_id','Customers');
 	}
 
 	function activate(){

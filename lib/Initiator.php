@@ -47,6 +47,9 @@ class Initiator extends \Controller_Addon {
 			$this->app->addHook('supplier_update',[$ledger,'createSupplierLedger']);
 			$this->app->addHook('outsource_party_update',[$ledger,'createOutsourcePartyLedger']);
 		}
+
+		$search_ledger = $this->add('xepan\accounts\Model_Ledger');
+        $this->app->addHook('quick_searched',[$search_ledger,'quickSearch']);
 		
 		return $this;
 
