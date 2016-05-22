@@ -56,6 +56,13 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function setup_frontend(){
+		$this->app->epan->default_currency = $this->recall(
+											$this->app->epan->id.'_defaultCurrency',
+											$this->memorize(
+												$this->app->epan->id.'_defaultCurrency',
+												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'))
+												)
+											);
 		return $this;
 	}
 
