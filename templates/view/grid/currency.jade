@@ -7,8 +7,8 @@
                 span(class="form-control pull-left")|{$quick_search}
                     i(class="fa fa-search search-icon")
     {/Pannel}
-    .main-box-body.clearfix.table
-        table.table.user-list.table-hover(style="width:100%")
+    .main-box-body.clearfix.table-responsive
+        table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
             {header}
             thead.xepan-hover-hand
                 tr
@@ -19,7 +19,7 @@
                     th(id="{$value_sortid}")
                       span Value
                       span(style= "cursor:pointer; cursor: hand; max-width:600px;") {$value_sort}
-                    th
+                    th(data-hide="phone")
                       span Icon
                     th
                     {/}    

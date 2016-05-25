@@ -7,24 +7,24 @@
                 span(class="form-control pull-left")|{$quick_search}
                     i(class="fa fa-search search-icon")
     {/Pannel}
-    .main-box-body.clearfix.table
-        table.table.user-list.table-hover(style="width:100%")
+    .main-box-body.clearfix.table-responsive
+        table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
             {header}
             thead
                 {cols}{col}
-                th
+                th()
                     a(href='#')
                         span S.no
                 th.text-right
                     a.asc(href='#')
                         span Voucher No
-                th.text-right
+                th.text-right(data-hide="phone")
                     a.asc(href='#')
                         span Transaction Type
-                th.text-right
+                th.text-right(data-hide="phone")
                     a.asc(href='#')
                         span Created At
-                th.text-right
+                th.text-right()
                     a.asc(href='#')
                         span Narration
                 th.text-right
