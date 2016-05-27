@@ -9,7 +9,7 @@ class page_balancesheet extends \xepan\base\Page{
 		$f=$this->add('Form');
 		$f->addField('DatePicker','from_date');
 		$f->addField('DatePicker','to_date');
-		$f->addSubmit('Go')->addClass('btn btn-primary');
+		$f->addSubmit('Go')->addClass('btn btn-primary xepan-push');
 
 
 		$transactions = $this->add('xepan\accounts\Model_TransactionRow');
