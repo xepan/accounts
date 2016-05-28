@@ -4,22 +4,28 @@
     <div class="main-box-body clearfix">
       <div class="xepan-push"></div>
       <div class="row xepan-push">
-        <div class="col-md-3">Profit</div>
-        <div class="col-md-3">Amount</div>
-        <div class="col-md-3">Loss</div>
-        <div class="col-md-3">Amount</div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-3">Profit
+          <div class="xepan-push-small"></div>
           <div class="row">
-            <div class="col-md-6"><a href="{url}?page=xepan_accounts_balancesheetdetail&amp;account_balance_sheet_id={$id}{/}" class="user-link">{$assets_name}</a></div>
-            <div class="col-md-6">{$assets_amount}</div>
+            <div class="col-md-12"><a href="{url}?page=xepan_accounts_balancesheetdetail&amp;account_balance_sheet_id={$id}{/}" class="user-link">{$assets_name}</a></div>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-3">Amount
+          <div class="xepan-push-small"></div>
           <div class="row">
-            <div class="col-md-6"><a href="{url}?page=xepan_accounts_balancesheetdetail&amp;account_balance_sheet_id={$id}{/}" class="user-link">{$liabilities_name}</a></div>
-            <div class="col-md-6">{$liabilities_amount}</div>
+            <div class="col-md-12">{$assets_amount}</div>
+          </div>
+        </div>
+        <div class="col-md-3">Loss
+          <div class="xepan-push-small"></div>
+          <div class="row">
+            <div class="col-md-12"><a href="{url}?page=xepan_accounts_balancesheetdetail&amp;account_balance_sheet_id={$id}{/}" class="user-link">{$liabilities_name}</a></div>
+          </div>
+        </div>
+        <div class="col-md-3">Amount
+          <div class="xepan-push-small"></div>
+          <div class="row">
+            <div class="col-lg-12">{$liabilities_amount}</div>
           </div>
         </div>
       </div>

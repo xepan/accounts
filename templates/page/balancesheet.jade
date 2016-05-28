@@ -5,28 +5,32 @@ div(id="{$_name}")
 			.row.xepan-push
 				.col-md-3
 					| Assests
-				.col-md-3
-					| Amount
-				.col-md-3
-					| Liabilities
-				.col-md-3
-					| Amount
-			.row
-				.col-md-6
+					.xepan-push-small
 					.row
-						.col-md-6
+						.col-md-12
 							a.user-link(href='{url}?page=xepan_accounts_balancesheetdetail&account_balance_sheet_id={$id}{/}')
 								{$assets_name}
-						.col-md-6
-							{$assets_amount}
-				.col-md-6
+
+				.col-md-3
+					| Amount
+					.xepan-push-small
 					.row
-						.col-md-6
+						.col-lg-12
+							{$assets_amount}
+					
+				.col-md-3
+					| Liabilities
+					.xepan-push-small
+					.row
+						.col-md-12
 							a.user-link(href='{url}?page=xepan_accounts_balancesheetdetail&account_balance_sheet_id={$id}{/}')
 								{$liabilities_name}
-						.col-md-6
+				.col-md-3
+					| Amount
+					.xepan-push-small
+					.row
+						.col-lg-12
 							{$liabilities_amount}
-
 		.main-box
 			.main-box-body.clearfix
 				{$Content}

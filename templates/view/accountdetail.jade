@@ -7,31 +7,38 @@
 				{account_info}
 				.row.xepan-push
 					.col-md-3
+						label
 						strong Name:
-						.row
+						div
 							cite {$name}
 					.col-md-1
 					.col-md-3
+						label
 						strong Display Name:
-						.row
+						div
 							cite {$LedgerDisplayName}
 					.col-md-1
 					.col-md-3
+						label
 						strong Group:
-						.row
+						div
 							cite {$group}{$group_id}
-				.row
+				.row.xepan-push
 					.col-md-3
+						label
 						strong OpeningBalanceDr:
-						.row
+						div
 							cite {$OpeningBalanceDr}
 					.col-md-1
 					.col-md-3
+						label
 						strong OpeningBalanceCr:
-						.row.xepan-push
+						div
 							cite {$OpeningBalanceCr}
+					.col-md-1
 					.col-md-3
+						label
 						strong Ledger Type:
-						.row.xepan-push
+						div
 							cite {$ledger_type}
 				{/}		
