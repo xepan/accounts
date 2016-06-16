@@ -15,7 +15,7 @@ class page_statement extends \xepan\base\Page {
 		$form->addField('DatePicker','to_date');
 		$form->addSubmit('Get Statement')->addClass('btn btn-primary');
 
-		$grid = $this->add('xepan\accounts\Grid_AccountsBase',null,null,['view/accountstatement-grid']);
+		$grid = $this->add('xepan\accounts\Grid_AccountsBase',['no_records_message'=>'No account statement found'],null,['view/accountstatement-grid']);
 
 		$transactions = $this->add('xepan\accounts\Model_TransactionRow');
 
