@@ -23,5 +23,9 @@ class page_accounts extends \xepan\base\Page
 		$frm=$crud->grid->addQuickSearch(['name']);
 		$crud->add('xepan\base\Controller_Avatar');
 
+		if(!$crud->isEditing()){
+			$crud->grid->js('click')->_selector('.do-view-frame')->univ()->frameURL('Lead Details',[$this->api->url('xepan_accounts_accountdetail'),'ledger_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
+		}
+
 	}
 }
