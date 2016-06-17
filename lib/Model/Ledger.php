@@ -294,42 +294,53 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return array('CR'=>$cr,'DR'=>$dr,'cr'=>$cr,'dr'=>$dr,'Cr'=>$cr,'Dr'=>$dr);
 	}
 
-	function quickSearch($app,$search_string,$view){
+	function quickSearch($app,$search_string,&$result_array){
+
 		$this->addExpression('Relevance')->set('MATCH(name, ledger_type, LedgerDisplayName) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
 		$this->addCondition('Relevance','>',0);
  		$this->setOrder('Relevance','Desc');
+ 			
  		if($this->count()->getOne()){
- 			$lc = $view->add('Completelister',null,null,['view/quicksearch-accounts-grid']);
- 			$lc->setModel($this);
-    		$lc->addHook('formatRow',function($g){
-    			$g->current_row_html['type'] = "Ledger";	
-    			$g->current_row_html['url'] = $this->app->url('xepan_accounts_accounts');	
-     		});	
+ 			foreach ($this->getRows() as $data) {	 				 				
+ 				$result_array[] = [
+ 					'image'=>null,
+ 					'title'=>$data['name'],
+ 					'relevency'=>$data['Relevance'],
+ 					'url'=>$this->app->url('xepan_accounts_accounts',['status'=>$data['status']])->getURL(),
+ 				];
+ 			}
 		}
 
 		$groups = $this->add('xepan\accounts\Model_Group');
 		$groups->addExpression('Relevance')->set('MATCH(name) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
 		$groups->addCondition('Relevance','>',0);
  		$groups->setOrder('Relevance','Desc');
+ 		
  		if($groups->count()->getOne()){
- 			$gc = $view->add('Completelister',null,null,['view/quicksearch-accounts-grid']);
- 			$gc->setModel($groups);
-    		$gc->addHook('formatRow',function($g){
-    			$g->current_row_html['type'] = "Account Group";	
-    			$g->current_row_html['url'] = $this->app->url('xepan_accounts_group');	
-     		});	
+ 			foreach ($groups->getRows() as $data) {	 				
+ 				$result_array[] = [
+ 					'image'=>null,
+ 					'title'=>$data['name'],
+ 					'relevency'=>$data['Relevance'],
+ 					'url'=>$this->app->url('xepan_accounts_group')->getURL(),
+ 				];
+ 			}
 		}
 
 		$currency = $this->add('xepan\accounts\Model_Currency');
 		$currency->addExpression('Relevance')->set('MATCH(search_string) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
 		$currency->addCondition('Relevance','>',0);
  		$currency->setOrder('Relevance','Desc');
+ 		
  		if($currency->count()->getOne()){
- 			$cc = $view->add('Completelister',null,null,['view/quicksearch-accounts-grid']);
- 			$cc->setModel($currency);
-    		$cc->addHook('formatRow',function($g){
-    			$g->current_row_html['url'] = $this->app->url('xepan_accounts_currency',['status'=>$g->model['status']]);	
-     		});	
+ 			foreach ($currency->getRows() as $data) {	 				
+ 				$result_array[] = [
+ 					'image'=>null,
+ 					'title'=>$data['name'],
+ 					'relevency'=>$data['Relevance'],
+ 					'url'=>$this->app->url('xepan_accounts_currency')->getURL(),
+ 				];
+ 			}
 		}
 	}
 
