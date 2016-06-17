@@ -307,6 +307,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
  					'title'=>$data['name'],
  					'relevency'=>$data['Relevance'],
  					'url'=>$this->app->url('xepan_accounts_accounts',['status'=>$data['status']])->getURL(),
+ 					'type_status'=>$data['type'].' '.'['.$data['status'].']',
  				];
  			}
 		}
@@ -339,6 +340,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
  					'title'=>$data['name'],
  					'relevency'=>$data['Relevance'],
  					'url'=>$this->app->url('xepan_accounts_currency')->getURL(),
+ 					'type_status'=>$data['type'].' '.'['.$data['status'].']',
  				];
  			}
 		}
