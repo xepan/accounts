@@ -294,9 +294,9 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return array('CR'=>$cr,'DR'=>$dr,'cr'=>$cr,'dr'=>$dr,'Cr'=>$cr,'Dr'=>$dr);
 	}
 
-	function quickSearch($app,$search_string,&$result_array){
+	function quickSearch($app,$search_string,&$result_array,$relevency_mode){
 
-		$this->addExpression('Relevance')->set('MATCH(name, ledger_type, LedgerDisplayName) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
+		$this->addExpression('Relevance')->set('MATCH(name, ledger_type, LedgerDisplayName) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
 		$this->addCondition('Relevance','>',0);
  		$this->setOrder('Relevance','Desc');
  			
@@ -313,7 +313,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		}
 
 		$groups = $this->add('xepan\accounts\Model_Group');
-		$groups->addExpression('Relevance')->set('MATCH(name) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
+		$groups->addExpression('Relevance')->set('MATCH(name) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
 		$groups->addCondition('Relevance','>',0);
  		$groups->setOrder('Relevance','Desc');
  		
@@ -329,7 +329,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		}
 
 		$currency = $this->add('xepan\accounts\Model_Currency');
-		$currency->addExpression('Relevance')->set('MATCH(search_string) AGAINST ("'.$search_string.'" IN NATURAL LANGUAGE MODE)');
+		$currency->addExpression('Relevance')->set('MATCH(search_string) AGAINST ("'.$search_string.'" '.$relevency_mode.')');
 		$currency->addCondition('Relevance','>',0);
  		$currency->setOrder('Relevance','Desc');
  		
