@@ -43,7 +43,6 @@ class Model_Currency extends \xepan\base\Model_Document{
 	function updateSearchString($m){		
 		$search_string = ' ';
 		$search_string .=" ". $this['name'];
-		$search_string .=" ". $this['value'];
 		$search_string .=" ". $this['type'];
 		$search_string .=" ". $this['status'];
 		$this['search_string'] = $search_string;
