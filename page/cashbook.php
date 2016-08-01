@@ -11,7 +11,7 @@ class page_cashbook extends \xepan\base\Page{
 		$form->addField('DatePicker','to_date')->validateNotNull();
 		$form->addSubmit('Open Cash Book')->addClass('btn btn-primary');
 
-		$grid = $this->add('xepan\accounts\Grid_AccountsBase');
+		$grid = $this->add('xepan\accounts\Grid_AccountsBase',['no_records_message'=>'No cash book statement found'],null,['view/cashbookstatement-grid']);
 
 		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
 		$group=$this->add('xepan\accounts\Model_Group')->loadRootCashGroup();
@@ -52,7 +52,7 @@ class page_cashbook extends \xepan\base\Page{
 		$grid->addCurrentBalanceInEachRow();
 
 		$grid->setModel($transaction_row,['voucher_no','transaction_type','created_at','Narration','account','amountDr','amountCr','root_group_name']);
-		// $grid->addSno();
+		$grid->addSno();
 		$grid->removeColumn('account');
 
 		$grid->addMethod('format_transaction_type',function($g,$f){
