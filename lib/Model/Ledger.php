@@ -275,13 +275,14 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		});
 
 		// $transaction_row->_dsql()->del('fields')->field('SUM(amountDr) sdr')->field('SUM(amountCr) scr');
-		$result = $transaction_row->_dsql()->getHash();
+		$result = $transaction_row->getRows();
+		$result=$result[0];
+		// if($this['OpeningBalanceCr'] ==null){
+		// 	$temp_account = $this->add('xepan\accounts\Model_Ledger')->load($this->id);
+		// 	$this['OpeningBalanceCr'] = $temp_account['OpeningBalanceCr'];
+		// 	$this['OpeningBalanceDr'] = $temp_account['OpeningBalanceDr'];
+		// }
 
-		if($this['OpeningBalanceCr'] ==null){
-			$temp_account = $this->add('xepan\accounts\Model_Ledger')->load($this->id);
-			$this['OpeningBalanceCr'] = $temp_account['OpeningBalanceCr'];
-			$this['OpeningBalanceDr'] = $temp_account['OpeningBalanceDr'];
-		}
 
 		$cr = $result['scr'];
 		if(!$forPandL) $cr = $cr + $this['OpeningBalanceCr'];
