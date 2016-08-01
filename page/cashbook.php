@@ -6,6 +6,7 @@ class page_cashbook extends \xepan\base\Page{
 		parent::init();
 
 		$form = $this->add('Form');
+		$form->setLayout('view/form/casbookstatement-grid-info-form');
 		$form->addField('DatePicker','from_date')->validateNotNull();
 		$form->addField('DatePicker','to_date')->validateNotNull();
 		$form->addSubmit('Open Cash Book')->addClass('btn btn-primary');

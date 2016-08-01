@@ -9,7 +9,7 @@ class page_statement extends \xepan\base\Page {
 		 $ledger_id= $this->api->stickyGET('ledger_id')?:0;
 
 		$form=$this->add('Form',null,null);
-		$form->setLayout('view/form/statement-grid');
+		$form->setLayout('view/form/actstatement-grid-info-form');
 
 		if($ledger_id){
 			$ledger_m = $this->add('xepan\accounts\Model_Ledger')->load($ledger_id);
