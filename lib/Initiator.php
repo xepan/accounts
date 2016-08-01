@@ -23,7 +23,7 @@ class Initiator extends \Controller_Addon {
 			if(!$this->app->isAjaxOutput()){
 				$m = $this->app->top_menu->addMenu('Account');
 
-				$m->addItem(['Account','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
+				$m->addItem(['Accounts/Ledgers','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
 				$m->addItem(['Account Paid','icon'=>'fa fa-cc-visa'],'xepan_accounts_amtpaid');
 				$m->addItem(['Payment Received','icon'=>'fa fa-cc-paypal'],'xepan_accounts_amtreceived');
 				$m->addItem(['Cash <=> Bank','icon'=>'fa fa-exchange'],'xepan_accounts_contra');

@@ -13,9 +13,10 @@ class page_statement extends \xepan\base\Page {
 
 		if($ledger_id){
 			$ledger_m = $this->add('xepan\accounts\Model_Ledger')->load($ledger_id);
-			$account_field = $form->addField('Readonly','ledger')->set($ledger_m['name']);
+			$form->layout->add('View',null,'ledger')->set($ledger_m['name']);
+			// $account_field = $form->addField('Readonly','ledger')->set($ledger_m['name']);
 
-		}else{
+		}else{			
 			$account_field = $form->addField('autocomplete/Basic','ledger')->validateNotNull();
 			$account_field->setModel('xepan\accounts\Ledger');
 		}
