@@ -12,30 +12,22 @@
             {header}
             thead
                 {cols}{col}
-                th()
-                    a(href='#')
-                        span S.no
-                th.text-right
-                    a.asc(href='#')
-                        span Voucher No
-                th.text-right(data-hide="phone")
-                    a.asc(href='#')
+                th 
+                    span SNo
+                th
+                    span Voucher No
+                th(data-hide="phone")
                         span Transaction Type
-                th.text-right(data-hide="phone")
-                    a.asc(href='#')
-                        span Created At
-                th.text-right()
-                    a.asc(href='#')
-                        span Narration
-                th.text-right
-                    a.asc(href='#')
-                        span Debit
-                th.text-right
-                    a.asc(href='#')
-                        span credit
-                th.text-right
-                    a.asc(href='#')
-                        span Balance                                                
+                th(data-hide="phone")
+                    span Created At
+                th
+                    span Narration
+                th
+                    span Debit
+                th
+                    span credit
+                th
+                    span Balance                                                
                 th 
                 {/}{/}
             {/}
@@ -45,11 +37,11 @@
                 {rows}{row}
                 tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
-                    td
-                      {$sno}
+                    td 
+                        {$s_no}
                     td
                       {$voucher_no}
-                    td.text-right
+                    td
                       {$transaction_type}
                     td
                       {$created_at}

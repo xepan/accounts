@@ -6,10 +6,19 @@ class page_statement extends \xepan\base\Page {
 	function init(){
 		parent::init();
 
+		 $ledger_id= $this->api->stickyGET('ledger_id')?:0;
 
-		$form=$this->add('Form');
-		$account_field = $form->addField('autocomplete/Basic','ledger')->validateNotNull();
-		$account_field->setModel('xepan\accounts\Ledger');
+		$form=$this->add('Form',null,null);
+		$form->setLayout('view/form/statement-grid');
+
+		if($ledger_id){
+			$ledger_m = $this->add('xepan\accounts\Model_Ledger')->load($ledger_id);
+			$account_field = $form->addField('Readonly','ledger')->set($ledger_m['name']);
+
+		}else{
+			$account_field = $form->addField('autocomplete/Basic','ledger')->validateNotNull();
+			$account_field->setModel('xepan\accounts\Ledger');
+		}
 
 		$form->addField('DatePicker','from_date');
 		$form->addField('DatePicker','to_date');
@@ -19,7 +28,7 @@ class page_statement extends \xepan\base\Page {
 
 		$transactions = $this->add('xepan\accounts\Model_TransactionRow');
 
-		if($ledger_id = $this->api->stickyGET('ledger_id')){
+		if($ledger_id){
 			
 			$ledger_id = $this->api->stickyGET('ledger_id');
 			$this->api->stickyGET('from_date');
@@ -95,7 +104,7 @@ class page_statement extends \xepan\base\Page {
 			
 			$grid->js()->reload(
 					[
-						'ledger_id'=>$form['ledger'],
+						'ledger_id'=>$ledger_id?:$form['ledger'],
 						'from_date'=>($form['from_date'])?:0,
 						'to_date'=>($form['to_date'])?:0,
 						]
