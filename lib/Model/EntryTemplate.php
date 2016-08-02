@@ -63,7 +63,11 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				}
 
 				$field->setModel($ledger);
-
+				if($row['is_include_currency']){
+					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name');
+					$form_currency->setModel('xepan\accounts\Currency');
+					$exchange_rate = $form->addField('line','to_exchange_rate'.$row->id,'Currency Rate')->validateNotNull(true);
+				}
 				$form->addField('line','amount_'.$row->id,'Amount');
 			}
 		}
@@ -73,7 +77,12 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		if($form->isSubmitted()){
 			foreach ($transactions as $trans) {
 				$transaction = $this->add('xepan\accounts\Model_Transaction');
-				$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration']);
+				if($form_currency){
+					$currency = $this->add('xepan\accounts\Model_Currency')->load($form['bank_currency_'.$row->id]);
+					$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration'],$currency,$exchange_rate);
+				}else{
+					$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration']);
+				}
 				foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
 					if($row['side']=='Cr')
 						$transaction->addCreditLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id]);
