@@ -11,6 +11,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table {
 
 		$this->addField('name');
 		$this->addField('detail');
+		$this->addField('is_favourite_menu_lister');
 		$this->addField('is_merge_transaction')->type('boolean');
 		$this->hasMany('xepan\accounts\EntryTemplateTransaction','template_id');
 	}

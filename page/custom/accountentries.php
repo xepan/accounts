@@ -10,8 +10,7 @@ class page_custom_accountentries extends \xepan\base\Page {
 		$entry_template_m = $this->add('xepan\accounts\Model_EntryTemplate');
 
 		$crud = $this->add('CRUD');
-		$crud->setModel($entry_template_m,['name','detail'],['name','detail']);
-
+		$crud->setModel($entry_template_m);
 		if(!$crud->isEditing()){
 			$crud->grid->addColumn('expander','transactions');
 		}
