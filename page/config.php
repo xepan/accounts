@@ -1,5 +1,7 @@
 <?php
+
 namespace xepan\accounts;
+
 class page_config extends \xepan\base\Page{
 	public $title="Accounts Configuration";
 	function init(){
