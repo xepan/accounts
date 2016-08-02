@@ -109,7 +109,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 	}
 
 	function transaction(){
-		return $this->ref('transaction_id')->tryLoadAny();
+		return $this->ref('transaction_id');
 	}
 	
 }
