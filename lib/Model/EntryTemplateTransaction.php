@@ -13,5 +13,9 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 		$this->addField('name');
 		$this->addField('type');
 		$this->hasMany('xepan\accounts\EntryTemplateTransactionRow','template_transaction_id');
+		
+		$this->is([
+			'type|required'
+			]);
 	}
 }
