@@ -34,9 +34,10 @@ class page_daybook extends \xepan\base\Page{
 
 		$grid->addMethod('format_transaction_type',function($g,$f){
 			if($g->model->transaction()->customer()){
-				$g->current_row_html[$f]=$g->model['transaction_type']." :: ".$g->model->transaction()->customer()->get('organization');
-			}else
-				$g->current_row_html[$f]=$g->model['transaction_type'];
+				$g->current_row_html[$f] = $g->model['transaction_type']." :: ".$g->model->transaction()->customer()->get('organization');
+			}else{
+				$g->current_row_html[$f] = $g->model['transaction_type'];
+			}
 		});
 		$grid->addFormatter('transaction_type','transaction_type');
 
