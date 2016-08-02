@@ -6,6 +6,7 @@ namespace xepan\accounts;
 
 class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 	public $table = "custom_account_entries_templates_transactions";
+	public $acl=false;
 	function init(){
 		parent::init();
 

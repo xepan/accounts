@@ -7,13 +7,11 @@ namespace xepan\accounts;
 class page_custom_accountentries extends \xepan\base\Page {
 
 	function page_index(){
+		
 		$entry_template_m = $this->add('xepan\accounts\Model_EntryTemplate');
-
-		$crud = $this->add('CRUD');
+		$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-template']);
 		$crud->setModel($entry_template_m);
-		if(!$crud->isEditing()){
-			$crud->grid->addColumn('expander','transactions');
-		}
+		$crud->grid->addColumn('expander','transactions');
 	}
 
 	function page_transactions(){
@@ -22,12 +20,9 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 		$temp_tansaction=$entry_template_m->ref('xepan\accounts\EntryTemplateTransaction');
 
-		$crud=$this->add('CRUD');
+		$crud=$this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-lister']);
 		$crud->setModel($temp_tansaction);
-
-		if(!$crud->isEditing()){
-			$crud->grid->addColumn('expander','rows');
-		}	
+		$crud->grid->addColumn('expander','rows');
 
 	}
 
@@ -38,7 +33,7 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 		$rows = $transaction->ref('xepan\accounts\EntryTemplateTransactionRow');
 
-		$crud = $this->add('CRUD');
+		$crud=$this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-rows-lister']);
 
 		$crud->setModel($rows);
 		if($crud->isEditing()){
@@ -53,5 +48,6 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 		}
 	}
+
 
 }

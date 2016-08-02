@@ -1,10 +1,10 @@
 <?php
 
-
 namespace xepan\accounts;
 
-class Model_EntryTemplate extends \xepan\base\Model_Table {
+class Model_EntryTemplate extends \xepan\base\Model_Table{
 	public $table= "custom_account_entries_templates";
+	public $acl=false;
 
 	function init(){
 		parent::init();

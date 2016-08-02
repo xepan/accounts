@@ -1,0 +1,72 @@
+.xepan-grid.main-box.clearfix.atk-table.atk-table-zebra.atk-table-bordered(id="{$_name}" class="{$class}")
+    {Pannel}
+    header.main-box-header.clearfix.atk-actions(class=" {$class} ")
+        div.filter-block( style="100%")
+            .pull-right {$grid_buttons} 
+            .form-group.pull-right.xepan-filter-form
+                span(class="form-control pull-left")|{$quick_search}
+                    i(class="fa fa-search search-icon")
+    {/Pannel}
+    .main-box-body.clearfix.table-responsive
+        table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
+            {header}
+            thead.xepan-hover-hand
+                tr(style="font-size: 0.65em;")
+                    {cols}
+                    th Side
+                    th Group
+                    th Balance Sheet
+                    th Parent Group
+                    th Ledger
+                    th Ledger Type
+                    th Ledger Changable
+                    th Allow Add Ledger
+                    th Include Curreny
+                    th
+                    {/}    
+            {/}
+            {$subheader}
+
+            tbody
+                {rows}{row}
+                tr(class="{$odd_even}" data-id="{$id}" style="font-size: 0.65em;")
+                    {cols}
+                    td
+                        {side}{/}
+                    td
+                        {group}{/}
+                    td
+                        {$balance_sheet}
+                    td
+                        {$parent_group}
+                    td
+                        {$ledger}
+                    td 
+                        {$ledger_type}
+                    td
+                        {$is_ledger_changable}
+                    td
+                        {$is_allow_add_ledger}
+                    td
+                        {$is_include_currency}
+                    td(style="width: 15%;")
+                        {$edit}
+                        {$delete}
+                        {/}
+                {/}{/}
+                {not_found}
+                div.row
+                    .col-md-12.text-center.alert.alert-warning(role="alert")
+                        span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
+                {/}
+
+            {totals}
+            tfoot
+                tr(class="totals")
+                    {cols}{col}
+                    <td {$tdparam}>
+                    {$content}
+                    </td>
+                    {/}{/}
+            {/}
+        {$Paginator}
