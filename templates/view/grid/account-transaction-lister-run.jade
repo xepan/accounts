@@ -11,33 +11,32 @@
         table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
             {header}
             thead.xepan-hover-hand
-                tr(style="font-size: 0.75em;")
+                tr
                     {cols}
-                    th Template
                     th Name
-                    th Type
-                    th Rows
-                    th
+                    th Detail
+                    th.text-center Favourite Menu Lister
+                    th.text-center Merge Transaction
+                    th Execute
                     {/}    
             {/}
             {$subheader}
 
             tbody
                 {rows}{row}
-                tr(class="{$odd_even}" data-id="{$id}" style="font-size: 0.75em;")
+                tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
-                    td
-                        {$template}
                     td
                         {name}{/}
                     td
-                        {$type}
+                        {detail}{/}
                     td
-                        {$rows}
-                    td(style="width: 15%;")
-                        {$edit}
-                        {$delete}
-                        {/}
+                        {$is_favourite_menu_lister}
+                    td
+                        {$is_merge_transaction}
+                    td
+                        {$Run}
+                    {/}
                 {/}{/}
                 {not_found}
                 div.row

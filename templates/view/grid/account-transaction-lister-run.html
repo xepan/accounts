@@ -9,26 +9,22 @@
   <div class="main-box-body clearfix table-responsive">
     <table style="width:100%" class="table user-list table-hover footable toggle-circle-filled">{header}
       <thead class="xepan-hover-hand">
-        <tr style="font-size: 0.75em;">{cols}
-          <th>Template</th>
+        <tr>{cols}
           <th>Name</th>
-          <th>Type</th>
-          <th>Rows</th>
-          <th></th>{/}    
+          <th>Detail</th>
+          <th class="text-center">Favourite Menu Lister</th>
+          <th class="text-center">Merge Transaction</th>
+          <th>Execute</th>{/}    
         </tr>
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
-        <tr data-id="{$id}" style="font-size: 0.75em;" class="{$odd_even}">{cols}
-          <td>{$template}</td>
+        <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td>{name}{/}</td>
-          <td>{$type}</td>
-          <td>{$rows}</td>
-          <td style="width: 15%;">
-            {$edit}
-            {$delete}
-            {/}
-          </td>
+          <td>{detail}{/}</td>
+          <td>{$is_favourite_menu_lister}</td>
+          <td>{$is_merge_transaction}</td>
+          <td>{$Run}</td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">
