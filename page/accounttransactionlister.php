@@ -7,7 +7,7 @@ class page_accounttransactionlister extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
-		$grid = $this->add('Grid');
+		$grid = $this->add('xepan\hr\Grid',null,null,['view/grid/account-transaction-lister-run']);
 		$transaction_m = $this->add('xepan\accounts\Model_EntryTemplate');
 		$grid->setModel($transaction_m);
 		$run_executer = $grid->addColumn('button','Run');
