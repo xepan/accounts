@@ -44,8 +44,30 @@ class page_custom_accountentries extends \xepan\base\Page {
 			$grp_fld = $form->getElement('group');
 			$grp_fld->select_menu_options=['tags'=>true];
 
-			$led_fld=$form->getElement('ledger');
-			$led_fld->select_menu_options=['tags'=>true];
+			$group_m=$this->add('xepan\accounts\Model_Group');
+			foreach ($group_m as $g) {
+				$x[$g['name']]=[];
+			}
+			$x['*']=['parent_group','balance_sheet'];
+
+			$grp_fld->js(true)->univ()->bindConditionalShow(
+				$x,
+			'div.atk-form-row');
+
+			$ledger_fld = $form->getElement('ledger');
+			$ledger_fld->select_menu_options=['tags'=>true];
+			
+			$ledger_m=$this->add('xepan\accounts\Model_Ledger');
+			foreach ($ledger_m as $ledg) {
+				$y[$ledg['name']]=[];
+			}
+			$y['*']=['ledger_type'];
+
+			$ledger_fld->js(true)->univ()->bindConditionalShow(
+				$y,
+			'div.atk-form-row');
+
+
 			$balancesheet_field=$form->getElement('balance_sheet');
 
 
