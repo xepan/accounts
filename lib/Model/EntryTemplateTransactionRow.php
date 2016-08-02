@@ -12,6 +12,7 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 		parent::init();
 
 		$this->hasOne('xepan\accounts\EntryTemplateTransaction','template_transaction_id');
+		$this->addField('title');
 		$this->addField('side')->enum(['Dr','Cr']);
 		
 		$group_field = $this->addField('group')->display(['form'=>'xepan\base\NoValidateDropDown']);

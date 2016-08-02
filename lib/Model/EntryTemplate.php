@@ -20,23 +20,19 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$transactions = $this->ref('xepan\accounts\EntryTemplateTransaction');
 
 		$form = $page->add('Form');
-
 		$form->addField('DatePicker','date');
-		
-		$cols= $form->add('Columns');
 		
 		foreach ($transactions as $trans) {
 			foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
-				
-				$form->add('View')->set($row['side']);
 
 				if($row['is_allow_add_ledger'])
 					$field_type= 'xepan\base\Plus';
 				else
 					$field_type= 'autocomplete\Basic';
+			
 
-				$field = $form->addField($field_type,'ledger_'.$row->id, 'ledger');
-				$field->fields= ['name'];
+				$field = $form->addField($field_type,'ledger_'.$row->id, $row['title']);
+				$field->show_fields= ['name'];
 
 				$row_ledger_present = $row['ledger']?true:false;
 				$row_ledger=null;
@@ -61,7 +57,9 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 				if(!$row['is_ledger_changable']){
 					$ledger->addCondition('name',$row['ledger']);
-					$field->set($row_ledger->id);
+
+					if($row_ledger_present)
+						$field->set($row_ledger->id);
 				}
 
 				$field->setModel($ledger);

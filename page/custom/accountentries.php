@@ -7,7 +7,6 @@ namespace xepan\accounts;
 class page_custom_accountentries extends \xepan\base\Page {
 
 	function page_index(){
-		
 		$entry_template_m = $this->add('xepan\accounts\Model_EntryTemplate');
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-template']);
 		$crud->setModel($entry_template_m);
@@ -35,6 +34,10 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 		$crud=$this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-rows-lister']);
 
+		if($crud->isEditing()){
+			$form=$crud->form;
+			$form->setLayout(['view/form/accountentriesrow']);
+		}	
 		$crud->setModel($rows);
 		if($crud->isEditing()){
 			$form=$crud->form;
