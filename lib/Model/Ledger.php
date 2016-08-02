@@ -84,9 +84,9 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$this->addHook('beforeDelete',$this);
 		
-		// $this->is([
-		// 		'name|required|unique_in_epan'
-		// 	]);
+		$this->is([
+				'name|required|unique_in_epan'
+			]);
 	}
 
 	function beforeDelete(){

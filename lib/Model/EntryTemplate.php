@@ -19,7 +19,9 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 	function manageForm($page){
 		$transactions = $this->ref('xepan\accounts\EntryTemplateTransaction');
 
-		$form = $page->add('Form');
+		$form = $page->add('xepan\accounts\Form_EntryRunner');
+		$form->setLayout(['view/form/accounttransactionexecuter']);
+
 		$form->addField('DatePicker','date');
 		
 		foreach ($transactions as $trans) {
@@ -29,9 +31,10 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 					$field_type= 'xepan\base\Plus';
 				else
 					$field_type= 'autocomplete\Basic';
-			
+				
+				$spot = $row['side']=='Dr'?'left':'right';			
 
-				$field = $form->addField($field_type,'ledger_'.$row->id, $row['title']);
+				$field = $form->addField($field_type,'ledger_'.$row->id, $row['title'],null,$spot);
 				$field->show_fields= ['name'];
 
 				$row_ledger_present = $row['ledger']?true:false;
