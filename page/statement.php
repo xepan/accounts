@@ -95,11 +95,26 @@ class page_statement extends \xepan\base\Page {
 		}
 
 		$transactions->setOrder('created_at');
-		$grid->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr']);
+		$transactions->addExpression('related')->set(function($m,$q){
+			$related_no = $m->add('xepan\accounts\Model_Transaction')
+									->addCondition('id',$m->getElement('transaction_id'));
+			return $q->expr("[0]",[$related_no->fieldQuery('related_id')]);
+		});
+
+		$transactions->addExpression('no')->set(function($m,$q){
+			$related_no = $m->add('xepan\commerce\Model_QSP_Master')
+									->addCondition('id',$m->getElement('related'));
+			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
+		});
+		$grid->setModel($transactions);
+			// ,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		// $grid->addPaginator(10);
 		$grid->addSno();
-		
-
+		$grid->addHook('formatRow',function($g){
+			if($g->model['no']){
+				$g->current_row['sales_no'] = " :: " .$g->model['no'];
+			}
+		});
 
 		if($form->isSubmitted()){
 			
