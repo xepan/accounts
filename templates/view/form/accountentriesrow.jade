@@ -1,0 +1,55 @@
+div(id="{$_name}" class="{$class}")
+	.atk-box-large.atk-swatch-ink.atk-push-reset.atk-shape-rounded-top
+		.main-box
+			.main-box-body.clearfix
+				form.form-group
+					.row.xepan-push
+						cite
+							strong Title
+						.col-md-12.col-lg-12
+							.atk-form-row.atk-form-field{$title}
+					.row.xepan-push
+						.col-md-4.col-lg-4
+							cite
+								strong Side
+							.atk-form-row.atk-form-field{$side}
+						.col-md-4.col-lg-4
+							cite 
+								strong  Group
+							.atk-form-row.atk-form-field{$group}
+						.col-md-4.col-lg-4
+							cite 
+								strong  Balance Sheet
+							.atk-form-row.atk-form-field{$balance_sheet}
+					.row.xepan-push
+						.col-md-4.col-lg-4
+							cite 
+								strong  Parent Group
+							.atk-form-row.atk-form-field{$parent_group}
+						.col-md-4.col-lg-4
+							cite
+								strong   Ledger
+							.atk-form-row.atk-form-field{$ledger}
+						.col-md-4.col-lg-4
+							cite 
+								strong  Ledger Type
+							.atk-form-row.atk-form-field{$ledger_type}
+						
+					.row.xepan-push
+						.col-md-4.col-lg-4
+							cite
+								strong   Ledger Changable
+							.atk-form-row.atk-form-field{$is_ledger_changable}
+						.col-md-4.col-lg-4
+							cite
+								strong   Allow Add Ledger
+							.atk-form-row.atk-form-field{$is_allow_add_ledger}
+						.col-md-4.col-lg-4
+							cite
+								strong   Include Curreny
+							.atk-form-row.atk-form-field{$is_include_currency}
+					.xepan-push-large
+					.xepan-push-large
+					hr
+					a.xbtn.xbtn-primary.atk-swatch-tomato.atk-button-large.atk-col-5.w-shadow.action-large						
+						{$FormButtons}

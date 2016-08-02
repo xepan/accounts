@@ -40,10 +40,12 @@ class page_custom_accountentries extends \xepan\base\Page {
 		$rows = $transaction->ref('xepan\accounts\EntryTemplateTransactionRow');
 
 		$crud = $this->add('CRUD');
-
-		$crud->setModel($rows);
 		if($crud->isEditing()){
 			$form=$crud->form;
+			$form->setLayout(['view/form/accountentriesrow']);
+		}	
+		$crud->setModel($rows);
+		if($crud->isEditing()){
 			$grp_fld = $form->getElement('group');
 			$grp_fld->select_menu_options=['tags'=>true];
 
