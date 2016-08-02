@@ -19,7 +19,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 	function manageForm($page){
 		$transactions = $this->ref('xepan\accounts\EntryTemplateTransaction');
 
-		$form = $page->add('xepan\accounts\Form_EntryRunner');
+		$form = $page->add('xepan\accounts\Form_EntryRunner',null,null,['form/empty']);
 		$form->setLayout(['view/form/accounttransactionexecuter']);
 
 		$form->addField('DatePicker','date');
@@ -67,11 +67,11 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 				$field->setModel($ledger);
 				if($row['is_include_currency']){
-					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name');
+					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name',null,$spot."_currency");
 					$form_currency->setModel('xepan\accounts\Currency');
-					$exchange_rate = $form->addField('line','to_exchange_rate'.$row->id,'Currency Rate')->validateNotNull(true);
+					$exchange_rate = $form->addField('line','to_exchange_rate'.$row->id,'Currency Rate',null,$spot."_exchange_rate")->validateNotNull(true)->addClass('exchange-rate');
 				}
-				$form->addField('line','amount_'.$row->id,'Amount');
+				$form->addField('line','amount_'.$row->id,'Amount',null,$spot."_amount");
 			}
 		}
 
