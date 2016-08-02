@@ -10,6 +10,7 @@
     <table style="width:100%" class="table user-list table-hover footable toggle-circle-filled">{header}
       <thead class="xepan-hover-hand">
         <tr style="font-size: 0.65em;">{cols}
+          <th>Title</th>
           <th>Side</th>
           <th>Group</th>
           <th>Balance Sheet</th>
@@ -25,6 +26,7 @@
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" style="font-size: 0.65em;" class="{$odd_even}">{cols}
+          <td>{$title}</td>
           <td>{side}{/}</td>
           <td>{group}{/}</td>
           <td>{$balance_sheet}</td>

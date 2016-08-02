@@ -13,6 +13,7 @@
             thead.xepan-hover-hand
                 tr(style="font-size: 0.65em;")
                     {cols}
+                    th Title
                     th Side
                     th Group
                     th Balance Sheet
@@ -31,6 +32,8 @@
                 {rows}{row}
                 tr(class="{$odd_even}" data-id="{$id}" style="font-size: 0.65em;")
                     {cols}
+                    td
+                        {$title}
                     td
                         {side}{/}
                     td
