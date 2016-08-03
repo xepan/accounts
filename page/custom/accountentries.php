@@ -11,14 +11,32 @@ class page_custom_accountentries extends \xepan\base\Page {
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-template']);
 		$crud->setModel($entry_template_m);
 		$crud->grid->addColumn('expander','transactions');
-		$import_template = $crud->grid->addColumn('button','import');
+		$import_btn=$crud->grid->addButton('import')->addClass('btn btn-primary');
+
+		$p=$this->add('VirtualPage');
+		$p->set(function($p){
+			$f=$p->add('Form');
+			$f->addField('text','json');
+			$f->addSubmit('Go');
+			
+			if($f->isSubmitted()){
+				$import_m=$this->add('xepan\accounts\Model_EntryTemplate');
+				$import_m->importJson($f['json']);	
+				
+				$f->js()->reload()->univ()->successMessage('Done')->execute();
+			}
+		});
+		if($import_btn->isClicked()){
+			$this->js()->univ()->frameURL('Import',$p->getUrl())->execute();
+		}
 		
-		// $import_template->js('click')->successMessage('sd');
-			// echo "hello";
-		// $gets = $entry_template_m->getrows();
-		// print_r($gets);
-		// exit;
-		$crud->grid->addColumn('button','export');
+		$p=$this->add('VirtualPage');
+		$p->set(function($p){
+			$export_m=$this->add('xepan\accounts\Model_EntryTemplate')->load($p->id);
+				$json=$export_m->exportJson();
+				$p->add('View')->set($json);
+		});
+		$p->addColumn("export", "export", "export", $crud->grid);
 
 	}
 
