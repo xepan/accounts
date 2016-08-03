@@ -79,7 +79,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				
 				$spot = $row['side']=='Dr'?'left':'right';			
 
-				$field = $form->addField($field_type,'ledger_'.$row->id, $row['title'],null,$spot.'_ledger_'.$row->id);
+				$field = $form->addField($field_type,['name'=>'ledger_'.$row->id,'hint'=>'Select Ledger'], $row['title'],null,$spot.'_ledger_'.$row->id);
 				$field->show_fields= ['name'];
 
 				$row_ledger_present = $row['ledger']?true:false;
@@ -114,7 +114,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				if($row['is_include_currency']){
 					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name',null,$spot.'_currency_'.$row->id);
 					$form_currency->setModel('xepan\accounts\Currency');
-					$exchange_rate = $form->addField('line','to_exchange_rate'.$row->id,'Currency Rate',null,$spot.'_exchange_rate_'.$row->id)->validateNotNull(true)->addClass('exchange-rate');
+					$exchange_rate = $form->addField('line','to_exchange_rate_'.$row->id,'Currency Rate',null,$spot.'_exchange_rate_'.$row->id)->validateNotNull(true)->addClass('exchange-rate');
 				}
 				$field = $form->addField('line','amount_'.$row->id,'Amount',null,$spot.'_amount_'.$row->id);
 			}
@@ -125,19 +125,23 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		if($form->isSubmitted()){
 			foreach ($transactions as $trans) {
 				$transaction = $this->add('xepan\accounts\Model_Transaction');
-				if($form_currency){
-					$currency = $this->add('xepan\accounts\Model_Currency')->tryLoad($form['bank_currency_'.$row->id]);
-					$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration'],$currency,$exchange_rate);
-				}else{
-					$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration']);
-				}
+				$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration']);
+
 				foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
+					$currency=null;
+					$exchange_rate = null;
+					if($row['is_include_currency']){
+						$currency = $this->add('xepan\accounts\Model_Currency')->load($form['bank_currency_'.$row->id]);
+						$exchange_rate = $form['to_exchange_rate_'.$row->id];
+					}
+
 					if($row['side']=='Cr')
-						$transaction->addCreditLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id]);
+						$transaction->addCreditLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id],$currency,$exchange_rate);
 					else
-						$transaction->addDebitLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id]);
+						$transaction->addDebitLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id],$currency,$exchange_rate);
 				}
 				$transaction->execute();
+				echo "done";
 			}	
 
 			$form->js()->reload()->univ()->successMessage('Done')->execute();		
