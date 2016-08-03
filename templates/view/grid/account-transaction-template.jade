@@ -17,7 +17,9 @@
                     th Detail
                     th Favourite Menu Lister
                     th Merge Transaction
-                    th Execute
+                    th Transactions
+                    th Import Template
+                    th Export Template
                     th
                     {/}    
             {/}
@@ -37,6 +39,10 @@
                         {$is_merge_transaction}
                     td
                         {$transactions}
+                    td
+                        {$import}
+                    td
+                        {$export}
                     td(style="width: 15%;")
                         {$edit}
                         {$delete}
