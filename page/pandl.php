@@ -6,9 +6,12 @@ class page_pandl extends \xepan\base\Page{
 		parent::init();
 		
 		
-		$f=$this->add('Form');
-		$f->addField('DatePicker','from_date');
-		$f->addField('DatePicker','to_date');
+		$f=$this->add('Form',null,'form');
+		$c=$f->add('Columns')->addClass('row xepan-push');
+		$l=$c->addColumn(6)->addClass('col-md-6');
+		$r=$c->addColumn(6)->addClass('col-md-6');
+		$l->addField('DatePicker','from_date');
+		$r->addField('DatePicker','to_date');
 		$f->addSubmit('Go')->addClass('btn btn-primary xepan-push');
 
 
