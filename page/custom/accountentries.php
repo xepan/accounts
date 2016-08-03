@@ -11,6 +11,8 @@ class page_custom_accountentries extends \xepan\base\Page {
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-template']);
 		$crud->setModel($entry_template_m);
 		$crud->grid->addColumn('expander','transactions');
+		$crud->grid->addColumn('button','import');
+		$crud->grid->addColumn('button','export');
 	}
 
 	function page_transactions(){
