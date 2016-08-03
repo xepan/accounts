@@ -157,7 +157,7 @@ class Initiator extends \Controller_Addon {
         if(!isset($this->app->new_epan)) $this->app->new_epan = $this->app->epan;
         
 		$this->app->epan=$this->app->old_epan;
-        $truncate_models = ['TransactionType','TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
+        $truncate_models = ['EntryTemplateTransactionRow','EntryTemplateTransaction','EntryTemplate','TransactionType','TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
         foreach ($truncate_models as $t) {
             $m=$this->add('xepan\accounts\Model_'.$t);
             foreach ($m as $mt) {
