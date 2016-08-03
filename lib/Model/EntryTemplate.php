@@ -180,10 +180,48 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 			$data['transactions'][] = $transaction_data;
 		}
-		return $data;
+		return json_encode($data);
 	}
 
 	function importJson($json){
+		$data=json_decode($json,true);
+		// echo "<pre>";
+		// // print_r($data['transactions'][0]['rows']);
+		// print_r($data['transactions'][0]);
+		// echo "</pre>";
+		$temp=$this->add('xepan\accounts\Model_EntryTemplate');
+		$temp['name']=$data['name'];
+		$temp['detail']=$data['detail'];
+		$temp['unique_trnasaction_template_code']=$data['unique_trnasaction_template_code'];
+		$temp['is_system_default']=$data['is_system_default'];
+		$temp['is_favourite_menu_lister']=$data['is_favourite_menu_lister'];
+		$temp['is_merge_transaction']=$data['is_merge_transaction'];
+		$temp->save();
+
+		foreach ($data['transactions'] as $tr) {
+			$transaction=$this->add('xepan\accounts\Model_EntryTemplateTransaction');
+			$transaction['template_id']=$temp->id;
+			$transaction['name']=$tr['name'];
+			$transaction['type']=$tr['type'];
+			$transaction->save();
+
+			foreach ($tr['rows'] as  $tr_row) {
+				$row=$this->add('xepan\accounts\Model_EntryTemplateTransactionRow');
+				$row['template_transaction_id']=$transaction->id;
+				$row['title']=$tr_row['title'];
+				$row['side']=$tr_row['side'];
+				$row['group']=$tr_row['group'];
+				$row['balance_sheet']=$tr_row['balance_sheet'];
+				$row['parent_group']=$tr_row['parent_group'];
+				$row['ledger']=$tr_row['ledger'];
+				$row['ledger_type']=$tr_row['ledger_type'];
+				$row['is_ledger_changable']=$tr_row['is_ledger_changable'];
+				$row['is_allow_add_ledger']=$tr_row['is_allow_add_ledger'];
+				$row['is_include_currency']=$tr_row['is_include_currency'];
+				$row->save();
+			}
+		}
+
 
 	}
 }
