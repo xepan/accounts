@@ -12,6 +12,8 @@
         <tr>{cols}
           <th>Name</th>
           <th>Detail</th>
+          <th>Code</th>
+          <th>System Default</th>
           <th>Favourite Menu Lister</th>
           <th>Merge Transaction</th>
           <th>Transactions</th>
@@ -25,6 +27,8 @@
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td>{name}{/}</td>
           <td>{detail}{/}</td>
+          <td>{$unique_trnasaction_template_code}</td>
+          <td>{$is_system_default}</td>
           <td>{$is_favourite_menu_lister}</td>
           <td>{$is_merge_transaction}</td>
           <td>{$transactions}</td>

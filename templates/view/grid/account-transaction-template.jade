@@ -15,6 +15,8 @@
                     {cols}
                     th Name
                     th Detail
+                    th Code
+                    th System Default
                     th Favourite Menu Lister
                     th Merge Transaction
                     th Transactions
@@ -33,6 +35,10 @@
                         {name}{/}
                     td
                         {detail}{/}
+                    td
+                        {$unique_trnasaction_template_code}
+                    td
+                        {$is_system_default}
                     td
                         {$is_favourite_menu_lister}
                     td
