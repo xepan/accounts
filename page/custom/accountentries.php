@@ -9,8 +9,13 @@ class page_custom_accountentries extends \xepan\base\Page {
 	function page_index(){
 		$entry_template_m = $this->add('xepan\accounts\Model_EntryTemplate');
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-template']);
-		$crud->setModel($entry_template_m);
+		$crud->setModel($entry_template_m,['name','detail','unique_trnasaction_template_code',
+											'is_favourite_menu_lister','is_merge_transaction'],
+										  ['name','detail','unique_trnasaction_template_code',
+										  	'is_system_default','is_favourite_menu_lister','is_merge_transaction']);
+		// $crud->setModel($entry_template_m);
 		$crud->grid->addColumn('expander','transactions');
+<<<<<<< HEAD
 		$import_btn=$crud->grid->addButton('import')->addClass('btn btn-primary');
 
 		$p=$this->add('VirtualPage');
@@ -37,7 +42,17 @@ class page_custom_accountentries extends \xepan\base\Page {
 				$p->add('View')->set($json);
 		});
 		$p->addColumn("export", "export", "export", $crud->grid);
+=======
+		$import_template = $crud->grid->addColumn('button','import');
+		$crud->grid->addColumn('button','export');
+>>>>>>> 9023d944c3ad6eab21eed7cdd74d59bf5d72a97e
 
+		$crud->grid->addHook('formatRow',function($g){
+			if($g->model['is_system_default']){
+				$g->current_row_html['edit'] = " ";
+				$g->current_row_html['delete'] = " ";
+			}
+		});
 	}
 
 	function page_transactions(){

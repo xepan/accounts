@@ -23,12 +23,13 @@ class Initiator extends \Controller_Addon {
 			if(!$this->app->isAjaxOutput()){
 				$m = $this->app->top_menu->addMenu('Account');
 
+				$m->addItem(['Accounts Chart','icon'=>'fa fa-bar-chart-o'],'xepan_accounts_chartofaccount');
 				$m->addItem(['Accounts/Ledgers','icon'=>'fa fa-briefcase'],'xepan_accounts_accounts');
 				$m->addItem(['Account Paid','icon'=>'fa fa-cc-visa'],'xepan_accounts_amtpaid');
 				$m->addItem(['Payment Received','icon'=>'fa fa-cc-paypal'],'xepan_accounts_amtreceived');
 				$m->addItem(['Cash <=> Bank','icon'=>'fa fa-exchange'],'xepan_accounts_contra');
 				$m->addItem(['Transaction Lister','icon'=>'fa fa-list'],'xepan_accounts_accounttransactionlister');
-				$favourite_menu = $m->addItem(['Favouite Transaction','icon'=>'fa fa-list'],'#');
+				$m->addItem(['Favouite Transaction','icon'=>'fa fa-list'],'#');
 				$m->addItem(['Account Statement','icon'=>'fa fa-file-excel-o'],'xepan_accounts_statement');
 				$m->addItem(['Cash Book','icon'=>'fa fa-book'],'xepan_accounts_cashbook');
 				$m->addItem(['Day Book','icon'=>'fa fa-bookmark'],'xepan_accounts_daybook');
