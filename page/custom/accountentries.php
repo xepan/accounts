@@ -9,17 +9,21 @@ class page_custom_accountentries extends \xepan\base\Page {
 	function page_index(){
 		$entry_template_m = $this->add('xepan\accounts\Model_EntryTemplate');
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-template']);
-		$crud->setModel($entry_template_m);
+		$crud->setModel($entry_template_m,['name','detail','unique_trnasaction_template_code',
+											'is_favourite_menu_lister','is_merge_transaction'],
+										  ['name','detail','unique_trnasaction_template_code',
+										  	'is_system_default','is_favourite_menu_lister','is_merge_transaction']);
+		// $crud->setModel($entry_template_m);
 		$crud->grid->addColumn('expander','transactions');
 		$import_template = $crud->grid->addColumn('button','import');
-		
-		// $import_template->js('click')->successMessage('sd');
-			// echo "hello";
-		// $gets = $entry_template_m->getrows();
-		// print_r($gets);
-		// exit;
 		$crud->grid->addColumn('button','export');
 
+		$crud->grid->addHook('formatRow',function($g){
+			if($g->model['is_system_default']){
+				$g->current_row_html['edit'] = " ";
+				$g->current_row_html['delete'] = " ";
+			}
+		});
 	}
 
 	function page_transactions(){
