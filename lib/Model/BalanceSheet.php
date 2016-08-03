@@ -17,6 +17,8 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		$this->addField('order');
 		$this->addField('created_at')->type('date')->defaultValue($this->app->today);
 
+		$this->hasMany('xepan\accounts\Group','balance_sheet_id');
+
 	}
 
 
