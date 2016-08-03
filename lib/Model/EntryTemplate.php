@@ -120,12 +120,12 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 			}
 		}
 
-		$form->addSubmit('DO');
+		$form->addSubmit('DO')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
 			foreach ($transactions as $trans) {
 				$transaction = $this->add('xepan\accounts\Model_Transaction');
-				$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration']);
+				$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration'],null,null,$related_id, $related_type);
 
 				foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
 					$currency=null;
@@ -155,6 +155,35 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 	}
 
 	function execute($data=[]){ //dr=>[['acc'=>'amt'],['acc'=>amt]],cr=>[['acc'=>amt]]
+
+	}
+
+	function exportJson(){
+		$data = $this->get();
+		unset($data['id']);
+
+		$data['transactions']=[];
+		foreach ($this->ref('xepan\accounts\EntryTemplateTransaction') as $transaction) {
+			$transaction_data = $transaction->get();
+			unset($transaction_data['id']);
+			unset($transaction_data['template_id']);
+			unset($transaction_data['template']);
+
+			$transaction_data['rows']=[];
+			foreach ($transaction->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
+				$row_data = $row->get();
+				unset($row_data['id']);
+				unset($row_data['template_transaction_id']);
+				unset($row_data['template_transaction_id']);
+				$transaction_data['rows'][] = $row_data;
+			}
+
+			$data['transactions'][] = $transaction_data;
+		}
+		return $data;
+	}
+
+	function importJson($json){
 
 	}
 }
