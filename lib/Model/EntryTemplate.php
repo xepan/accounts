@@ -118,7 +118,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 			}
 		}
 
-		$form->addSubmit('DO');
+		$form->addSubmit('DO')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
 			foreach ($transactions as $trans) {
