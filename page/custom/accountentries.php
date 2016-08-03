@@ -22,41 +22,42 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 		$crud->grid->addColumn('expander','transactions');
 
-		$import_btn=$crud->grid->addButton('import')->addClass('btn btn-primary');
+		if(!$crud->isEditing()){
+			$import_btn=$crud->grid->addButton('import')->addClass('btn btn-primary');
 
-		$p=$this->add('VirtualPage');
-		$p->set(function($p){
-			$f=$p->add('Form');
-			$f->addField('text','json');
-			$f->addSubmit('Go');
-			
-			if($f->isSubmitted()){
-				$import_m=$this->add('xepan\accounts\Model_EntryTemplate');
-				$import_m->importJson($f['json']);	
+			$p=$this->add('VirtualPage');
+			$p->set(function($p){
+				$f=$p->add('Form');
+				$f->addField('text','json');
+				$f->addSubmit('Go');
 				
-				$f->js()->reload()->univ()->successMessage('Done')->execute();
+				if($f->isSubmitted()){
+					$import_m=$this->add('xepan\accounts\Model_EntryTemplate');
+					$import_m->importJson($f['json']);	
+					
+					$f->js()->reload()->univ()->successMessage('Done')->execute();
+				}
+			});
+			if($import_btn->isClicked()){
+				$this->js()->univ()->frameURL('Import',$p->getUrl())->execute();
 			}
-		});
-		if($import_btn->isClicked()){
-			$this->js()->univ()->frameURL('Import',$p->getUrl())->execute();
+			
+			$p=$this->add('VirtualPage');
+			$p->set(function($p){
+				$export_m=$this->add('xepan\accounts\Model_EntryTemplate')->load($p->id);
+					$json=$export_m->exportJson();
+					$p->add('View')->set($json);
+			});
+			$p->addColumn("export", "export", "export", $crud->grid);
+
+			$crud->grid->addHook('formatRow',function($g){
+				if($g->model['is_system_default']){
+					$g->current_row_html['edit'] = " ";
+					$g->current_row_html['delete'] = " ";
+				}
+			});
 		}
 		
-		$p=$this->add('VirtualPage');
-		$p->set(function($p){
-			$export_m=$this->add('xepan\accounts\Model_EntryTemplate')->load($p->id);
-				$json=$export_m->exportJson();
-				$p->add('View')->set($json);
-		});
-		$p->addColumn("export", "export", "export", $crud->grid);
-
-		$import_template = $crud->grid->addColumn('button','import');
-		$crud->grid->addColumn('button','export');
-		$crud->grid->addHook('formatRow',function($g){
-			if($g->model['is_system_default']){
-				$g->current_row_html['edit'] = " ";
-				$g->current_row_html['delete'] = " ";
-			}
-		});
 	}
 
 	function page_transactions(){
