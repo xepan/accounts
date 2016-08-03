@@ -61,15 +61,16 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 		}
 		
 		/*Check Ledger*/
-
-		$ledger_m = $this->add('xepan\accounts\Model_Ledger');
-		$ledger_m->addCondition('name',$this['ledger']);
-		$ledger_m->tryLoadAny();
-		
-		if(!$ledger_m->loaded()){
-			$ledger_m['group_id'] = $group_m->id;
-			$ledger_m['ledger_type'] = $this['ledger_type'];
-			$ledger_m->save();
+		if($this['ledger']){
+			$ledger_m = $this->add('xepan\accounts\Model_Ledger');
+			$ledger_m->addCondition('name',$this['ledger']);
+			$ledger_m->tryLoadAny();
+			
+			if(!$ledger_m->loaded()){
+				$ledger_m['group_id'] = $group_m->id;
+				$ledger_m['ledger_type'] = $this['ledger_type'];
+				$ledger_m->save();
+			}
 		}
 	}
 }

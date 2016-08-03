@@ -3,7 +3,7 @@ namespace xepan\accounts;
 
 class Model_Ledger extends \xepan\base\Model_Table{
 	public $table="ledger";
-	public $acl=false;	
+	public $acl_type='Ledger';	
 	
 	function init(){
 		parent::init();
@@ -508,12 +508,13 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 
 	function loadDefaultBankLedger(){
-		$this->addCondition('name','Your Default Bank Account');
+		// $this->addCondition('name','Your Default Bank Account');
 		$this->addCondition('ledger_type','BankAccount');
 		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
+			$this['name']='Your Default Bank Account';
 			$this->save();
 		}
 
@@ -545,6 +546,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
+			$this['name'] = 'Bank Chanrges';
 			$this->save();
 		}
 

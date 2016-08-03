@@ -4,7 +4,8 @@ namespace xepan\accounts;
 
 class Model_EntryTemplate extends \xepan\base\Model_Table{
 	public $table= "custom_account_entries_templates";
-	public $acl=false;
+	public $acl=true;
+	public $acl_type = 'AccountEntryTemplate';
 
 	function init(){
 		parent::init();
@@ -16,7 +17,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$this->hasMany('xepan\accounts\EntryTemplateTransaction','template_id');
 	}
 
-	function manageForm($page){
+	function manageForm($page, $related_id=null, $related_type=null){
 		$transactions = $this->ref('xepan\accounts\EntryTemplateTransaction');
 
 		$form = $page->add('xepan\accounts\Form_EntryRunner',null,null,['form/empty']);
