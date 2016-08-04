@@ -49,29 +49,30 @@ class page_custom_accountentries extends \xepan\base\Page {
 			$p->set(function($p){
 				$export_m=$this->add('xepan\accounts\Model_EntryTemplate')->load($p->id);
 					$json=$export_m->exportJson();
-					$f=$p->add('Form');
-					$f->addField('line','name')->set(trim($export_m['name']));
-					$f->addField('text','json_data')->set($json);
-					$f->addSubmit('Save File')->addClass('btn btn-primary');
+					$p->add('View')->set($json);
+					// $f=$p->add('Form');
+					// $f->addField('line','name')->set(trim($export_m['name']));
+					// $f->addField('text','json_data')->set($json);
+					// $f->addSubmit('Save File')->addClass('btn btn-primary');
 
-					$path=$this->api->pathfinder->base_location->base_path.'/../vendor/'.str_replace("\\","/",$this->namespace)."/".$this->dir;
-					if($f->isSubmitted()){
-			        	// if  file name exis the update the file content
+					// $path=$this->api->pathfinder->base_location->base_path.'/../vendor/'.str_replace("\\","/",$this->namespace)."/".$this->dir;
+					// if($f->isSubmitted()){
+			  //       	// if  file name exis the update the file content
 
-			        	if($f['name'] and file_exists($path."/".$f['name'])){
-			        		$filename = $f['name'];
-			        	}else{
-							$filename = $f['name'].".json";
-			        	}
+			  //       	if($f['name'] and file_exists($path."/".$f['name'])){
+			  //       		$filename = $f['name'];
+			  //       	}else{
+					// 		$filename = $f['name'].".json";
+			  //       	}
 			        	
-						$newFileName = $path.'/'.$filename;
-						$newFileContent = $f['json_data'];
-						if(file_put_contents($newFileName,$newFileContent)!=false){
-							return $f->js(true,$f->js()->reload())->univ()->successMessage("File created (".basename($newFileName).")");
-						}else{
-							return $f->js(true,$f->js()->reload())->univ()->errorMessage("Cannot create file (".basename($newFileName).")");
-						}
-			        }
+					// 	$newFileName = $path.'/'.$filename;
+					// 	$newFileContent = $f['json_data'];
+					// 	if(file_put_contents($newFileName,$newFileContent)!=false){
+					// 		return $f->js(true,$f->js()->reload())->univ()->successMessage("File created (".basename($newFileName).")");
+					// 	}else{
+					// 		return $f->js(true,$f->js()->reload())->univ()->errorMessage("Cannot create file (".basename($newFileName).")");
+					// 	}
+			        // }
 
 			});
 			$p->addColumn("export", "export", "export", $crud->grid);
