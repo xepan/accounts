@@ -1,4 +1,21 @@
 
+<style>
+  .atk-cells {
+    display: table;
+    width: 100%;
+  }
+  .atk-cells > .atk-cell {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  .atk-cells.atk-cells-justified {
+    table-layout: fixed;
+  }
+  .atk-cells[class*=atk-move] {
+    width: auto;
+  }
+  
+</style>
 <h2 class="text-center">{$transaction_name}</h2>
 <hr/>
 <div class="form-group">
