@@ -180,6 +180,23 @@ class Initiator extends \Controller_Addon {
        	$config = $this->app->epan->ref('Configurations')->tryLoadAny();
        	$config->setConfig('DEFAULT_CURRENCY_ID',$default_currency->id,'accounts');
        	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config->getConfig('DEFAULT_CURRENCY_ID'));
+	
+       	/*Default Account Entry*/
+       	
+       	$path=realpath(getcwd().'/vendor/xepan/accounts/defaultAccount');
+		// throw new \Exception($path, 1);
+		
+		if(file_exists($path)){
+       		foreach (new \DirectoryIterator($path) as $file) {
+       			 if($file->isDot()) continue;
+       			// echo $path."/".$file;
+       			 $json= file_get_contents($path."/".$file);
+       			 $import_model = $this->add('xepan\accounts\Model_EntryTemplate');
+       			 $import_model->importJson($json);
+       		}
+       	}	
+
+
 	}
 
 }
