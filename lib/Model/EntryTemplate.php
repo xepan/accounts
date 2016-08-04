@@ -129,19 +129,23 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 				foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
 					$currency=null;
-					$exchange_rate = null;
+					$exchange_rate = 1;
 					if($row['is_include_currency']){
 						$currency = $this->add('xepan\accounts\Model_Currency')->load($form['bank_currency_'.$row->id]);
 						$exchange_rate = $form['to_exchange_rate_'.$row->id];
 					}
 
-					if($row['side']=='Cr')
-						$transaction->addCreditLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id],$currency,$exchange_rate);
-					else
-						$transaction->addDebitLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id],$currency,$exchange_rate);
+					if($form['ledger_'.$row->id] && $form['amount_'.$row->id] ){
+						if($row['side']=='Cr'){							
+							$transaction->addCreditLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id],$currency,$exchange_rate);
+						}
+						else{
+							$transaction->addDebitLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id],$currency,$exchange_rate);
+						}
+					}
 				}
 				$transaction->execute();
-				echo "done";
+				
 			}	
 
 			$form->js()->reload()->univ()->successMessage('Done')->execute();		

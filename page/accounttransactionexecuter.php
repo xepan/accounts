@@ -9,9 +9,12 @@ class page_accounttransactionexecuter extends \xepan\base\Page{
 		parent::init();
 		$template_id = $this->app->stickyGET('accounts_template_id');
 
-		$this->add('xepan\accounts\Model_EntryTemplate')
-			->load($template_id)
-			->manageForm($this);
+		$model = $this->add('xepan\accounts\Model_EntryTemplate')
+			->load($template_id);
+		
+		$this->title = $model['name'];
+
+		$model->manageForm($this);
 
 	}
 }	
