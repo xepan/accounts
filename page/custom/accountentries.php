@@ -128,6 +128,9 @@ class page_custom_accountentries extends \xepan\base\Page {
 				$x,
 			'div.atk-form-row');
 
+			$prnt_grp = $form->getElement('parent_group');
+			$prnt_grp->select_menu_options=['tags'=>true];
+
 			$ledger_fld = $form->getElement('ledger');
 			$ledger_fld->select_menu_options=['tags'=>true];
 			
