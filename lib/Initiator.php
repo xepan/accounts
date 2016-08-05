@@ -196,7 +196,20 @@ class Initiator extends \Controller_Addon {
        		}
        	}	
 
-
+       	/*Default Balance Sheet Head*/
+       	$balance_sheet = $this->add('xepan\accounts\Model_BalanceSheet');
+       	$balance_sheet->loadDepositLiabilities();
+       	$balance_sheet->loadCurrentAssets();
+       	$balance_sheet->loadCapitalAccount();
+       	$balance_sheet->loadExpenses();
+       	$balance_sheet->loadIncome();
+       	$balance_sheet->loadSuspenseLedger();
+       	$balance_sheet->loadSales();
+       	$balance_sheet->loadPurchase();
+       	$balance_sheet->loadDutiesAndTaxes();
+       	$balance_sheet->loadFixedAssets();
+       	$balance_sheet->loadBranchDivisions();
+       	$balance_sheet->loadCurrentLiabilities();
 	}
 
 }
