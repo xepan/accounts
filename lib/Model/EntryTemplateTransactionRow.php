@@ -13,7 +13,7 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\accounts\EntryTemplateTransaction','template_transaction_id');
 		$this->addField('title');
-		$this->addField('side')->enum(['Dr','Cr']);
+		$this->addField('side')->enum(['DR','CR']);
 		
 		$group_field = $this->addField('group')->display(['form'=>'xepan\base\NoValidateDropDown']);
 		$group_field->setModel($this->add('xepan\accounts\Model_Group',['id_field'=>'name']),'name');
