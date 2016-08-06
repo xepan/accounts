@@ -23,6 +23,8 @@ class page_custom_accountentries extends \xepan\base\Page {
 									]);
 
 		$crud->grid->addColumn('expander','transactions');
+		$crud->grid->addPaginator(10);
+		$crud->grid->addQuickSearch(['name']);
 
 		if(!$crud->isEditing()){
 			$import_btn=$crud->grid->addButton('import')->addClass('btn btn-primary');
