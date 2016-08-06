@@ -1,4 +1,21 @@
 
+<style>
+  .atk-cells {
+    display: table;
+    width: 100%;
+  }
+  .atk-cells > .atk-cell {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  .atk-cells.atk-cells-justified {
+    table-layout: fixed;
+  }
+  .atk-cells[class*=atk-move] {
+    width: auto;
+  }
+  
+</style>
 <div id="{$_name}"> 
   <div class="main-box">
     <div class="main-box-body clearfix">
@@ -8,7 +25,7 @@
         <div class="col-md-3">Assests
           <div class="xepan-push-small"></div>
           <div class="row">
-            <div class="col-md-12"><a href="{url}?page=xepan_accounts_balancesheetdetail&amp;account_balance_sheet_id={$id}{/}" class="user-link">{$assets_name}</a></div>
+            <div class="col-md-12">{$assets_name}</div>
           </div>
         </div>
         <div class="col-md-3">Amount
@@ -20,7 +37,7 @@
         <div class="col-md-3">Liabilities
           <div class="xepan-push-small"></div>
           <div class="row">
-            <div class="col-md-12"><a href="{url}?page=xepan_accounts_balancesheetdetail&amp;account_balance_sheet_id={$id}{/}" class="user-link">{$liabilities_name}</a></div>
+            <div class="col-md-12">{$liabilities_name}</div>
           </div>
         </div>
         <div class="col-md-3">Amount

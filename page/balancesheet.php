@@ -6,7 +6,7 @@ class page_balancesheet extends \xepan\base\Page{
 		parent::init();
 		
 		
-		$f=$this->add('Form',null,'form');
+		$f=$this->add('Form',null,'form',['form/stacked']);
 		$c=$f->add('Columns')->addClass('row xepan-push');
 		$l=$c->addColumn(6)->addClass('col-md-6');
 		$r=$c->addColumn(6)->addClass('col-md-6');
@@ -41,7 +41,11 @@ class page_balancesheet extends \xepan\base\Page{
 				$side='liabilities';
 			}
 
-			$this->add('View',null,$side.'_name')->set($tr['balance_sheet']);
+			$this->add('View',null,$side.'_name')
+				->add('View')
+				->setElement('a')
+				->setAttr('href','?page=xepan_accounts_balancesheetdetail&account_balance_sheet_id='.$tr['balance_sheet_id'])
+				->set($tr['balance_sheet']);
 			$this->add('View',null,$side.'_amount')->set(abs($amount));
 
 		}
@@ -56,9 +60,9 @@ class page_balancesheet extends \xepan\base\Page{
 			$this->add('View',null,'liabilities_amount')->set(abs($amount));
 		}
 
-		// $grid = $this->add('xepan\hr\Grid');
-		// $grid->setModel($pandl,['balance_sheet_id','balance_sheet','is_pandl','group','ledger','CR','DR']);
-		// $grid->js(true)->find('table')->css('width','100%')->attr('border','1px')->attr('cell-padding','0.5em');
+		$grid = $this->add('xepan\hr\Grid');
+		$grid->setModel($pandl,['balance_sheet_id','balance_sheet','is_pandl','group','ledger','CR','DR']);
+		$grid->js(true)->find('table')->css('width','100%')->attr('border','1px')->attr('cell-padding','0.5em');
 
 	}
 

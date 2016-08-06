@@ -14,9 +14,10 @@ class page_daybook extends \xepan\base\Page{
 		$grid = $this->add('xepan\accounts\Grid_AccountsBase',['no_records_message'=>'No day book statement found'],null,['view/daybookstatement-grid']);
 
 		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
-		$group=$this->add('xepan\accounts\Model_Group')->loadRootCashGroup();
-		
-		$transaction_row->addCondition('root_group_id','<>',$group['id']);
+			
+		// Remove Cash entries from day book
+		// $group=$this->add('xepan\accounts\Model_Group')->loadRootCashGroup();
+		// $transaction_row->addCondition('root_group_id','<>',$group['id']);
 		
 		if($_GET['date_selected']){
 			$transaction_row->addCondition('created_at','>=',$_GET['date_selected']);

@@ -1,3 +1,19 @@
+style.
+	.atk-cells {
+	  display: table;
+	  width: 100%;
+	}
+	.atk-cells > .atk-cell {
+	  display: table-cell;
+	  vertical-align: middle;
+	}
+	.atk-cells.atk-cells-justified {
+	  table-layout: fixed;
+	}
+	.atk-cells[class*=atk-move] {
+	  width: auto;
+	}
+
 div(id="{$_name}")  
 	.main-box
 		.main-box-body.clearfix
@@ -10,8 +26,7 @@ div(id="{$_name}")
 					.xepan-push-small
 					.row
 						.col-md-12
-							a.user-link(href='{url}?page=xepan_accounts_balancesheetdetail&account_balance_sheet_id={$id}{/}')
-								{$assets_name}
+							{$assets_name}
 
 				.col-md-3
 					| Amount
@@ -25,8 +40,7 @@ div(id="{$_name}")
 					.xepan-push-small
 					.row
 						.col-md-12
-							a.user-link(href='{url}?page=xepan_accounts_balancesheetdetail&account_balance_sheet_id={$id}{/}')
-								{$liabilities_name}
+							{$liabilities_name}
 				.col-md-3
 					| Amount
 					.xepan-push-small
