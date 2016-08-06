@@ -12,6 +12,7 @@ class page_accounttransactionlister extends \xepan\base\Page{
 		$transaction_m->add('xepan\hr\Controller_ACL');
 		
 		$grid->setModel($transaction_m);
+		$grid->addQuickSearch(['name']);
 		$run_executer = $grid->addColumn('button','Run');
 
 		if($_GET['Run']){

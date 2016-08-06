@@ -13,7 +13,7 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\accounts\EntryTemplateTransaction','template_transaction_id');
 		$this->addField('title');
-		$this->addField('side')->enum(['Dr','Cr']);
+		$this->addField('side')->enum(['DR','CR']);
 		
 		$group_field = $this->addField('group')->display(['form'=>'xepan\base\NoValidateDropDown']);
 		$group_field->setModel($this->add('xepan\accounts\Model_Group',['id_field'=>'name']),'name');
@@ -39,7 +39,6 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 
 	function beforeSave(){
 		/*Check  Group*/
-
 		$group_m=$this->add('xepan\accounts\Model_Group');
 		$group_m->addCondition('name',$this['group']);
 		$group_m->tryLoadAny();
@@ -53,8 +52,13 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 			$pg_m=$this->add('xepan\accounts\Model_ParentGroup');
 			$pg_m->tryLoadBy('name',$this['parent_group']);
 
-			if(!$pg_m->loaded()) throw $this->exception("must be select Parent Group",'ValidityCheck')->setField('parent_group');
-			
+			if(!$pg_m->loaded()){
+				$pg_m['name'] = $this['parent_group'];
+				$pg_m['balance_sheet_id'] = $balancesheet_m->id;
+				$pg_m->save();			
+			}
+			// if(!$pg_m['name']) throw $this->exception("must be define Parent Group",'ValidityCheck')->setField('parent_group');
+
 			$group_m['parent_group_id']=$pg_m->id;
 			$group_m['balance_sheet_id']=$balancesheet_m->id;
 			$group_m->save();

@@ -34,7 +34,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 			$transaction_template->trySetHTML('transaction_name','{$transaction_name_'.$trans->id.'}');
 
 			foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
-				if($row['side']=="Dr"){
+				if($row['side']=="DR"){
 					$row_left_template = $this->add('GiTemplate');
 					$row_left_template->loadTemplate('view/form/entrytransactionsiderows');
 					$row_left_template->trySetHTML('ledger','{$left_ledger_'.$row->id.'}');
@@ -77,7 +77,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				else
 					$field_type= 'autocomplete\Basic';
 				
-				$spot = $row['side']=='Dr'?'left':'right';			
+				$spot = $row['side']=='DR'?'left':'right';			
 
 				$field = $form->addField($field_type,['name'=>'ledger_'.$row->id,'hint'=>'Select Ledger'], $row['title'],null,$spot.'_ledger_'.$row->id);
 				$field->show_fields= ['name'];

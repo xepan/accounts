@@ -45,7 +45,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 			$this->unload();
 		$this
 		->addCondition('name','Current Assets')
-		->addCondition('positive_side','LT')
+		->addCondition('positive_side','RT')
 		->addCondition('is_pandl',false)
 		->addCondition('subtract_from','CR')
 		->addCondition('order',5)
@@ -99,9 +99,9 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 			$this->unload();
 		$this
 		->addCondition('name','Income')
-		->addCondition('positive_side','LT')
+		->addCondition('positive_side','RT')
 		->addCondition('is_pandl',true)
-		->addCondition('subtract_from','CR')
+		->addCondition('subtract_from','DR')
 		->addCondition('order',5)
 		->tryLoadAny();
 		if(!$this->loaded()) $this->save();

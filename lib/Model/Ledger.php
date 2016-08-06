@@ -546,7 +546,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->tryLoadAny();
 
 		if(!$this->loaded()){
-			$this['name'] = 'Bank Chanrges';
+			$this['name'] = 'Bank Charges';
 			$this->save();
 		}
 

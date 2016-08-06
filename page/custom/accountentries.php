@@ -23,6 +23,8 @@ class page_custom_accountentries extends \xepan\base\Page {
 									]);
 
 		$crud->grid->addColumn('expander','transactions');
+		$crud->grid->addPaginator(10);
+		$crud->grid->addQuickSearch(['name']);
 
 		if(!$crud->isEditing()){
 			$import_btn=$crud->grid->addButton('import')->addClass('btn btn-primary');
@@ -127,6 +129,9 @@ class page_custom_accountentries extends \xepan\base\Page {
 			$grp_fld->js(true)->univ()->bindConditionalShow(
 				$x,
 			'div.atk-form-row');
+
+			$prnt_grp = $form->getElement('parent_group');
+			$prnt_grp->select_menu_options=['tags'=>true];
 
 			$ledger_fld = $form->getElement('ledger');
 			$ledger_fld->select_menu_options=['tags'=>true];
