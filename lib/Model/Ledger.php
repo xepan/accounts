@@ -147,61 +147,94 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$outsource = $app->add('xepan\accounts\Model_Group')->loadSundryCreditor();
 
 		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for,$outsource,"OutsourceParty");
-
-	}
-
-
-
-	function createNewLedger($contact_for,$group,$ledger_type=null){
-
-		$ledger = $this->add('xepan\accounts\Model_Ledger');
-		$ledger->addCondition('contact_id',$contact_for->id);
-		$ledger->addCondition('group_id',$group->id);
-		$ledger->addCondition('ledger_type',$ledger_type);
-
-		$ledger->tryLoadAny();
-
-		$ledger['name'] = $contact_for['name'];
-		$ledger['LedgerDisplayName'] = $contact_for['name'];
-		$ledger['updated_at'] =  $this->api->now;
-		$ledger['related_id'] =  $contact_for->id;
-		return $ledger->save();
 	}
 
 	function createTaxLedger($tax_obj){
+	
+	if(!($tax_obj instanceof \xepan\commerce\Model_Taxation))
+		throw new \Exception("must pass taxation model", 1);	
+
+	if(!$tax_obj->loaded())
+		throw new \Exception("must loaded taxation", 1);
+
+	$ledger = $this->add('xepan\accounts\Model_Ledger');
+	$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
+	$ledger->addCondition('ledger_type',$tax_obj['name']);
+
+	$ledger->tryLoadAny();
+
+	$ledger['name'] = $tax_obj['name'];
+	$ledger['LedgerDisplayName'] = $tax_obj['name'];
+	$ledger['related_id'] = $tax_obj['id'];
+	$ledger['updated_at'] =  $this->api->now;
+	return $ledger->save();
+	}
+
+	function createNewLedger($name,$group_id,$other_values=array()){
 		
-		if(!($tax_obj instanceof \xepan\commerce\Model_Taxation))
-			throw new \Exception("must pass taxation model", 1);	
+		$this['name'] = $name;
+		$this['group_id'] = $group_id;
+		foreach ($other_values as $field => $value) {
+			$this[$field] = $value;
+		}
 
-		if(!$tax_obj->loaded())
-			throw new \Exception("must loaded taxation", 1);
-
-		$ledger = $this->add('xepan\accounts\Model_Ledger');
-		$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
-		$ledger->addCondition('ledger_type',$tax_obj['name']);
-
-		$ledger->tryLoadAny();
-
-		$ledger['name'] = $tax_obj['name'];
-		$ledger['LedgerDisplayName'] = $tax_obj['name'];
-		$ledger['related_id'] = $tax_obj['id'];
-		$ledger['updated_at'] =  $this->api->now;
-		return $ledger->save();
+		$this->save();
 	}
 
-	function LoadTaxLedger($tax_obj){
-		if(!($tax_obj instanceof \xepan\commerce\Model_Taxation))
-			throw new \Exception("must pass taxation model", 1);	
+	function loadDefaults(){
 
-		if(!$tax_obj->loaded())
-			throw new \Exception("must loaded taxation", 1);
+		$data= $this->defaultLedger;
 
-		$ledger = $this->add('xepan\accounts\Model_Ledger');
-		$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
-		$ledger->addCondition('ledger_type',$tax_obj['name']);
-		$ledger->addCondition('related_id',$tax_obj->id);
-		return $ledger->tryLoadAny();
+		foreach ($data as $ledger) {
+			// group id set
+			$ledger['group_id'] = $this->add('xepan\accounts\Model_Group')->load($ledger['group'])->get('id');
+
+			$this->newInstance()->set($ledger)->save();
+		}
 	}
+
+	function load($id_name){
+		if(is_numeric($id_name)) return parent::load($id_name);
+		
+		$this->unload();
+
+		$this->tryLoadBy('name',$id_name);
+		if($this->loaded()) return $this;
+
+		foreach ($this->defaultLedger as $ledger) {
+			if($ledger['name']==$id_name){
+				// group id set 
+				$ledger['group_id'] = $this->add('xepan\accounts\Model_Group')->load($ledger['group'])->get('id');
+
+				$this->set($ledger)->save();
+				return $this;
+			}
+		}
+
+		throw $this->exception('Could Not Load Ledger');
+	}
+
+	function check($name){
+		return $this['name']===$name;
+	}
+
+	public $defaultLedger=[
+
+		['name'=>'Miscellaneous Expenses','group'=>'Direct Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Miscellaneous Expenses'],
+		['name'=>'Sales Account','group'=>'Sales','ledger_type'=>'Sales','LedgerDisplayName'=>'Sales Account'],
+		['name'=>'Purchase Account','group'=>'Purchase','ledger_type'=>'Purchase','LedgerDisplayName'=>'Purchase Account'],
+		['name'=>'Round Account','group'=>'IndirectIncome','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
+		['name'=>'Tax Account','group'=>'Service Tax','ledger_type'=>'Tax','LedgerDisplayName'=>'Tax Name'],
+		['name'=>'Discount Allowed','group'=>'Discount Given','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Allowed'],
+		['name'=>'Discount Recieved','group'=>'Discount Received','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Received'],
+		['name'=>'Shipping Account','group'=>'InDirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Shipping Account'],
+		['name'=>'Exchange Rate Different Loss','group'=>'InDirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Exchange Loss'],
+		['name'=>'Exchange Rate Different Gain','group'=>'InDirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
+		['name'=>'Bank Charges','group'=>'InDirect Expenses','ledger_type'=>'Bank','LedgerDisplayName'=>'Bank Charges'],
+		['name'=>'Cash','group'=>'Cash In Hand','ledger_type'=>'Cash','LedgerDisplayName'=>'Cash Account'],
+		['name'=>'Your Default Bank Account','group'=>'Cash In Bank','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account']
+	
+	];	
 
 
 	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate){
@@ -347,211 +380,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		}
 	}
 
-	function loadDefaultLedgersReceivable(){
-		$this->addCondition('name','Accounts Receivable');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectIncome()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;
-	}
-
-	function loadDefaultSalesLedger(){
-		$this->addCondition('name','Sales Account');
-		$this->addCondition('ledger_type','SalesAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootSalesGroup()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;
-	}
-
-	function filterSalesLedger(){
-		$this->addCondition('ledger_type','SalesAccount');
-		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootSalesGroup()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		return $this;
-	}
-
-	function loadDefaultPurchaseLedger(){
-		$this->addCondition('name','Purchase Account');
-		$this->addCondition('ledger_type','PurchaseAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootPurchaseGroup()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;	
-	}
-
-	function filterPurchaseLedger(){
-		$this->addCondition('ledger_type','PurchaseAccount');
-		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootPurchaseGroup()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		return $this;
-	}
-
-	function loadDefaultRoundLedger(){
-		$this->addCondition('name','Round Account');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectIncome()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;
-	}
-
-	function loadDefaultTaxLedger(){
-		$this->addCondition('name','Tax Account');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;
-	}
-
-
-	function loadDefaultDiscountGivenLedger(){
-		$this->addCondition('name','Discount Given');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDirectExpenses()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;
-	}
-
-	function loadDefaultDiscountRecieveLedger(){
-		$this->addCondition('name','Discount Recieve');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectIncome()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;
-	}
-
-	function loadDefaultShippingLedger(){
-		$this->addCondition('name','Shipping Account');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;	
-	}
-
-	function loadDefaultExchangeLoss(){
-		$this->addCondition('name','Exchange Loss');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;	
-	}
-
-	function loadDefaultExchangeGain(){
-		$this->addCondition('name','Exchange Gain');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectIncome()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;	
-	}
-
-	function loadDefaultCashLedger(){
-		$this->addCondition('name','Cash Account');
-		$this->addCondition('ledger_type','CashAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootCashGroup()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;
-	}
-
-	function filterCashLedgers(){
-		$this->addCondition('ledger_type','CashAccount');
-		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootCashGroup()->fieldQuery('id'));
-
-		return $this;
-	}
-
-
-	function loadDefaultBankLedger(){
-		// $this->addCondition('name','Your Default Bank Account');
-		$this->addCondition('ledger_type','BankAccount');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this['name']='Your Default Bank Account';
-			$this->save();
-		}
-
-		return $this;
-	}
-
-	function filterBankLedgers(){
-		$this->addCondition('ledger_type','BankAccount');
-		$this->addCondition('root_group_id',$this->add('xepan\accounts\Model_Group')->loadRootBankGroup()->fieldQuery('id'));
-
-		return $this;
-	}
-
-	function loadDefaultBankChargesLedger(){
-		$this->addCondition('name','Bank Charges');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this->save();
-		}
-
-		return $this;
-	}
-
-	function filterBankCharges(){
-		$this->addCondition('ledger_type','BankCharges');
-		$this->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadIndirectExpenses()->fieldQuery('id'));
-		$this->tryLoadAny();
-
-		if(!$this->loaded()){
-			$this['name'] = 'Bank Charges';
-			$this->save();
-		}
-
-		return $this;
-	}
 
 	function contact(){
 		if($this['contact_id'])
@@ -562,14 +390,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function group(){
 		return $this->ref('group_id');
-	}
-
-	function isSundryDebtor(){
-		return $this->group()->isSundryDebtor();
-	}
-
-	function isSundryCreditor(){
-		return $this->group()->isSundryCreditor();
 	}
 
 	
