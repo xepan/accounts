@@ -63,7 +63,7 @@ class Model_Group extends \xepan\base\Model_Table{
 
 		$data= $this->defaultGroups;
 
-		foreach ($arr as $dg) {
+		foreach ($data as $group) {
 			// balancesheet id set and parent id set if in array
 
 			if($group['parent_group']){
@@ -76,7 +76,7 @@ class Model_Group extends \xepan\base\Model_Table{
 
 			$group['balance_sheet_id'] = $this->add('xepan\accounts\Model_BalanceSheet')->load($group['balance_sheet'])->get('id');
 
-			$this->newInstance()->set($dg)->save();
+			$this->newInstance()->set($group)->save();
 		}
 	}
 
@@ -123,7 +123,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		// Liabilities(Loans & Liabilities)
 		['name'=>'Bank OverDraft','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Loans & Liabilities'],
 		['name'=>'Loans Taken','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Loans & Liabilities'],
-		['name'=>'Provision','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Loans & Liabilities'],
+		['name'=>'Provision (Liabilities)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Loans & Liabilities'],
 		['name'=>'Staff Security','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Loans & Liabilities'],
 
 		// Liabilities(Current Liabilities)
@@ -151,7 +151,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Loan Given','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'Bank FD','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'GoodWill','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
-		['name'=>'Provision','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
+		['name'=>'Provision (Assets)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		
 		// Assets(Deposit Assets)
 		['name'=>'Mortgrage Deposit','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Deposit Assets'],

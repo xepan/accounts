@@ -4,6 +4,11 @@ class page_balancesheet extends \xepan\base\Page{
 	public $title="Account Balance Sheet";
 	function init(){
 		parent::init();
+
+		$this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
+       $this->add('xepan\accounts\Model_Group')->loadDefaults();
+
+       return;
 		
 		// $m = $this->add('xepan\accounts\Model_BSLedger');
 		// $m->addExpression('DR')->set($m->sum('closingBalanceDR'));

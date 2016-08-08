@@ -29,7 +29,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 
 	function loadDefaults(){
 		$data= $this->defaultHeads;
-		foreach ($arr as $dg) {
+		foreach ($data as $dg) {
 			$this->newInstance()->set($dg)->save();
 		}
 	}
@@ -61,7 +61,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		// Liabilities
 		['name'=>'Capital Account','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>1],
 		['name'=>'Loans & Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>2],
-		['name'=>'Current & Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>3],
+		['name'=>'Current Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>3],
 		['name'=>'Sundry Creditor','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>4],
 		['name'=>'Suspense Account','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>5],
 		['name'=>'Profit','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>6],
