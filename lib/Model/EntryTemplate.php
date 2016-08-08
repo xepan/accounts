@@ -142,13 +142,15 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				$transaction['rows']=[];
 
 				foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
+					if(!$form['ledger_'.$row->id]) continue;
+
 					$transaction_row=[];
 					
 					$currency=null;
-					$exchange_rate = null;
+					$exchange_rate = 1.0;
 
 					if($row['is_include_currency']){
-						$currency = $this->add('xepan\accounts\Model_Currency')->load($form['bank_currency_'.$row->id]);
+						$currency = $form['bank_currency_'.$row->id] ;//$this->add('xepan\accounts\Model_Currency')->load($form['bank_currency_'.$row->id]);
 						$exchange_rate = $form['to_exchange_rate_'.$row->id];
 					}
 
@@ -161,16 +163,15 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 					else
 						$transaction_row['side']='DR';
 
-					$transaction_row['ledger'] = $this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]);
-					$transaction_row['acmount'] = $form['amount_'.$row->id];
+					$transaction_row['ledger'] = $form['ledger_'.$row->id];//$this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]);
+					$transaction_row['amount'] = $form['amount_'.$row->id];
 
 					$transaction['rows'][] = $transaction_row;
 				}
 				$data[] = $transaction;
 
-				$this->execute($data);
-			}	
-
+			}
+			$this->execute($data);
 			$form->js()->reload()->univ()->successMessage('Done')->execute();		
 		}
 
@@ -194,6 +195,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				}
 			}
 			$new_transaction->execute();
+
 		}
 	}
 

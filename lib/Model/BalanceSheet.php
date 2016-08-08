@@ -2,8 +2,10 @@
 namespace xepan\accounts;
 
 class Model_BalanceSheet extends \xepan\base\Model_Table{
+	
 	public $table="account_balance_sheet";
 	public $acl=false;
+	
 	function init(){
 		parent::init();
 
