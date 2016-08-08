@@ -6,9 +6,10 @@ class page_balancesheet extends \xepan\base\Page{
 		parent::init();
 
 		$this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
-       $this->add('xepan\accounts\Model_Group')->loadDefaults();
+       	$this->add('xepan\accounts\Model_Group')->loadDefaults();
+       	$this->add('xepan\accounts\Model_Ledger')->loadDefaults();
 
-       return;
+       	return;
 		
 		// $m = $this->add('xepan\accounts\Model_BSLedger');
 		// $m->addExpression('DR')->set($m->sum('closingBalanceDR'));

@@ -103,9 +103,9 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		if(!$employee_for->loaded())
 			throw new \Exception("must pass Employee loaded model", 1);	
 
-		$creditor = $app->add('xepan\accounts\Model_Group')->loadSundryCreditor();
+		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 		
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for,$creditor,"Employee");
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for,$creditor,'Sundry Creditor');
 	}
 
 	//creating customer ledger
@@ -223,7 +223,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		['name'=>'Miscellaneous Expenses','group'=>'Direct Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Miscellaneous Expenses'],
 		['name'=>'Sales Account','group'=>'Sales','ledger_type'=>'Sales','LedgerDisplayName'=>'Sales Account'],
 		['name'=>'Purchase Account','group'=>'Purchase','ledger_type'=>'Purchase','LedgerDisplayName'=>'Purchase Account'],
-		['name'=>'Round Account','group'=>'IndirectIncome','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
+		['name'=>'Round Account','group'=>'InDirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
 		['name'=>'Tax Account','group'=>'Service Tax','ledger_type'=>'Tax','LedgerDisplayName'=>'Tax Name'],
 		['name'=>'Discount Allowed','group'=>'Discount Given','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Allowed'],
 		['name'=>'Discount Recieved','group'=>'Discount Received','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Received'],
@@ -232,7 +232,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		['name'=>'Exchange Rate Different Gain','group'=>'InDirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
 		['name'=>'Bank Charges','group'=>'InDirect Expenses','ledger_type'=>'Bank','LedgerDisplayName'=>'Bank Charges'],
 		['name'=>'Cash','group'=>'Cash In Hand','ledger_type'=>'Cash','LedgerDisplayName'=>'Cash Account'],
-		['name'=>'Your Default Bank Account','group'=>'Cash In Bank','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account']
+		['name'=>'Your Default Bank Account','group'=>'Bank Account','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account']
 	
 	];	
 

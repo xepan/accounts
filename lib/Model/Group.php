@@ -147,7 +147,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		
 		// Assets(Current Assets)
 		['name'=>'Cash In Hand','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
-		['name'=>'Cash In Bank','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
+		['name'=>'Bank Account','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'Loan Given','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'Bank FD','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'GoodWill','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
