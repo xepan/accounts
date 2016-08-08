@@ -8,7 +8,9 @@ class page_custom_accountentries extends \xepan\base\Page {
 	public $title='xEpan Accounts Entries';
 	public $dir='defaultAccount';
     public $namespace = __NAMESPACE__;
+	
 	function page_index(){
+	
 		$entry_template_m = $this->add('xepan\accounts\Model_EntryTemplate');
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-template']);
 		$crud->setModel($entry_template_m,
@@ -52,31 +54,8 @@ class page_custom_accountentries extends \xepan\base\Page {
 				$export_m=$this->add('xepan\accounts\Model_EntryTemplate')->load($p->id);
 					$json=$export_m->exportJson();
 					$p->add('View')->set($json);
-					// $f=$p->add('Form');
-					// $f->addField('line','name')->set(trim($export_m['name']));
-					// $f->addField('text','json_data')->set($json);
-					// $f->addSubmit('Save File')->addClass('btn btn-primary');
-
-					// $path=$this->api->pathfinder->base_location->base_path.'/../vendor/'.str_replace("\\","/",$this->namespace)."/".$this->dir;
-					// if($f->isSubmitted()){
-			  //       	// if  file name exis the update the file content
-
-			  //       	if($f['name'] and file_exists($path."/".$f['name'])){
-			  //       		$filename = $f['name'];
-			  //       	}else{
-					// 		$filename = $f['name'].".json";
-			  //       	}
-			        	
-					// 	$newFileName = $path.'/'.$filename;
-					// 	$newFileContent = $f['json_data'];
-					// 	if(file_put_contents($newFileName,$newFileContent)!=false){
-					// 		return $f->js(true,$f->js()->reload())->univ()->successMessage("File created (".basename($newFileName).")");
-					// 	}else{
-					// 		return $f->js(true,$f->js()->reload())->univ()->errorMessage("Cannot create file (".basename($newFileName).")");
-					// 	}
-			        // }
-
 			});
+
 			$p->addColumn("export", "export", "export", $crud->grid);
 
 			$crud->grid->addHook('formatRow',function($g){
@@ -95,13 +74,24 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 		$temp_tansaction=$entry_template_m->ref('xepan\accounts\EntryTemplateTransaction');
 
-		$crud=$this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-lister']);
+		$crud=$this->add('xepan\hr\CRUD',['grid_class'=>'xepan\accounts\Grid_AccountsBase'],null,['view/grid/account-transaction-lister']);
 		$crud->setModel($temp_tansaction);
+
 		$crud->grid->addColumn('expander','rows');
 
+		if(!$crud->isEditing()){
+			$crud->grid->addHook('formatRow',function($g){
+				if($g->model['is_system_default']){
+					$g->current_row_html['edit'] = " ";
+					$g->current_row_html['delete'] = " ";
+				}
+			});
+		}
 	}
 
 	function page_transactions_rows(){
+
+
 		$transaction_id = $this->api->stickyGET('custom_account_entries_templates_transactions_id');
 		$transaction = $this->add('xepan\accounts\Model_EntryTemplateTransaction');
 		$transaction->load($transaction_id);
@@ -149,7 +139,14 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 			$balancesheet_field=$form->getElement('balance_sheet');
 
-
+		}
+		if(!$crud->isEditing()){
+			$crud->grid->addHook('formatRow',function($g){
+				if($g->model['is_system_default']){
+					$g->current_row_html['edit'] = " ";
+					$g->current_row_html['delete'] = " ";
+				}
+			});
 		}
 	}
 

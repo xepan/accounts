@@ -13,13 +13,20 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$this->addField('name');
 		$this->addField('detail');
 		$this->addField('unique_trnasaction_template_code')->PlaceHolder('If it is default for system, Insert Unique Default Template Transaction Code')->caption('Code')->hint('Place your unique template transaction code ');
-		$this->addField('is_system_default')->type('boolean');
-		$this->addField('is_favourite_menu_lister')->type('boolean');
-		$this->addField('is_merge_transaction')->type('boolean');
+		$this->addField('is_system_default')->type('boolean')->defaultValue(false);
+		$this->addField('is_favourite_menu_lister')->type('boolean')->defaultValue(false);
+		// $this->addField('is_merge_transaction')->type('boolean');
 		$this->hasMany('xepan\accounts\EntryTemplateTransaction','template_id');
 	}
 
-	function manageForm($page, $related_id=null, $related_type=null){
+	
+	function manageForm($page, $related_id=null, $related_type=null, $pre_filled_values=[]){
+		
+		// Pre filled values array format
+		// $pre_filled_values=[
+				// 'transaction_number'=>['transaction_row_number'=>['ledger'=>$ledger,'amount'=>$amount,'currency'=>$currency,'exchange_rate'=>$exchange_rate]],
+		// ]
+
 		$transactions = $this->ref('xepan\accounts\EntryTemplateTransaction');
 
 		$template = $this->add('GiTemplate');
@@ -54,6 +61,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				}	
 				
 			}
+
 			$template->appendHTML('transactions',$transaction_template->render());
 
 		}
@@ -123,24 +131,44 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$form->addSubmit('DO')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
+			$data=[];
 			foreach ($transactions as $trans) {
-				$transaction = $this->add('xepan\accounts\Model_Transaction');
-				$transaction->createNewTransaction($trans['type'], null, $form['date'], $form['narration'],null,null,$related_id, $related_type);
+				$transaction = [];
+				$transaction['type'] = $trans['type'];
+				$transaction['date'] = $form['date'];
+				$transaction['narration'] = $form['narration'];
+				$transaction['related_id'] = $related_id;
+				$transaction['related_type'] = $related_type;
+				$transaction['rows']=[];
 
 				foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
+					$transaction_row=[];
+					
 					$currency=null;
 					$exchange_rate = null;
+
 					if($row['is_include_currency']){
 						$currency = $this->add('xepan\accounts\Model_Currency')->load($form['bank_currency_'.$row->id]);
 						$exchange_rate = $form['to_exchange_rate_'.$row->id];
 					}
 
+					$transaction_row['currency'] = $currency;
+					$transaction_row['exchange_rate'] = $exchange_rate;
+
+
 					if($row['side']=='CR')
-						$transaction->addCreditLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id],$currency,$exchange_rate);
+						$transaction_row['side']='CR';
 					else
-						$transaction->addDebitLedger($this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]),$form['amount_'.$row->id],$currency,$exchange_rate);
+						$transaction_row['side']='DR';
+
+					$transaction_row['ledger'] = $this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]);
+					$transaction_row['acmount'] = $form['amount_'.$row->id];
+
+					$transaction['rows'][] = $transaction_row;
 				}
-				$transaction->execute();
+				$data[] = $transaction;
+
+				$this->execute($data);
 			}	
 
 			$form->js()->reload()->univ()->successMessage('Done')->execute();		
@@ -153,8 +181,20 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 	}
 
-	function execute($data=[]){ //dr=>[['acc'=>'amt'],['acc'=>amt]],cr=>[['acc'=>amt]]
+	function execute($data=[]){ //transaction_no=>[dr=>[['acc'=>$acc,'amt'=>$amt,'currency'=>$curr,'exchange_rate'=>$exchange_rate],['acc'=>$acc ....]],cr=>[['acc'=>...]]]
+		foreach ($data as $transaction) {
+			$new_transaction = $this->add('xepan\accounts\Model_Transaction');
+			$new_transaction->createNewTransaction($transaction['type'],null,$transaction['date'],$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],$transaction['related_id'],$transaction['related_type']);
 
+			foreach ($transaction['rows'] as $row) {
+				if(strtolower($row['side'])=='dr'){
+					$new_transaction->addDebitLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
+				}else{
+					$new_transaction->addCreditLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
+				}
+			}
+			$new_transaction->execute();
+		}
 	}
 
 	function exportJson(){

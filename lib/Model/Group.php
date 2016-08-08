@@ -59,390 +59,62 @@ class Model_Group extends \xepan\base\Model_Table{
 		$this->save();
 	}
 
-	function loadRootCashGroup($load=true){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Cash Account');
-		if($load){
-			$this->tryLoadAny();
-			if(!$this->loaded()){
-				$this->save();
+	function loadDefaults(){
+
+		$data= $this->defaultGroups;
+
+		foreach ($arr as $dg) {
+			// balancesheet id set and parent id set if in array
+
+			if($group['parent_group']){
+				$group['parent_group_id'] = $this->newInstance()->load($group['parent_group'])->get('id');
+			}
+			
+			if($group['root_group']){
+				$group['root_group_id'] = $this->newInstance()->load($group['root_group'])->get('id');
+			}
+
+			$group['balance_sheet_id'] = $this->add('xepan\accounts\Model_BalanceSheet')->load($group['balance_sheet'])->get('id');
+
+			$this->newInstance()->set($dg)->save();
+		}
+	}
+
+	function load($id_name){
+		if(is_numeric($id_name)) return parent::load($id_name);
+		
+		$this->unload();
+
+		$this->tryLoadBy('name',$id_name);
+		if($this->loaded()) return $this;
+
+		foreach ($this->defaultGroups as $group) {
+			if($group['name']==$id_name){
+				// balancesheet id set and parent id set if in array
+				if($group['parent_group']){
+					$group['parent_group_id'] = $this->newInstance()->load($group['parent_group'])->get('id');
+				}
+				
+				if($group['root_group']){
+					$group['root_group_id'] = $this->newInstance()->load($group['root_group'])->get('id');
+				}
+
+				$group['balance_sheet_id'] = $this->add('xepan\accounts\Model_BalanceSheet')->load($group['balance_sheet'])->get('id');
+
+				$this->set($group)->save();
+				return $this;
 			}
 		}
 
-		return $this;	
+		throw $this->exception('Could Not Load Group');
 	}
 
-	function filterCashGroup(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('root_group_id',$this->loadRootCashGroup()->fieldQuery('id'));
-		
-		return $this;	
+	function check($name){
+		return $this['name']===$name;
 	}
 
-	function isCashLedger(){
-		return $this['name'] == "Cash Account";
-	}
-
-	function loadRootBankGroup($load=true){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Bank Account');
-		if($load){
-			$this->tryLoadAny();
-			if(!$this->loaded()){
-				$this->save();
-			}
-		}
-
-		return $this;	
-	}
-
-	function filterBankGroup(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('root_group_id',$this->loadRootBankGroup()->fieldQuery('id'));
-		
-		return $this;	
-	}
-
-	function isBankLedgers(){
-		return $this['name'] == "Bank Accounts";
-	}
-
-	function loadBankOD(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Bank OD')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;
-	}
-
-	function isBankOD(){
-		return $this['name'] == "Bank OD";
-	}
-
-	function loadFDAssets(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','F.D. Assets')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isFDAssets(){
-		return $this['name'] == "F.D. Assets";
-	}
-
-	function loadShareCapital(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Share Capital')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isShareCapital(){
-		return $this['name'] == "Share Capital";
-	}
-
-	function loadDirectExpenses(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadExpenses()->fieldquery('id'));
-		$this->addCondition('name','Direct Expenses')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-		
-		return $this;	
-	}
-
-	function isDirectExpenses(){
-		return $this['name'] == "Direct Expenses";
-	}
-
-	function loadDirectIncome(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadIncome()->fieldquery('id'));
-		$this->addCondition('name','Direct Income')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isDirectIncome(){
-		return $this['name'] == "Direct Income";
-	}
-
-	function loadDutiesAndTaxes(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadDutiesAndTaxes()->fieldquery('id'));
-		$this->addCondition('name','Duties & Taxes')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isDutiesAndTaxes(){
-		return $this['name'] == "Duties & Taxes";
-	}
-
-	function loadFixedAssets(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadFixedAssets()->fieldquery('id'));
-		$this->addCondition('name','Fixed Assets')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isFixedAssets(){
-		return $this['name'] == "Fixed Assets";
-	}
-
-	function loadIndirectExpenses(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadExpenses()->fieldquery('id'));
-		$this->addCondition('name','Indirect Expenses')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isIndirectExpenses(){
-		return $this['name'] == "Indirect Expenses";
-	}
-
-	function loadIndirectIncome(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadIncome()->fieldquery('id'));
-		$this->addCondition('name','Indirect Income')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isIndirectIncome(){
-		return $this['name'] == "Indirect Income";
-	}
-
-	function loadLoanAdvanceAssets(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Loan Advances (Assets)')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isLoanAdvanceAssets(){
-		return $this['name'] == "Loan Advances (Assets)";
-	}
-
-	function loadLoanLiabilities(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentLiabilities()->fieldquery('id'));
-		$this->addCondition('name','Loan (Liabilities)')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isLoanLiabilities(){
-		return $this['name'] == "Loan (Liabilities)";
-	}
-
-	function loadMiscExpensesAssets(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Misc Expenses (Assets)')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isMiscExpensesAssets(){
-		return $this['name'] == "Misc Expenses (Assets)";
-	}
-
-	// function loadProvision(){
-	// 	if($this->loaded())
-	// 		$this->unload();
-	// 	$this->addCondition('balance_sheet_id',$this->add('xAccount/Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-	// 	$this->addCondition('name','Provision')
-	// 		->tryLoadAny();
-	// 	return $this;	
-	// }
-
-	// function isProvision(){
-	// 	return $this['name'] == "Provision";
-	// }
-
-	function loadReserveSurpuls(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Reserve Surpuls')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isReserveSurpuls(){
-		return $this['name'] == "Reserve Surpuls";
-	}
-
-	function loadRetainedEarnings(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Retained Earnings')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isRetainedEarnings(){
-		return $this['name'] == "Retained Earnings";
-	}
-
-	function loadSecuredLoan(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Secured (Loan)')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isSecuredLoan(){
-		return $this['name'] == "Secured (Loan)";
-	}
-
-	function loadSundryCreditor(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentLiabilities()->fieldquery('id'));
-		$this->addCondition('name','Sundry Creditor')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isSundryCreditor(){
-		return $this['name'] == "Sundry Creditor";
-	}
-
-	function loadSundryDebtor(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Sundry Debtor')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-
-		return $this;	
-	}
-
-	function isSundryDebtor(){
-		return $this['name'] == "Sundry Debtor";
-	}
-
-	function loadSuspenseLedger(){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadCurrentAssets()->fieldquery('id'));
-		$this->addCondition('name','Suspense Account')
-		->tryLoadAny();
-		
-		if(!$this->loaded()) $this->save();
-		
-		return $this;	
-	}
-
-
-	function isSuspenseLedger(){
-		return $this['name'] == "Suspense Account";
-	}
-
-	function loadRootSalesGroup($load=true){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadSales()->fieldquery('id'));
-		$this->addCondition('name','Sales');
-		if($load){
-			$this->tryLoadAny();
-			if(!$this->loaded()){
-				$this->save();
-			}
-		}
-		return $this;	
-	}
-
-	function loadRootPurchaseGroup($load=true){
-		if($this->loaded())
-			$this->unload();
-		$this->addCondition('balance_sheet_id',$this->add('xepan\accounts\Model_BalanceSheet')->loadPurchase()->fieldquery('id'));
-		$this->addCondition('name','Purchase');
-		if($load){
-			$this->tryLoadAny();
-			if(!$this->loaded()){
-				$this->save();
-			}
-		}
-		return $this;	
-	}
+	public $defaultGroups=[
+		['name'=>'Capital Account','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Capital Account'],
+	];
 
 }

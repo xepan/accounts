@@ -35,6 +35,10 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 		$this->addField('is_include_currency')->type('boolean');
 
 		$this->addHook('beforeSave',$this);
+
+		$this->addExpression('is_system_default')->set($this->refSQL('template_transaction_id')->fieldQuery('is_system_default'));
+
+		$this->setOrder('id');
 	}
 
 	function beforeSave(){

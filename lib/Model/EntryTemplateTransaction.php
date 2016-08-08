@@ -15,8 +15,11 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 		$this->addField('type');
 		$this->hasMany('xepan\accounts\EntryTemplateTransactionRow','template_transaction_id');
 		
+		$this->addExpression('is_system_default')->set($this->refSQL('template_id')->fieldQuery('is_system_default'));
+
 		$this->is([
 			'type|required'
 			]);
+		$this->setOrder('id');
 	}
 }
