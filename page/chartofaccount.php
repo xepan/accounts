@@ -51,18 +51,20 @@ class page_chartofaccount extends \xepan\base\Page{
 	    if(!is_array($array)) return '';
 	    // echo "working on ";
 	    // var_dump($array);
-
 	    $output = '<ul>';
-	    foreach($array as $item){  
+	    foreach($array as $item){
+	    	if(!isset($item['name'])){
+	    		var_dump($item);
+	    		continue;
+	    	}
 
 	        $output .= '<li>' . $item['name'];
 	        // echo $item['name']. ' -- ';
 	        if(isset($item['groups']) && count($item['groups'])){
-	        	// var_dump($item['groups']);
 	            $output .= $this->make_ulli($item['groups']);
 	        }
 
-	        if(isset($item['ledgers']) && count($item['ledgers']))
+	        if(isset($item['ledgers']) && count($item['ledgers']))	            
 	            $output .= $this->make_ulli($item['ledgers']);
 
 	        $output .= '</li>';
