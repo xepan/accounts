@@ -74,10 +74,10 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 			return  $m->refSQL('ledger_id')->fieldQuery('balance_sheet');
 		});
 
-		$this->addExpression('is_pandl')->set(function($m,$q){
+		$this->addExpression('report_name')->set(function($m,$q){
 			return  $m->add('xepan\accounts\Model_BalanceSheet',['pandl_check'])
 						->addCondition('id',$m->getElement('balance_sheet_id'))
-						->fieldQuery('is_pandl');
+						->fieldQuery('report_name');
 		});
 
 		$this->addExpression('subtract_from')->set(function($m,$q){

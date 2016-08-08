@@ -35,14 +35,14 @@ class page_balancesheet extends \xepan\base\Page{
 		$transactions->addExpression('DR')->set($transactions->dsql()->expr('sum(IFNULL([0],0))+IFNULL([1],0)',[$transactions->getElement('amountDr'), $transactions->getElement('OpeningDRSUM')]));
 		$transactions->addExpression('CR')->set($transactions->dsql()->expr('sum(IFNULL([0],0))',[$transactions->getElement('amountCr')]));
 		$transactions->_dsql()->group('balance_sheet_id');
-		$transactions->addCondition('is_pandl',false);
+		$transactions->addCondition('report_name','BalanceSheet');
 		// $transactions->addCondition('created_at','>=',$fy['start']);
 
 		$pandl = $this->add('xepan\accounts\Model_TransactionRow');
 		$pandl->addExpression('DR')->set($transactions->dsql()->expr('sum(IFNULL([0],0))',[$transactions->getElement('amountDr')]));
 		$pandl->addExpression('CR')->set($transactions->dsql()->expr('sum(IFNULL([0],0))',[$transactions->getElement('amountCr')]));
 		// $pandl->_dsql()->group('balance_sheet_id','group','ledger']);
-		$pandl->addCondition('is_pandl',true);
+		$pandl->addCondition('report_name','Profit & Loss');
 		// $transactions->addCondition('created_at','>=',$fy['start']);
 		// $transactions->addCondition('created_at','<',$naxtday_of_selected_day);
 		$pandl->tryLoadAny();
