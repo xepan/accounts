@@ -5,7 +5,19 @@ class page_balancesheet extends \xepan\base\Page{
 	function init(){
 		parent::init();
 		
+		// $m = $this->add('xepan\accounts\Model_BSLedger');
+		// $m->addExpression('DR')->set($m->sum('closingBalanceDR'));
+		// $m->addExpression('CR')->set($m->sum('closingBalanceCR'));
+
+		// $m->_dsql()->group($m->dsql()->expr('[0]',[$m->getElement('balance_sheet_id')]));
+
+		// $g = $this->add('Grid');
+		// $g->setModel($m,['balance_sheet','OpeningBalanceDr','PreviousTransactionDR','OpeningBalanceDrOnDate','OpeningBalanceCrOnDate','transactionsDR','transactionsCR','DR','CR'])
+		// ->debug()
+		// ;
 		
+		// return;
+
 		$f=$this->add('Form',null,'form',['form/stacked']);
 		$c=$f->add('Columns')->addClass('row xepan-push');
 		$l=$c->addColumn(6)->addClass('col-md-6');
@@ -17,7 +29,10 @@ class page_balancesheet extends \xepan\base\Page{
 
 		$transactions = $this->add('xepan\accounts\Model_TransactionRow');
 
-		$transactions->addExpression('DR')->set($transactions->dsql()->expr('sum(IFNULL([0],0))',[$transactions->getElement('amountDr')]));
+		$transactions->addExpression('OpeningDRSUM')->set($transactions->refSQL('ledger_id')->sum('OpeningBalanceDr'));
+		// $transactions->addExpression('OpeningCRSUM')->set($transactions->dsql()->expr('sum(IFNULL([0],0))',[$transactions->getElement('amountDr')]));
+		
+		$transactions->addExpression('DR')->set($transactions->dsql()->expr('sum(IFNULL([0],0))+IFNULL([1],0)',[$transactions->getElement('amountDr'), $transactions->getElement('OpeningDRSUM')]));
 		$transactions->addExpression('CR')->set($transactions->dsql()->expr('sum(IFNULL([0],0))',[$transactions->getElement('amountCr')]));
 		$transactions->_dsql()->group('balance_sheet_id');
 		$transactions->addCondition('is_pandl',false);
