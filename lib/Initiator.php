@@ -199,6 +199,7 @@ class Initiator extends \Controller_Addon {
        	/*Default Balance Sheet Heads and groups*/
        $this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
        $this->add('xepan\accounts\Model_Group')->loadDefaults();
+       $this->add('xepan\accounts\Model_Ledger')->loadDefaults();
        	
 	}
 
