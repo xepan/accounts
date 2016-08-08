@@ -21,6 +21,10 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 
 		$this->hasMany('xepan\accounts\Group','balance_sheet_id');
 
+		$this->is([
+				'name|to_trim|unique_in_epan'
+			]);
+
 	}
 
 	function loadDefaults(){
