@@ -51,14 +51,20 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		});
 
 		$this->addExpression('ClosingBalanceDr')->set(function($m,$q){
-			return $q->expr('IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0)',[
+			return $q->expr('
+				IF(report_name="BalanceSheet",
+				IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0),
+				IFNULL([2],0))',[
 					$m->getElement('OpeningBalanceDr'),
 					$m->getElement('PreviousTransactionsDr'),
 					$m->getElement('TransactionsDr')
 				]);
 		});
 		$this->addExpression('ClosingBalanceCr')->set(function($m,$q){
-			return $q->expr('IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0)',[
+			return $q->expr('
+				IF(report_name="BalanceSheet",
+				IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0),
+				IFNULL([2],0))',[
 					$m->getElement('OpeningBalanceCr'),
 					$m->getElement('PreviousTransactionsCr'),
 					$m->getElement('TransactionsCr')
