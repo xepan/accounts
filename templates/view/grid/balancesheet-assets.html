@@ -15,8 +15,8 @@
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td><span>{$name}</span></td>
-          <td><span>{$assets_amount}                      	  </span></td>{/}
+          <td><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="xepan-accounts-bs-group">{$name}</span></td>
+          <td><span>{$amount}                      	  </span></td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">

@@ -71,27 +71,15 @@ class page_balancesheet extends \xepan\base\Page{
 			$right[] = ['name'=>'Loss','amount'=>abs($loss)];
 		}
 
-		// $bsbalancesheet_l->addCondition('is_left',true);
-		$grid_l = $this->add('xepan\hr\Grid',null,'balancesheet_liablity');
+		$grid_l = $this->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
 		$grid_l->setSource($left);
-		$grid_l->addColumn('name');
-		$grid_l->addColumn('amount');
 
-		$grid_l->removeColumn('id');
-
-		$grid_a = $this->add('xepan\hr\Grid',null,'balancesheet_assets');
+		$grid_a = $this->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
 		$grid_a->setSource($right);
-		$grid_a->addColumn('name');
-		$grid_a->addColumn('amount');
-		
-		$grid_a->removeColumn('id');
-		
-		// $grid->addHook('formatRow',function($g){		
-		// 	if($g->model['positive_side'] == 'LT'){
-		// 		$g->current_row['left_side'] = $g->model['name'];
-		// 		$g->current_row['liablity_amount'] = $g->model['name'];
-		// 	}	
-		// });
+	
+        $this->on('click','.xepan-accounts-bs-group',function($js,$data){
+            return $js->univ()->redirect($this->app->url('xepan_accounts_bstogroups',['bs_id'=>$data['id']]));
+        });
 	}
 
 	function defaultTemplate(){
