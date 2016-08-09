@@ -8,10 +8,10 @@ class page_bstogroup extends \xepan\base\Page{
 		parent::init();
 				
 		$bs_id = $this->api->stickyGET('bs_id');
-		$to_date = $this->api->stickyGET('to_date');
 		$from_date = $this->api->stickyGET('from_date');
+		$to_date = $this->api->stickyGET('to_date');
 		
-		$bs_group = $this->add('xepan\accounts\Model_BSGroup');
+		$bs_group = $this->add('xepan\accounts\Model_BSGroup',['from_date'=>$from_date,'to_date'=>$to_date]);
 		$bs_group->addCondition('balance_sheet_id',$bs_id);
 
 		$grid = $this->add('xepan\hr\Grid',null,null,['view\grid\bstogroup']);

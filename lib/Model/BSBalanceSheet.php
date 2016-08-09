@@ -39,14 +39,14 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 			$transaction =  $m->add('xepan\accounts\Model_TransactionRow');
 			return $transaction->addCondition('balance_sheet_id',$q->getField('id'))
 								->addCondition('created_at','>=',$this->from_date)
-								->addCondition('created_at','<',$this->app->nextDate($this->from_date))
+								->addCondition('created_at','<',$this->app->nextDate($this->to_date))
 								->sum($q->expr('IFNULL([0],0)',[$transaction->getElement('amountDr')]));
 		});
 		$this->addExpression('TransactionsCr')->set(function($m,$q){
 			$transaction =  $m->add('xepan\accounts\Model_TransactionRow');
 			return $transaction->addCondition('balance_sheet_id',$q->getField('id'))
 								->addCondition('created_at','>=',$this->from_date)
-								->addCondition('created_at','<',$this->app->nextDate($this->from_date))
+								->addCondition('created_at','<',$this->app->nextDate($this->to_date))
 								->sum($q->expr('IFNULL([0],0)',[$transaction->getElement('amountCr')]));
 		});
 

@@ -13,40 +13,40 @@ class Model_BSGroup extends Model_Group{
 
 		$this->addExpression('OpeningBalanceDr')->set(function($m,$q){
 			$ledger = $m->add('xepan\accounts\Model_Ledger');
-			return $ledger->addCondition('group_path','like',$q->getField('path').'%')
+			return $ledger->addCondition('group_path','like',$q->expr('CONCAT([0],"%")',[$q->getField('path')]))
 						->sum($q->expr('IFNULL([0],0)',[$ledger->getElement('OpeningBalanceDr')]));
 		});
 		$this->addExpression('OpeningBalanceCr')->set(function($m,$q){
 			$ledger = $m->add('xepan\accounts\Model_Ledger');
-			return $ledger->addCondition('group_path','like',$q->getField('path').'%')
+			return $ledger->addCondition('group_path','like',$q->expr('CONCAT([0],"%")',[$q->getField('path')]))
 						->sum($q->expr('IFNULL([0],0)',[$ledger->getElement('OpeningBalanceCr')]));
 		});
 
 		$this->addExpression('PreviousTransactionsDr')->set(function($m,$q){
 			$transaction =  $m->add('xepan\accounts\Model_TransactionRow');
-			return $transaction->addCondition('group_path','like',$q->getField('path').'%')
+			return $transaction->addCondition('group_path','like',$q->expr('CONCAT([0],"%")',[$q->getField('path')]))
 								->addCondition('created_at','<',$this->from_date)
 								->sum($q->expr('IFNULL([0],0)',[$transaction->getElement('amountDr')]));
 		});
 		$this->addExpression('PreviousTransactionsCr')->set(function($m,$q){
 			$transaction =  $m->add('xepan\accounts\Model_TransactionRow');
-			return $transaction->addCondition('group_path','like',$q->getField('path').'%')
+			return $transaction->addCondition('group_path','like',$q->expr('CONCAT([0],"%")',[$q->getField('path')]))
 								->addCondition('created_at','<',$this->from_date)
 								->sum($q->expr('IFNULL([0],0)',[$transaction->getElement('amountCr')]));
 		});
 
 		$this->addExpression('TransactionsDr')->set(function($m,$q){
 			$transaction =  $m->add('xepan\accounts\Model_TransactionRow');
-			return $transaction->addCondition('group_path','like',$q->getField('path').'%')
+			return $transaction->addCondition('group_path','like',$q->expr('CONCAT([0],"%")',[$q->getField('path')]))
 								->addCondition('created_at','>=',$this->from_date)
-								->addCondition('created_at','<',$this->app->nextDate($this->from_date))
+								->addCondition('created_at','<',$this->app->nextDate($this->to_date))
 								->sum($q->expr('IFNULL([0],0)',[$transaction->getElement('amountDr')]));
 		});
 		$this->addExpression('TransactionsCr')->set(function($m,$q){
 			$transaction =  $m->add('xepan\accounts\Model_TransactionRow');
-			return $transaction->addCondition('group_path','like',$q->getField('path').'%')
+			return $transaction->addCondition('group_path','like',$q->expr('CONCAT([0],"%")',[$q->getField('path')]))
 								->addCondition('created_at','>=',$this->from_date)
-								->addCondition('created_at','<',$this->app->nextDate($this->from_date))
+								->addCondition('created_at','<',$this->app->nextDate($this->to_date))
 								->sum($q->expr('IFNULL([0],0)',[$transaction->getElement('amountCr')]));
 		});
 
