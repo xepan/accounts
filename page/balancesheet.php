@@ -103,8 +103,10 @@ class page_balancesheet extends \xepan\base\Page{
 
 		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
 		$grid_l->setSource($left);
-
+		$grid_l->template->trySet('lheading','Liablities');
+		
 		$grid_a = $view->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
+		$grid_a->template->trySet('rheading','Assets');
 		$grid_a->setSource($right);
 	
         $view->js('click')->_selector('.xepan-accounts-bs-group')->univ()->location([$this->app->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->data('id'),'from_date'=>$from_date,'to_date'=>$to_date]);

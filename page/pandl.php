@@ -72,17 +72,19 @@ class page_pandl extends \xepan\base\Page{
 		}
 
 		if($gross_profit >= 0){
-			$left[] = ['name'=>'Profit','amount'=>abs($gross_profit)];	
+			$left[] = ['name'=>'Gross Profit','amount'=>abs($gross_profit)];	
 		}
 
 		if($gross_loss > 0){
-			$right[] = ['name'=>'Loss','amount'=>abs($gross_loss)];
+			$right[] = ['name'=>'Gross Loss','amount'=>abs($gross_loss)];
 		}
 
 		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
+		$grid_l->template->trySet('lheading','Expenses\Loss');
 		$grid_l->setSource($left);
 
 		$grid_a = $view->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
+		$grid_a->template->trySet('rheading','Income\Profit');
 		$grid_a->setSource($right);
 	
         $view->js('click')->_selector('.xepan-accounts-bs-group')->univ()->location([$this->app->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->data('id'),'from_date'=>$from_date,'to_date'=>$to_date]);
