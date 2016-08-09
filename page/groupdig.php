@@ -9,6 +9,9 @@ class page_groupdig extends \xepan\base\Page{
 		parent::init();
 
 		$group_id = $this->api->stickyGET('group_id');
+		$to_date = $this->api->stickyGET('to_date');
+		$from_date = $this->api->stickyGET('from_date');
+
 		$bs_group = $this->add('xepan\accounts\Model_BSGroup');
 		$bs_group->addCondition('parent_group_id',$group_id);
 
@@ -27,12 +30,18 @@ class page_groupdig extends \xepan\base\Page{
 		$grid = $this->add('xepan\hr\Grid',null,null,['view\grid\subgroupandledger']);
 		$grid->setSource($subgroupandledger);
 
-		$this->on('click','.xepan-accounts-bs-group-ledger',function($js,$data){
+		$g = $this->add('xepan\accounts\Model_BSGroup')->load($group_id);
+
+		$grid->template->trySet('parent',$g['name']);
+		$grid->template->trySet('from_date',$from_date);
+		$grid->template->trySet('to_date',$to_date);
+
+		$this->on('click','.xepan-accounts-bs-group-ledger',function($js,$data)use($from_date,$to_date){
             if($data['type'] == 'ledger')
-            	return $js->univ()->redirect($this->app->url('xepan_accounts_statement',['ledger_id'=>$data['id']]));
+            	return $js->univ()->redirect($this->app->url('xepan_accounts_statement',['ledger_id'=>$data['id'],'from_date'=>$from_date,'to_date'=>$to_date]));
             
             if($data['type'] == 'group')
-            	return $js->univ()->redirect($this->app->url('xepan_accounts_groupdig',['group_id'=>$data['id']]));
+            	return $js->univ()->redirect($this->app->url('xepan_accounts_groupdig',['group_id'=>$data['id'],'from_date'=>$from_date,'to_date'=>$to_date]));
         });	
 	}
 }

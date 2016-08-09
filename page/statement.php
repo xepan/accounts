@@ -6,7 +6,9 @@ class page_statement extends \xepan\base\Page {
 	function init(){
 		parent::init();
 
-		 $ledger_id= $this->api->stickyGET('ledger_id')?:0;
+		$ledger_id= $this->api->stickyGET('ledger_id')?:0;
+		$to_date = $this->api->stickyGET('to_date');
+		$from_date = $this->api->stickyGET('from_date');
 
 		$form=$this->add('Form',null,null);
 		$form->setLayout('view/form/actstatement-grid-info-form');
@@ -21,8 +23,9 @@ class page_statement extends \xepan\base\Page {
 			$account_field->setModel('xepan\accounts\Ledger');
 		}
 
-		$form->addField('DatePicker','from_date');
-		$form->addField('DatePicker','to_date');
+		$form->addField('DatePicker','from_date')->set($from_date);
+		$form->addField('DatePicker','to_date')->set($to_date);
+		
 		$form->addSubmit('Get Statement')->addClass('btn btn-primary');
 
 		$grid = $this->add('xepan\accounts\Grid_AccountsBase',['no_records_message'=>'No account statement found'],null,['view/accountstatement-grid']);
