@@ -5,9 +5,19 @@ class page_balancesheet extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
+		$model_balancesheet_l =$this->add('xepan\accounts\Model_BSBalanceSheet');
+		$model_balancesheet_l->addCondition('report_name','BalanceSheet');
+		$model_balancesheet_l->addCondition('is_left',true);
 
-		$g = $this->add('Grid');
-		$g->setModel('xepan\accounts\BSBalanceSheet');
+		$model_balancesheet_r =$this->add('xepan\accounts\Model_BSBalanceSheet');
+		$model_balancesheet_r->addCondition('report_name','BalanceSheet');
+		$model_balancesheet_r->addCondition('is_left',false);
+
+		$gl = $this->add('Grid');
+		$gl->setModel($model_balancesheet_l);
+
+		$gr = $this->add('Grid');
+		$gr->setModel($model_balancesheet_r);
 		return;
 
 		$f=$this->add('Form',null,'form',['form/stacked']);
