@@ -15,11 +15,13 @@ class page_balancesheet extends \xepan\base\Page{
 		
 		$bsbalancesheet_l = $this->add('xepan\accounts\Model_BSBalanceSheet');
 		$bsbalancesheet_l->addCondition('report_name','BalanceSheet');
+		$bsbalancesheet_l->addCondition('is_left',true);
 		$grid_l = $this->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
 		$grid_l->setModel($bsbalancesheet_l);
 
 		$bsbalancesheet_a = $this->add('xepan\accounts\Model_BSBalanceSheet');
 		$bsbalancesheet_a->addCondition('report_name','BalanceSheet');
+		$bsbalancesheet_l->addCondition('is_left',false);
 		$grid_a = $this->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
 		$grid_a->setModel($bsbalancesheet_a);
 		
