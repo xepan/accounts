@@ -12,19 +12,79 @@ class page_balancesheet extends \xepan\base\Page{
 		$l->addField('DatePicker','from_date');
 		$r->addField('DatePicker','to_date');
 		$f->addSubmit('Filter')->addClass('btn btn-primary btn-block');
-		
-		$bsbalancesheet_l = $this->add('xepan\accounts\Model_BSBalanceSheet');
-		$bsbalancesheet_l->addCondition('report_name','BalanceSheet');
-		$bsbalancesheet_l->addCondition('is_left',true);
-		$grid_l = $this->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
-		$grid_l->setModel($bsbalancesheet_l);
 
-		$bsbalancesheet_a = $this->add('xepan\accounts\Model_BSBalanceSheet');
-		$bsbalancesheet_a->addCondition('report_name','BalanceSheet');
-		$bsbalancesheet_l->addCondition('is_left',false);
-		$grid_a = $this->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
-		$grid_a->setModel($bsbalancesheet_a);
+		$from_date = '1970-01-01';
+		$to_date = '2017-01-01';
 		
+		$bsbalancesheet = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
+		$bsbalancesheet->addCondition('report_name','BalanceSheet');
+
+		$left=[];
+		$right=[];
+
+		$left_sum=0;
+		$right_sum=0;
+
+		foreach ($bsbalancesheet as $bs) {
+			if($bs['subtract_from']=='CR'){
+				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
+			}else{
+				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
+			}
+			if($amount >=0 && $bs['positive_side']=='LT'){
+				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount)];
+				$left_sum += abs($amount);
+			}else{
+				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount)];
+				$right_sum += abs($amount);
+			}
+		}
+		
+		// get Trading
+
+		// Add P&L
+		$profit = 0;
+		$loss=0;
+		$pandl = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
+		$pandl->addCondition('report_name','Profit & Loss');
+
+		foreach ($pandl as $pl) {
+			if($pl['subtract_from']=='CR'){
+				$amount  = $pl['ClosingBalanceCr'] - $pl['ClosingBalanceDr'];
+			}else{
+				$amount  = $pl['ClosingBalanceDr'] - $pl['ClosingBalanceCr'];
+			}
+			if($amount >=0 && $pl['positive_side']=='LT'){
+				$left_sum += abs($amount);
+				$profit += abs($amount);
+			}else{
+				$right_sum += abs($amount);
+				$loss += abs($amount);
+			}
+		}
+
+		if($profit >= 0){
+			$left[] = ['name'=>'Profit','amount'=>abs($profit)];	
+		}
+
+		if($loss > 0){
+			$right[] = ['name'=>'Loss','amount'=>abs($loss)];
+		}
+
+		// $bsbalancesheet_l->addCondition('is_left',true);
+		$grid_l = $this->add('xepan\hr\Grid',null,'balancesheet_liablity');
+		$grid_l->setSource($left);
+		$grid_l->addColumn('name');
+		$grid_l->addColumn('amount');
+
+		$grid_l->removeColumn('id');
+
+		$grid_a = $this->add('xepan\hr\Grid',null,'balancesheet_assets');
+		$grid_a->setSource($right);
+		$grid_a->addColumn('name');
+		$grid_a->addColumn('amount');
+		
+		$grid_a->removeColumn('id');
 		
 		// $grid->addHook('formatRow',function($g){		
 		// 	if($g->model['positive_side'] == 'LT'){

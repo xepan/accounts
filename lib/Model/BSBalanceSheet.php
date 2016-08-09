@@ -74,5 +74,7 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 				]);
 		});
 
+		$this->setOrder('order');
+
 	}
 }
