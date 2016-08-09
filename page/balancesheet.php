@@ -109,7 +109,6 @@ class page_balancesheet extends \xepan\base\Page{
 		$grid_a->template->trySet('rheading','Assets');
 		$grid_a->setSource($right);
 	
-        $view->js('click')->_selector('.xepan-accounts-bs-group')->univ()->location([$this->app->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->data('id'),'from_date'=>$from_date,'to_date'=>$to_date]);
-
+        $view->js('click')->_selector('.xepan-accounts-bs-group')->univ()->frameURL('BalanceSheet Head Groups',[$this->api->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
 	}
 }
