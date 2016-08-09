@@ -5,10 +5,11 @@ class page_balancesheet extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
-		$this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
-		$this->add('xepan\accounts\Model_Group')->loadDefaults();
-		$this->add('xepan\accounts\Model_Ledger')->loadDefaults();
-		
+
+		$g = $this->add('Grid');
+		$g->setModel('xepan\accounts\BSBalanceSheet');
+		return;
+
 		$f=$this->add('Form',null,'form',['form/stacked']);
 		$c=$f->add('Columns')->addClass('row xepan-push');
 		$l=$c->addColumn(6)->addClass('col-md-6');

@@ -16,6 +16,7 @@ class Model_Group extends \xepan\base\Model_Table{
 
 		$this->addField('name')->caption('Group Name')->mandatory(true)->sortable(true);
 		$this->addField('created_at')->type('date')->defaultValue(date('Y-m-d'))->sortable(true);
+		$this->addField('path')->type('text')->system(true);
 
 
 		$this->hasMany('xepan\accounts\Ledger','group_id');
@@ -29,7 +30,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		$this->hasMany('xepan\accounts\Group','root_group_id',null,'RootGroup');
 
 		$this->addHook('beforeDelete',[$this,'checkLedgerExistance']);
-		$this->addHook('afterSave',[$this,'manageRootGroupId']);
+		$this->addHook('afterSave',[$this,'manageRootGroupIdAndPath']);
 		//$this->add('dynamic_model/Controller_AutoCreator');
 	}
 
@@ -39,11 +40,16 @@ class Model_Group extends \xepan\base\Model_Table{
 			throw $this->exception('Cannot Delete, First Delete Ledgers');
 	}
 
-	function manageRootGroupId(){
-		if(!$this['parent_group_id']) 
+	function manageRootGroupIdAndPath(){
+		if(!$this['parent_group_id']){
 			$this['root_group_id']= $this->id;
-		else
-			$this['root_group_id']= $this->ref('parent_group_id')->get('root_group_id');
+			$this['path']= '.'.$this->id.'.';
+		}
+		else{
+			$parent= $this->ref('parent_group_id');
+			$this['root_group_id']= $parent['root_group_id'];
+			$this['path']= $parent['path'].$this->id.'.';
+		}
 		$this->save();
 	}
 

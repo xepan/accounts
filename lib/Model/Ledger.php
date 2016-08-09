@@ -58,6 +58,11 @@ class Model_Ledger extends \xepan\base\Model_Table{
 					->fieldQuery('id');
 		});
 
+		$this->addExpression('group_path')->set(function($m,$q){
+			return $this->add('xepan\accounts\Model_Group',['table_alias'=>'group_path'])
+					->addCondition('id',$m->getElement('group_id'))
+					->fieldQuery('path');
+		});
 
 		$this->addExpression('CurrentBalanceDr')->set(function($m,$q){
 			return $m->refSQL('TransactionRows')->sum('amountDr');

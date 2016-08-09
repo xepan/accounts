@@ -58,6 +58,10 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 			return $m->refSQL('ledger_id')->fieldQuery('group');
 		});
 
+		$this->addExpression('group_path')->set(function($m,$q){
+			return $m->refSQL('ledger_id')->fieldQuery('group_path');
+		});
+
 		$this->addExpression('root_group_id')->set(function($m,$q){
 			return $m->refSQL('ledger_id')->fieldQuery('root_group_id');
 		});
