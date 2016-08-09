@@ -15,7 +15,7 @@ class page_bstogroup extends \xepan\base\Page{
 		$grid->setModel($bs_group);
 
 		$this->on('click','.xepan-accounts-bs-subgroup',function($js,$data){
-            return $js->univ()->redirect($this->app->url('xepan_accounts_bstogroup',['bs_id'=>$data['id']]));
+            return $js->univ()->redirect($this->app->url('xepan_accounts_groupdig',['group_id'=>$data['id']]));
         });
 	}
 }
