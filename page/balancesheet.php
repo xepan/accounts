@@ -32,10 +32,10 @@ class page_balancesheet extends \xepan\base\Page{
 				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
 			}
 			if($amount >=0 && $bs['positive_side']=='LT'){
-				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount)];
+				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
 				$left_sum += abs($amount);
 			}else{
-				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount)];
+				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
 				$right_sum += abs($amount);
 			}
 		}

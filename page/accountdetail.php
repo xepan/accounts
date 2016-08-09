@@ -10,6 +10,7 @@ class page_accountdetail extends \xepan\base\Page{
 		parent::init();
 		$this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
         $this->add('xepan\accounts\Model_Group')->loadDefaults();
+        $this->add('xepan\accounts\Model_Ledger')->loadDefaults();
 		return;
 
 	$data =[
