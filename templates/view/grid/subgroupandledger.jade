@@ -59,4 +59,18 @@
                     </td>
                     {/}{/}
             {/}
+        .row
+            .main-box-body.clearfix.table
+                table.table.user-list.table-hover(style="width:100%")
+                    thead
+                        th(style="width:40%;")
+                        th(style="width:28%;")
+                        th(style="width:27%;")
+                    tbody
+                        tr(class="{$odd_even}" data-id="{$id}")
+                            td
+                            td
+                                {$dr}
+                            td
+                                {$cr}
         {$Paginator}
