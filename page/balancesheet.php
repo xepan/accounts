@@ -50,9 +50,31 @@ class page_balancesheet extends \xepan\base\Page{
 		
 		// get Trading
 
+		$gross_profit =0;
+		$gross_loss = 0;
+
+		$trade = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
+		$trade->addCondition('report_name','Trading');
+
+		foreach ($trade as $tr) {
+			if($tr['subtract_from']=='CR'){
+				$amount  = $tr['ClosingBalanceCr'] - $tr['ClosingBalanceDr'];
+			}else{
+				$amount  = $tr['ClosingBalanceDr'] - $tr['ClosingBalanceCr'];
+			}
+			if($amount >=0 && $tr['positive_side']=='LT'){
+				$left_sum += abs($amount);
+				$gross_profit += abs($amount);
+			}else{
+				$right_sum += abs($amount);
+				$gross_loss += abs($amount);
+			}
+		}
+
+
 		// Add P&L
-		$profit = 0;
-		$loss=0;
+		$profit = $gross_profit;
+		$loss=$gross_loss;
 		$pandl = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
 		$pandl->addCondition('report_name','Profit & Loss');
 
