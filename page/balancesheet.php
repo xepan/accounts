@@ -17,7 +17,7 @@ class page_balancesheet extends \xepan\base\Page{
 		$to_date = '2017-01-01';
 		
 		$bsbalancesheet = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
-		$bsbalancesheet->addCondition('report_name','BalanceSheet');
+		// $bsbalancesheet->addCondition('report_name','BalanceSheet');
 
 		$left=[];
 		$right=[];
