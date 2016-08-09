@@ -5,7 +5,7 @@ class page_balancesheet extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
-		$f=$this->add('Form',null,'form',['form/stacked']);
+		$f=$this->add('Form',null,null,['form/stacked']);
 		$c=$f->add('Columns')->addClass('row xepan-push');
 		$l=$c->addColumn(6)->addClass('col-md-6');
 		$r=$c->addColumn(6)->addClass('col-md-6');
@@ -13,11 +13,15 @@ class page_balancesheet extends \xepan\base\Page{
 		$r->addField('DatePicker','to_date');
 		$f->addSubmit('Filter')->addClass('btn btn-primary btn-block');
 
-		$from_date = '1970-01-01';
-		$to_date = '2017-01-01';
-		
-		$bsbalancesheet = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
-		// $bsbalancesheet->addCondition('report_name','BalanceSheet');
+		$view = $this->add('View',null,null,['page/balancesheet']);
+		$view_url = $this->api->url(null,['cut_object'=>$view->name]);
+
+		if($f->isSubmitted()){
+			return $view->js()->reload(['from_date'=>$f['from_date'],'to_date'=>$f['to_date']],null,$view_url);
+		}
+
+		$bsbalancesheet = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
+		$bsbalancesheet->addCondition('report_name','BalanceSheet');
 
 		$left=[];
 		$right=[];
@@ -45,7 +49,7 @@ class page_balancesheet extends \xepan\base\Page{
 		// Add P&L
 		$profit = 0;
 		$loss=0;
-		$pandl = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
+		$pandl = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
 		$pandl->addCondition('report_name','Profit & Loss');
 
 		foreach ($pandl as $pl) {
@@ -71,18 +75,14 @@ class page_balancesheet extends \xepan\base\Page{
 			$right[] = ['name'=>'Loss','amount'=>abs($loss)];
 		}
 
-		$grid_l = $this->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
+		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
 		$grid_l->setSource($left);
 
-		$grid_a = $this->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
+		$grid_a = $view->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
 		$grid_a->setSource($right);
 	
-        $this->on('click','.xepan-accounts-bs-group',function($js,$data){
+        $view->on('click','.xepan-accounts-bs-group',function($js,$data){
             return $js->univ()->redirect($this->app->url('xepan_accounts_bstogroup',['bs_id'=>$data['id']]));
         });
-	}
-
-	function defaultTemplate(){
-		return ['page/balancesheet'];
 	}
 }

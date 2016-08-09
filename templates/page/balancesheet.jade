@@ -1,21 +1,9 @@
-div(id="{$_name}")  
-	.main-box
-		.main-box-body.clearfix
-			.xepan-push
-			.row.xepan-push
-				{$form}
-		.row
-			.col-md-6
-				{$balancesheet_liablity}
-			.col-md-6 	
-				{$balancesheet_assets}
-		
-		.row.panel.panel-default
-			.col-md-6
-				span Total : {$total_l}
-			.col-md-6 	
-				span Total : {$total_a}
-
+div(id="{$_name}")
+	.row
+		.col-md-6
+			{$balancesheet_liablity}
+		.col-md-6 	
+			{$balancesheet_assets}
 
 style.
 	.atk-cells {
