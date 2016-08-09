@@ -17,14 +17,14 @@ class page_groupdig extends \xepan\base\Page{
 
 		$subgroupandledger = [];
 		foreach ($bs_group as $group){
-			$subgroupandledger[] = ['name'=>$group['name'],'type'=>'group','id'=>$group['id'],'class'=>'-sub-group','balancecr'=>$group['ClosingBalanceCr'],'balancedr'=>$group['ClosingBalanceDr']]; 
+			$subgroupandledger[] = ['name'=>$group['name'],'type'=>'group','id'=>$group['id'],'class'=>'xepan-accounts-sub-group','balancecr'=>$group['ClosingBalanceCr'],'balancedr'=>$group['ClosingBalanceDr']]; 
 		}
 		
 		$bs_ledger = $this->add('xepan\accounts\Model_BSLedger');
 		$bs_ledger->addCondition('group_id',$group_id);
 
 		foreach ($bs_ledger as $ledger){
-			$subgroupandledger[] = ['name'=>$ledger['name'],'type'=>'ledger','id'=>$ledger['id'],'class'=>'-ledger','balancecr'=>$ledger['ClosingBalanceCr'],'balancedr'=>$ledger['ClosingBalanceDr']]; 
+			$subgroupandledger[] = ['name'=>$ledger['name'],'type'=>'ledger','id'=>$ledger['id'],'class'=>'xepan-accounts-ledger','balancecr'=>$ledger['ClosingBalanceCr'],'balancedr'=>$ledger['ClosingBalanceDr']]; 
 		}
 
 		$grid = $this->add('xepan\hr\Grid',null,null,['view\grid\subgroupandledger']);
@@ -36,7 +36,7 @@ class page_groupdig extends \xepan\base\Page{
 		$grid->template->trySet('from_date',$from_date);
 		$grid->template->trySet('to_date',$to_date);
 
-        $this->js('click')->_selector('.xepan-accounts-bs-ledger')->univ()->frameURL('Account Statement',[$this->api->url('xepan_accounts_statement'),'ledger_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);	
-        $this->js('click')->_selector('.xepan-accounts-bs-sub-group')->univ()->frameURL('Groups And Ledger',[$this->api->url('xepan_accounts_groupdig'),'group_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);	
+        $this->js('click')->_selector('.xepan-accounts-ledger')->univ()->frameURL('Account Statement',[$this->api->url('xepan_accounts_statement'),'ledger_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);	
+        $this->js('click')->_selector('.xepan-accounts-sub-group')->univ()->frameURL('Groups And Ledger',[$this->api->url('xepan_accounts_groupdig'),'group_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);	
 	}
 }
