@@ -135,6 +135,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		// Liabilities(Current Liabilities)
 		['name'=>'TDS Payable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
 		['name'=>'Service Tax','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
+		['name'=>'Tax Payable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
 		['name'=>'Provident Fund','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
 		
 		// Liabilities(Sundry Creditor)
@@ -170,8 +171,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		// Trading LT
 		['name'=>'Opening Stock','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Opening Stock'],
 		['name'=>'Purchase','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Purchase'],
-		['name'=>'Carriage Inward','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Carriage Inward'],
-		['name'=>'Wages','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Wages'],
+		['name'=>'InDirect Expenses For Sale','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'InDirect Expenses For Sale'],
 		['name'=>'Sales Returns','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Sales Returns'],
 				
 		// Trading RT

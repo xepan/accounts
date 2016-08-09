@@ -163,7 +163,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		throw new \Exception("must loaded taxation", 1);
 
 	$ledger = $this->add('xepan\accounts\Model_Ledger');
-	$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->loadDutiesAndTaxes()->get('id'));
+	$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->load("Tax Payable")->get('id'));
 	$ledger->addCondition('ledger_type',$tax_obj['name']);
 
 	$ledger->tryLoadAny();
@@ -230,13 +230,13 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		['name'=>'Purchase Account','group'=>'Purchase','ledger_type'=>'Purchase','LedgerDisplayName'=>'Purchase Account'],
 		['name'=>'Round Account','group'=>'InDirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
 		['name'=>'Tax Account','group'=>'Service Tax','ledger_type'=>'Tax','LedgerDisplayName'=>'Tax Name'],
-		['name'=>'Discount Allowed','group'=>'Discount Given','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Allowed'],
+		['name'=>'Discount Given','group'=>'Discount Given','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Allowed'],
 		['name'=>'Discount Recieved','group'=>'Discount Received','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Received'],
 		['name'=>'Shipping Account','group'=>'InDirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Shipping Account'],
 		['name'=>'Exchange Rate Different Loss','group'=>'InDirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Exchange Loss'],
 		['name'=>'Exchange Rate Different Gain','group'=>'InDirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
-		['name'=>'Bank Charges','group'=>'InDirect Expenses','ledger_type'=>'Bank','LedgerDisplayName'=>'Bank Charges'],
-		['name'=>'Cash','group'=>'Cash In Hand','ledger_type'=>'Cash','LedgerDisplayName'=>'Cash Account'],
+		['name'=>'Bank Charges','group'=>'InDirect Expenses','ledger_type'=>'Bank Charges','LedgerDisplayName'=>'Bank Charges'],
+		['name'=>'Cash Account','group'=>'Cash In Hand','ledger_type'=>'Cash Account','LedgerDisplayName'=>'Cash Account'],
 		['name'=>'Your Default Bank Account','group'=>'Bank Account','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account']
 	
 	];	
