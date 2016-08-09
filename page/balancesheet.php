@@ -5,22 +5,26 @@ class page_balancesheet extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
+		$fy=$this->app->getFinancialYear();
+		
+		$from_date = $this->api->stickyGET('from_date')?:$fy['start_date'];
+		$to_date = $this->api->stickyGET('to_date')?:$fy['end_date'];
+
 		$f=$this->add('Form',null,null,['form/stacked']);
 		$c=$f->add('Columns')->addClass('row xepan-push');
 		$l=$c->addColumn(6)->addClass('col-md-6');
 		$r=$c->addColumn(6)->addClass('col-md-6');
-		$l->addField('DatePicker','from_date');
-		$r->addField('DatePicker','to_date');
+		$l->addField('DatePicker','from_date')->set($from_date);
+		$r->addField('DatePicker','to_date')->set($to_date);
 		$f->addSubmit('Filter')->addClass('btn btn-primary btn-block');
 
 		$view = $this->add('View',null,null,['page/balancesheet']);
-		$view_url = $this->api->url(null,['cut_object'=>$view->name]);
 
 		if($f->isSubmitted()){
-			return $view->js()->reload(['from_date'=>$f['from_date'],'to_date'=>$f['to_date']],null,$view_url);
+			return $view->js()->reload(['from_date'=>$f['from_date']?:0,'to_date'=>$f['to_date']?:0])->execute();
 		}
 
-		$bsbalancesheet = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
+		$bsbalancesheet = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
 		$bsbalancesheet->addCondition('report_name','BalanceSheet');
 
 		$left=[];
@@ -81,8 +85,7 @@ class page_balancesheet extends \xepan\base\Page{
 		$grid_a = $view->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
 		$grid_a->setSource($right);
 	
-        $view->on('click','.xepan-accounts-bs-group',function($js,$data){
-            return $js->univ()->redirect($this->app->url('xepan_accounts_bstogroup',['bs_id'=>$data['id']]));
-        });
+        $view->js('click')->_selector('.xepan-accounts-bs-group')->univ()->location([$this->app->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->data('id'),'from_date'=>$from_date,'to_date'=>$to_date]);
+
 	}
 }
