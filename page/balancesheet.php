@@ -101,6 +101,7 @@ class page_balancesheet extends \xepan\base\Page{
 			$right[] = ['name'=>'Loss','amount'=>abs($loss)];
 		}
 
+
 		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
 		$grid_l->setSource($left);
 		$grid_l->template->trySet('lheading','Liablities');
@@ -108,7 +109,20 @@ class page_balancesheet extends \xepan\base\Page{
 		$grid_a = $view->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
 		$grid_a->template->trySet('rheading','Assets');
 		$grid_a->setSource($right);
-	
+		
+		$ltotal = 0;
+		foreach ($left as $lib) {
+			$ltotal += $bs['amount'];
+		}
+
+		$atotal = 0;
+		foreach ($right as $ass) {
+			$atotal += $bs['amount'];
+		}
+
+		$view->template->trySet('ltotal',$ltotal);
+		$view->template->trySet('atotal',$atotal);
+
         $view->js('click')->_selector('.xepan-accounts-bs-group')->univ()->frameURL('BalanceSheet Head Groups',[$this->api->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
 	}
 }

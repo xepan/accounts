@@ -22,6 +22,7 @@ class page_bstogroup extends \xepan\base\Page{
 		$grid->template->trySet('from_date',$from_date);
 		$grid->template->trySet('to_date',$to_date);
 
+		throw new \Exception($grid->addTotals(['Amount DR']));
         $this->js('click')->_selector('.xepan-accounts-bs-subgroup')->univ()->frameURL('Groups And Ledger',[$this->api->url('xepan_accounts_groupdig'),'group_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
 	}
 }
