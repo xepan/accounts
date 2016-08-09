@@ -78,7 +78,7 @@ class page_balancesheet extends \xepan\base\Page{
 		$grid_a->setSource($right);
 	
         $this->on('click','.xepan-accounts-bs-group',function($js,$data){
-            return $js->univ()->redirect($this->app->url('xepan_accounts_bstogroups',['bs_id'=>$data['id']]));
+            return $js->univ()->redirect($this->app->url('xepan_accounts_bstogroup',['bs_id'=>$data['id']]));
         });
 	}
 
