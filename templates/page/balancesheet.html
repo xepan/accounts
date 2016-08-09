@@ -1,4 +1,23 @@
 
+<div id="{$_name}"> 
+  <div class="main-box">
+    <div class="main-box-body clearfix">
+      <div class="xepan-push"></div>
+      <div class="row xepan-push">{$form}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">{$balancesheet_liablity}</div>
+      <div class="col-md-6">
+        	
+        {$balancesheet_assets}
+      </div>
+    </div>
+    <div class="row panel panel-default">
+      <div class="col-md-6"><span>Total : {$total_l}</span></div>
+      <div class="col-md-6">	<span>Total : {$total_a}</span></div>
+    </div>
+  </div>
+</div>
 <style>
   .atk-cells {
     display: table;
@@ -14,42 +33,4 @@
   .atk-cells[class*=atk-move] {
     width: auto;
   }
-  
 </style>
-<div id="{$_name}"> 
-  <div class="main-box">
-    <div class="main-box-body clearfix">
-      <div class="xepan-push"></div>
-      <div class="row xepan-push">{$form}</div>
-      <div class="row xepan-push">
-        <div class="col-md-3">Assests
-          <div class="xepan-push-small"></div>
-          <div class="row">
-            <div class="col-md-12">{$assets_name}</div>
-          </div>
-        </div>
-        <div class="col-md-3">Amount
-          <div class="xepan-push-small"></div>
-          <div class="row">
-            <div class="col-lg-12">{$assets_amount}</div>
-          </div>
-        </div>
-        <div class="col-md-3">Liabilities
-          <div class="xepan-push-small"></div>
-          <div class="row">
-            <div class="col-md-12">{$liabilities_name}</div>
-          </div>
-        </div>
-        <div class="col-md-3">Amount
-          <div class="xepan-push-small"></div>
-          <div class="row">
-            <div class="col-lg-12">{$liabilities_amount}</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="main-box">
-      <div class="main-box-body clearfix">{$Content}</div>
-    </div>
-  </div>
-</div>

@@ -1,3 +1,22 @@
+div(id="{$_name}")  
+	.main-box
+		.main-box-body.clearfix
+			.xepan-push
+			.row.xepan-push
+				{$form}
+		.row
+			.col-md-6
+				{$balancesheet_liablity}
+			.col-md-6 	
+				{$balancesheet_assets}
+		
+		.row.panel.panel-default
+			.col-md-6
+				span Total : {$total_l}
+			.col-md-6 	
+				span Total : {$total_a}
+
+
 style.
 	.atk-cells {
 	  display: table;
@@ -13,40 +32,3 @@ style.
 	.atk-cells[class*=atk-move] {
 	  width: auto;
 	}
-
-div(id="{$_name}")  
-	.main-box
-		.main-box-body.clearfix
-			.xepan-push
-			.row.xepan-push
-				{$form}
-			.row.xepan-push
-				.col-md-3
-					| Assests
-					.xepan-push-small
-					.row
-						.col-md-12
-							{$assets_name}
-
-				.col-md-3
-					| Amount
-					.xepan-push-small
-					.row
-						.col-lg-12
-							{$assets_amount}
-					
-				.col-md-3
-					| Liabilities
-					.xepan-push-small
-					.row
-						.col-md-12
-							{$liabilities_name}
-				.col-md-3
-					| Amount
-					.xepan-push-small
-					.row
-						.col-lg-12
-							{$liabilities_amount}
-		.main-box
-			.main-box-body.clearfix
-				{$Content}

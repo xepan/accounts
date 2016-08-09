@@ -65,5 +65,16 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 				]);
 		});
 
+		$this->addExpression('is_left')->set(function($m,$q){
+			return $q->expr('IF(([0]-[1])>=0 AND [2]="LT",1,0)',[
+					$m->getElement('ClosingBalanceDr'),
+					$m->getElement('ClosingBalanceCr'),
+					$m->getElement('positive_side'),
+
+				]);
+		});
+
+		$this->setOrder('order');
+
 	}
 }
