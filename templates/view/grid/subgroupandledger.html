@@ -39,6 +39,24 @@
           {/}{/}
         </tr>
       </tfoot>{/}
-    </table>{$Paginator}
+    </table>
+    <div class="row">
+      <div class="main-box-body clearfix table">
+        <table style="width:100%" class="table user-list table-hover">
+          <thead>
+            <th style="width:40%;"></th>
+            <th style="width:28%;"></th>
+            <th style="width:27%;"></th>
+          </thead>
+          <tbody>
+            <tr data-id="{$id}" class="{$odd_even}">
+              <td></td>
+              <td>{$dr}</td>
+              <td>{$cr}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>{$Paginator}
   </div>
 </div>

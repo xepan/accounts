@@ -69,7 +69,7 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 					$m->getElement('PreviousTransactionsCr'),
 					$m->getElement('TransactionsCr')
 				]);
-		});
+		})->type('money');
 
 		$this->addExpression('is_left')->set(function($m,$q){
 			return $q->expr('IF(([0]-[1])>=0 AND [2]="LT",1,0)',[
@@ -78,7 +78,7 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 					$m->getElement('positive_side'),
 
 				]);
-		});
+		})->type('money');
 
 		$this->setOrder('order');
 
