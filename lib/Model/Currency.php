@@ -19,7 +19,9 @@ class Model_Currency extends \xepan\base\Model_Document{
 		$currency_j->addField('icon');
 		$currency_j->addField('name')->sortable(true);
 		$currency_j->addField('value')->sortable(true);
-		
+		$currency_j->addField('integer_part');
+		$currency_j->addField('fractional_part');
+
 		$this->addCondition('type','Currency');
 		$this->addHook('beforeSave',[$this,'updateSearchString']);
 	}
