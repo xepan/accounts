@@ -8,10 +8,10 @@ class page_accountdetail extends \xepan\base\Page{
 	function init()
 	{
 		parent::init();
-		$this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
-        $this->add('xepan\accounts\Model_Group')->loadDefaults();
-        $this->add('xepan\accounts\Model_Ledger')->loadDefaults();
-		return;
+		// $this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
+  //       $this->add('xepan\accounts\Model_Group')->loadDefaults();
+  //       $this->add('xepan\accounts\Model_Ledger')->loadDefaults();
+		// return;
 
 	$data =[
 			'Customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>$this->add('xepan\accounts\Model_Group')->load("Sundry Debtor")->get('id'),'ledger_type'=>'Customer'],
