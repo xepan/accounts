@@ -72,6 +72,8 @@ class Model_Group extends \xepan\base\Model_Table{
 		foreach ($data as $group) {
 			// balancesheet id set and parent id set if in array
 
+			if($this->newInstance()->tryLoadBy('name',$group['name'])->loaded()) continue;
+
 			if($group['parent_group']){
 				$group['parent_group_id'] = $this->newInstance()->load($group['parent_group'])->get('id');
 			}

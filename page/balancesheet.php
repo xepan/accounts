@@ -5,6 +5,12 @@ class page_balancesheet extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
+		// $this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
+		// $this->add('xepan\accounts\Model_Group')->loadDefaults();
+		// $this->add('xepan\accounts\Model_Ledger')->loadDefaults();
+
+		// return;
+
 		$fy=$this->app->getFinancialYear();
 		
 		$from_date = $this->api->stickyGET('from_date')?:$fy['start_date'];
@@ -24,82 +30,15 @@ class page_balancesheet extends \xepan\base\Page{
 			return $view->js()->reload(['from_date'=>$f['from_date']?:0,'to_date'=>$f['to_date']?:0])->execute();
 		}
 
-		$bsbalancesheet = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
-		$bsbalancesheet->addCondition('report_name','BalanceSheet');
-
-		$left=[];
-		$right=[];
-
-		$left_sum=0;
-		$right_sum=0;
-
-		foreach ($bsbalancesheet as $bs) {
-			if($bs['subtract_from']=='CR'){
-				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
-			}else{
-				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
-			}
-			if($amount >=0 && $bs['positive_side']=='LT'){
-				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
-				$left_sum += abs($amount);
-			}else{
-				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
-				$right_sum += abs($amount);
-			}
-		}
 		
-		// get Trading
+		$bsbalancesheet = $view->add('xepan\accounts\Model_BSBalanceSheet');
+		$report = $bsbalancesheet->getBalanceSheet($from_date,$to_date);
 
-		$gross_profit =0;
-		$gross_loss = 0;
+		$left=$report['left'];
+		$right=$report['right'];
 
-		$trade = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
-		$trade->addCondition('report_name','Trading');
-
-		foreach ($trade as $tr) {
-			if($tr['subtract_from']=='CR'){
-				$amount  = $tr['ClosingBalanceCr'] - $tr['ClosingBalanceDr'];
-			}else{
-				$amount  = $tr['ClosingBalanceDr'] - $tr['ClosingBalanceCr'];
-			}
-			if($amount >=0 && $tr['positive_side']=='LT'){
-				$left_sum += abs($amount);
-				$gross_profit += abs($amount);
-			}else{
-				$right_sum += abs($amount);
-				$gross_loss += abs($amount);
-			}
-		}
-
-
-		// Add P&L
-		$profit = $gross_profit;
-		$loss=$gross_loss;
-		$pandl = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
-		$pandl->addCondition('report_name','Profit & Loss');
-
-		foreach ($pandl as $pl) {
-			if($pl['subtract_from']=='CR'){
-				$amount  = $pl['ClosingBalanceCr'] - $pl['ClosingBalanceDr'];
-			}else{
-				$amount  = $pl['ClosingBalanceDr'] - $pl['ClosingBalanceCr'];
-			}
-			if($amount >=0 && $pl['positive_side']=='LT'){
-				$left_sum += abs($amount);
-				$profit += abs($amount);
-			}else{
-				$right_sum += abs($amount);
-				$loss += abs($amount);
-			}
-		}
-
-		if($profit >= 0){
-			$left[] = ['name'=>'Profit','amount'=>abs($profit)];	
-		}
-
-		if($loss > 0){
-			$right[] = ['name'=>'Loss','amount'=>abs($loss)];
-		}
+		$left_sum = $report['left_sum'];
+		$right_sum = $report['right_sum'];
 
 
 		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);

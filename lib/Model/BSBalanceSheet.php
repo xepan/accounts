@@ -83,4 +83,190 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		$this->setOrder('order');
 
 	}
+
+	function getTradingBalance($from_date,$to_date){
+		$bsbalancesheet = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
+		$bsbalancesheet->addCondition('report_name','Trading');
+
+		$left=[];
+		$right=[];
+
+		$left_sum=0;
+		$right_sum=0;
+		$gross_profit = 0;
+		$gross_loss = 0;
+
+		foreach ($bsbalancesheet as $bs) {
+			if(strtolower($bs['subtract_from'])=='cr'){
+				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
+			}else{
+				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
+			}
+			if($amount >=0){
+				if(strtolower($bs['positive_side'])=='lt'){
+					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$left_sum += abs($amount);
+					$gross_loss += abs($amount);
+				}else{
+					$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$right_sum += abs($amount);
+					$gross_profit += abs($amount);
+				}
+			}else{
+				if(strtolower($bs['positive_side'])=='rt'){
+					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$left_sum += abs($amount);
+					$gross_loss += abs($amount);
+				}else{
+					$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$right_sum += abs($amount);
+					$gross_profit += abs($amount);
+				}
+			}
+		}
+
+		// var_dump($gross_profit);
+		// var_dump($gross_loss);
+		if($gross_profit > $gross_loss){
+			$gross_profit -= $gross_loss;
+			$gross_loss = 0;
+		}else{
+			$gross_loss -= $gross_profit;
+			$gross_profit = 0;
+		}
+
+		if($gross_profit >= 0){
+			$left[] = ['name'=>'Gross Profit','amount'=>abs($gross_profit),'id'=>'gross_profit'];
+			$left_sum += $gross_profit;	
+		}
+
+		if($gross_loss > 0){
+			$right[] = ['name'=>'Gross Loss','amount'=>abs($gross_loss),'id'=>'gross_loss'];
+			$right_sum += $gross_loss;
+		}
+
+		return ['left'=>$left,'right'=>$right,'left_sum'=>$left_sum,'right_sum'=>$right_sum, 'gross_profit'=>$gross_profit,'gross_loss'=>$gross_loss];
+	}
+
+	function getPandL($from_date,$to_date){
+		$bsbalancesheet = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
+		$bsbalancesheet->addCondition('report_name','Profit & Loss');
+
+		$left=[];
+		$right=[];
+
+		$left_sum=0;
+		$right_sum=0;
+
+		foreach ($bsbalancesheet as $bs) {
+			if($bs['subtract_from']=='CR'){
+				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
+			}else{
+				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
+			}
+			if($amount >=0 && $bs['positive_side']=='LT'){
+				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+				$left_sum += abs($amount);
+			}else{
+				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+				$right_sum += abs($amount);
+			}
+		}
+		
+		// get Trading
+		$trading = $this->getTradingBalance($from_date,$to_date);
+		$gross_profit = $trading['gross_profit'];
+		$gross_loss = $trading['gross_loss'];
+		
+		// var_dump($trading);
+		// exit;
+
+		if($gross_profit >= 0){
+			$right[] = ['name'=>'Gross Profit','amount'=>abs($gross_profit),'id'=>'gross_profit'];
+			$right_sum += $gross_profit;
+		}
+
+		if($gross_loss > 0){
+			$left[] = ['name'=>'Gross Loss','amount'=>abs($gross_loss),'id'=>'gross_loss'];
+			$left_sum += $gross_loss;
+		}
+
+		$net_profit = 0;
+		$net_loss = 0;
+
+		if($right_sum > $left_sum){
+			$net_profit = $right_sum - $left_sum;
+			$left[] = ['name'=>'Net Profit','amount'=>abs($net_profit),'id'=>'net_profit'];
+			$left_sum += $net_profit;
+		}else{
+			$net_loss = $left_sum - $right_sum;
+			$left[] = ['name'=>'Net Loss','amount'=>abs($net_loss),'id'=>'net_loss'];
+			$right_sum += $net_loss;
+		}
+
+		return ['left'=>$left,'right'=>$right,'left_sum'=>$left_sum,'right_sum'=>$right_sum,'net_profit'=>$net_profit,'net_loss'=>$net_loss, 'gross_profit'=>$gross_profit,'gross_loss'=>$gross_loss];
+	}
+
+	function getBalanceSheet($from_date,$to_date){
+		$bsbalancesheet = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
+		$bsbalancesheet->addCondition('report_name','BalanceSheet');
+
+		$left=[];
+		$right=[];
+
+		$left_sum=0;
+		$right_sum=0;
+
+		$openning_balances_dr=0;
+		$openning_balances_cr=0;
+
+		foreach ($bsbalancesheet as $bs) {
+			if($bs['subtract_from']=='CR'){
+				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
+				$openning_balances_cr += $bs['OpeningBalanceCr'];
+			}else{
+				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
+				$openning_balances_dr += $bs['OpeningBalanceDr'];
+			}
+			if($amount >=0 && $bs['positive_side']=='LT'){
+				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+				$left_sum += abs($amount);
+			}else{
+				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+				$right_sum += abs($amount);
+			}
+		}
+
+		$pandl = $this->getPandL($from_date,$to_date);
+		$net_profit = $pandl['net_profit'];
+		$net_loss = $pandl['net_loss'];
+
+		$gross_profit = $pandl['gross_profit'];
+		$gross_loss = $pandl['gross_loss'];
+
+		if($net_profit >= 0){
+			$left[] = ['name'=>'Profit','amount'=>abs($net_profit),'id'=>'net_profit'];
+			$left_sum += $net_profit;
+		}
+
+		if($net_loss > 0){
+			$right[] = ['name'=>'Loss','amount'=>abs($net_loss),'id'=>'net_loss'];
+			$right_sum += $net_loss;
+		}
+
+		$opening_balance_diff=$openning_balances_dr - $openning_balances_cr;
+		
+		if($opening_balance_diff>0){
+			$left[] = ['name'=>'Opp. Balance Diff','amount'=>abs($opening_balance_diff),'id'=>'opening_balnce_diff'];
+			$left_sum += $opening_balance_diff;
+		}
+
+		if($opening_balance_diff<0){
+			$right[] = ['name'=>'Opp. Balance Diff','amount'=>abs($opening_balance_diff),'id'=>'opening_balnce_diff'];
+			$right_sum += $opening_balance_diff;
+		}
+
+		return ['left'=>$left,'right'=>$right,'left_sum'=>$left_sum,'right_sum'=>$right_sum,'net_profit'=>$net_profit,'net_loss'=>$net_loss,'gross_profit'=>$gross_profit,'gross_loss'=>$gross_loss,'openning_balances_dr'=>$openning_balances_dr,'openning_balances_cr'=>$openning_balances_cr];
+
+	}
 }

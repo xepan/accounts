@@ -30,6 +30,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	function loadDefaults(){
 		$data= $this->defaultHeads;
 		foreach ($data as $dg) {
+			if($this->newInstance()->tryLoadBy('name',$dg['name'])->loaded()) continue;
 			$this->newInstance()->set($dg)->save();
 		}
 	}
@@ -74,14 +75,14 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		
 		// Trading LT
 		['name'=>'Opening Stock','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>1],
-		['name'=>'Purchase','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>2],
+		['name'=>'Sales','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'CR','order'=>2],
 		['name'=>'InDirect Expenses For Sale','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>3],
-		['name'=>'Sales Returns','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>4],
+		['name'=>'Purchase Returns','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'CR','order'=>4],
 		
 		// Trading RT
-		['name'=>'Purchase Returns','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'DR','order'=>1],
-		['name'=>'Sales','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'DR','order'=>2],
+		['name'=>'Purchase','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'DR','order'=>2],
 		['name'=>'Closing Stock','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'DR','order'=>3],
+		['name'=>'Sales Returns','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'DR','order'=>4],
 
 		// Expenses 
 		['name'=>'Expenses','positive_side'=>'LT','report_name'=>'Profit & Loss','subtract_from'=>'CR','order'=>1],
