@@ -97,13 +97,16 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		$gross_loss = 0;
 
 		foreach ($bsbalancesheet as $bs) {
+			$side='CR';
 			if(strtolower($bs['subtract_from'])=='cr'){
 				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
 			}else{
+				$side='DR';
 				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
 			}
-			if($amount >=0){
-				if(strtolower($bs['positive_side'])=='lt'){
+
+			if($amount >=0 && $side == $bs['subtract_from']){
+				if($bs['positive_side']=='LT'){
 					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
 					$left_sum += abs($amount);
 					$gross_loss += abs($amount);
@@ -113,7 +116,7 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 					$gross_profit += abs($amount);
 				}
 			}else{
-				if(strtolower($bs['positive_side'])=='rt'){
+				if($bs['positive_side']=='RT'){
 					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
 					$left_sum += abs($amount);
 					$gross_loss += abs($amount);
@@ -159,17 +162,30 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		$right_sum=0;
 
 		foreach ($bsbalancesheet as $bs) {
+			$side='CR';
 			if($bs['subtract_from']=='CR'){
 				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
 			}else{
+				$side='DR';
 				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
 			}
-			if($amount >=0 && $bs['positive_side']=='LT'){
-				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
-				$left_sum += abs($amount);
+
+			if($amount >=0 && $side == $bs['subtract_from']){
+				if($bs['positive_side']=='LT'){
+					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$left_sum += abs($amount);
+				}else{
+					$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$right_sum += abs($amount);
+				}
 			}else{
-				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
-				$right_sum += abs($amount);
+				if($bs['positive_side']=='RT'){
+					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$left_sum += abs($amount);
+				}else{
+					$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$right_sum += abs($amount);
+				}
 			}
 		}
 		
@@ -221,21 +237,37 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		$openning_balances_cr=0;
 
 		foreach ($bsbalancesheet as $bs) {
+			$side='CR';
 			if($bs['subtract_from']=='CR'){
 				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
 				$openning_balances_cr += $bs['OpeningBalanceCr'];
 			}else{
+				$side = 'DR';
 				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
 				$openning_balances_dr += $bs['OpeningBalanceDr'];
 			}
-			if($amount >=0 && $bs['positive_side']=='LT'){
-				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
-				$left_sum += abs($amount);
+			if($amount >=0 && $side == $bs['subtract_from']){
+				if($bs['positive_side']=='LT'){
+					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$left_sum += abs($amount);
+				}else{
+					$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$right_sum += abs($amount);
+				}
 			}else{
-				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
-				$right_sum += abs($amount);
+				if($bs['positive_side']=='RT'){
+					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$left_sum += abs($amount);
+				}else{
+					$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
+					$right_sum += abs($amount);
+				}
 			}
+			// echo $bs['name'] . ' - ' . $amount . '<br/>';
 		}
+
+		// var_dump($left,$right);
+		// exit;
 
 		$pandl = $this->getPandL($from_date,$to_date);
 		$net_profit = $pandl['net_profit'];
