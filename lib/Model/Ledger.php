@@ -110,11 +110,12 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 		
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for['name'],$creditor->id,['ledger_type'=>'Employee','LedgerDisplayName'=>$employee_for['name'],'related_id'=>$employee_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for['name'],$creditor->id,['ledger_type'=>'Employee','LedgerDisplayName'=>$employee_for['name'],'contact_id'=>$employee_for->id]);
 	}
 
 	//creating customer ledger
 	function createCustomerLedger($app,$customer_for){
+
 		if(!($customer_for instanceof \xepan\commerce\Model_Customer))
 			throw new \Exception("must pass customer model", 1);	
 		
@@ -123,7 +124,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$debtor = $app->add('xepan\accounts\Model_Group')->load("Sundry Debtor");
 		
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($customer_for['name'],$debtor->id,['ledger_type'=>'Customer','LedgerDisplayName'=>$customer_for['name'],'related_id'=>$customer_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($customer_for['name'],$debtor->id,['ledger_type'=>'Customer','LedgerDisplayName'=>$customer_for['name'],'contact_id'=>$customer_for->id]);
 	}
 
 	//creating supplier ledger
@@ -137,7 +138,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($supplier_for['name'],$creditor->id,['ledger_type'=>'Supplier','LedgerDisplayName'=>$supplier_for['name'],'related_id'=>$supplier_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($supplier_for['name'],$creditor->id,['ledger_type'=>'Supplier','LedgerDisplayName'=>$supplier_for['name'],'contact_id'=>$supplier_for->id]);
 
 	}
 
@@ -151,7 +152,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$outsource = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['name'],$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_for['name'],'related_id'=>$outsource_party_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['name'],$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_for['name'],'contact_id'=>$outsource_party_for->id]);
 	}
 
 	function createTaxLedger($tax_obj){
@@ -176,14 +177,18 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	}
 
 	function createNewLedger($name,$group_id,$other_values=array()){
-		
-		$this['name'] = $name;
-		$this['group_id'] = $group_id;
+		$ledger = $this->newInstance();
+		$ledger->addCondition('name',$name);
+		$ledger->addCondition('group_id',$group_id);
+		$ledger->tryLoadAny();
+		if($ledger->loaded()) return;
+
 		foreach ($other_values as $field => $value) {
-			$this[$field] = $value;
+			$ledger[$field] = $value;
 		}
 
-		$this->save();
+		$ledger->save();
+		return $ledger;
 	}
 
 	function loadDefaults(){
@@ -192,6 +197,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		foreach ($data as $ledger) {
 			// group id set
+			if($this->newInstance()->tryLoadBy('name',$ledger['name'])->loaded()) continue;
 			$ledger['group_id'] = $this->add('xepan\accounts\Model_Group')->load($ledger['group'])->get('id');
 
 			$this->newInstance()->set($ledger)->save();
@@ -228,13 +234,13 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		['name'=>'Miscellaneous Expenses','group'=>'Direct Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Miscellaneous Expenses'],
 		['name'=>'Sales Account','group'=>'Sales','ledger_type'=>'Sales','LedgerDisplayName'=>'Sales Account'],
 		['name'=>'Purchase Account','group'=>'Purchase','ledger_type'=>'Purchase','LedgerDisplayName'=>'Purchase Account'],
-		['name'=>'Round Account','group'=>'InDirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
+		['name'=>'Round Account','group'=>'Indirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
 		['name'=>'Tax Account','group'=>'Service Tax','ledger_type'=>'Tax','LedgerDisplayName'=>'Tax Name'],
 		['name'=>'Discount Given','group'=>'Discount Given','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Allowed'],
 		['name'=>'Discount Recieved','group'=>'Discount Received','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Received'],
-		['name'=>'Shipping Account','group'=>'InDirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Shipping Account'],
-		['name'=>'Exchange Rate Different Loss','group'=>'InDirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Exchange Loss'],
-		['name'=>'Exchange Rate Different Gain','group'=>'InDirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
+		['name'=>'Shipping Account','group'=>'Indirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Shipping Account'],
+		['name'=>'Exchange Rate Different Loss','group'=>'Indirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Exchange Loss'],
+		['name'=>'Exchange Rate Different Gain','group'=>'Indirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
 		['name'=>'Bank Charges','group'=>'InDirect Expenses','ledger_type'=>'Bank Charges','LedgerDisplayName'=>'Bank Charges'],
 		['name'=>'Cash Account','group'=>'Cash In Hand','ledger_type'=>'Cash Account','LedgerDisplayName'=>'Cash Account'],
 		['name'=>'Your Default Bank Account','group'=>'Bank Account','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account']

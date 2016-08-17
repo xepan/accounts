@@ -21,7 +21,6 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 	
 	function manageForm($page, $related_id=null, $related_type=null, $pre_filled_values=[]){
-		
 		// Pre filled values array format
 		// $pre_filled_values=[
 				// 'transaction_number'=>['transaction_row_number'=>['ledger'=>$ledger,'amount'=>$amount,'currency'=>$currency,'exchange_rate'=>$exchange_rate]],
@@ -33,7 +32,6 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$template->loadTemplate('view/form/entrytransaction');
 		$template->trySetHTML('date','{$date}');
 		
-
 		foreach ($transactions as $trans) {
 			$transaction_template = $this->add('GiTemplate');
 			$transaction_template->loadTemplate('view/form/entrytransactionsides');
@@ -59,9 +57,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 					$row_right_template->trySetHTML('exchange_rate','{$right_exchange_rate_'.$row->id.'}');
 					$transaction_template->appendHTML('transaction_row_right',$row_right_template->render());
 				}	
-				
 			}
-
 			$template->appendHTML('transactions',$transaction_template->render());
 
 		}
@@ -76,8 +72,10 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 		$form->addField('DatePicker','date');
 		
+		$tr_no=1;
 		foreach ($transactions as $trans) {
 			$form->layout->add('View',null,'transaction_name_'.$trans->id)->set($trans['name']);
+			$tr_row_no=1;
 			foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
 
 				if($row['is_allow_add_ledger'])
@@ -118,14 +116,34 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 						$field->set($row_ledger->id);
 				}
 
+				if(isset($pre_filled_values[$tr_no][$tr_row_no]['ledger'])){					
+					$ledger->addCondition('id',$pre_filled_values[$tr_no][$tr_row_no]['ledger']->id);
+				}
+
 				$field->setModel($ledger);
+				
+				if(isset($pre_filled_values[$tr_no][$tr_row_no]['ledger'])){					
+					$field->set($pre_filled_values[$tr_no][$tr_row_no]['ledger']->id);
+				}
+
 				if($row['is_include_currency']){
 					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name',null,$spot.'_currency_'.$row->id);
 					$form_currency->setModel('xepan\accounts\Currency');
+					if(isset($pre_filled_values[$tr_no][$tr_row_no]['currency'])){
+						$form_currency->set($pre_filled_values[$tr_no][$tr_row_no]['currency']->id);
+					}
+
 					$exchange_rate = $form->addField('line','to_exchange_rate_'.$row->id,'Currency Rate',null,$spot.'_exchange_rate_'.$row->id)->validateNotNull(true)->addClass('exchange-rate');
 				}
 				$field = $form->addField('line','amount_'.$row->id,'Amount',null,$spot.'_amount_'.$row->id);
+
+				if(isset($pre_filled_values[$tr_no][$tr_row_no]['amount'])){
+					$field->set($pre_filled_values[$tr_no][$tr_row_no]['amount']);
+				}
+
+				$tr_row_no++;
 			}
+			$tr_no++;
 		}
 
 		$form->addSubmit('DO')->addClass('btn btn-primary');
@@ -183,20 +201,24 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 	}
 
 	function execute($data=[]){ //transaction_no=>[dr=>[['acc'=>$acc,'amt'=>$amt,'currency'=>$curr,'exchange_rate'=>$exchange_rate],['acc'=>$acc ....]],cr=>[['acc'=>...]]]
+		$this->hook('beforeExecute',[$data]);
+		$transactions=[];
+		$total_amount=0;
 		foreach ($data as $transaction) {
-			$new_transaction = $this->add('xepan\accounts\Model_Transaction');
+			$transactions[] = $new_transaction = $this->add('xepan\accounts\Model_Transaction');
 			$new_transaction->createNewTransaction($transaction['type'],null,$transaction['date'],$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],$transaction['related_id'],$transaction['related_type']);
 
 			foreach ($transaction['rows'] as $row) {
 				if(strtolower($row['side'])=='dr'){
 					$new_transaction->addDebitLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
+					$total_amount += $row['amount'];
 				}else{
 					$new_transaction->addCreditLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
 				}
 			}
 			$new_transaction->execute();
-
 		}
+		$this->hook('afterExecute',[$transactions,$total_amount]);
 	}
 
 	function exportJson(){

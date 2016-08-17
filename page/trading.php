@@ -24,41 +24,14 @@ class page_trading extends \xepan\base\Page{
 			return $view->js()->reload(['from_date'=>$f['from_date']?:0,'to_date'=>$f['to_date']?:0])->execute();
 		}
 
-		$bsbalancesheet = $view->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
-		$bsbalancesheet->addCondition('report_name','Trading');
+		$bsbalancesheet = $view->add('xepan\accounts\Model_BSBalanceSheet');
+		$report = $bsbalancesheet->getTradingBalance($from_date,$to_date);
 
-		$left=[];
-		$right=[];
+		$left=$report['left'];
+		$right=$report['right'];
 
-		$left_sum=0;
-		$right_sum=0;
-		$net_profit = 0;
-		$net_loss = 0;
-
-		foreach ($bsbalancesheet as $bs) {
-			if($bs['subtract_from']=='CR'){
-				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
-			}else{
-				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
-			}
-			if($amount >=0 && $bs['positive_side']=='LT'){
-				$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
-				$left_sum += abs($amount);
-				$net_profit += abs($amount);
-			}else{
-				$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id']];
-				$right_sum += abs($amount);
-				$net_loss += abs($amount);
-			}
-		}
-
-		if($net_profit >= 0){
-			$left[] = ['name'=>'Net Profit','amount'=>abs($net_profit)];	
-		}
-
-		if($net_loss > 0){
-			$right[] = ['name'=>'Net Loss','amount'=>abs($net_loss)];
-		}
+		$left_sum = $report['left_sum'];
+		$right_sum = $report['right_sum'];
 
 
 		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
