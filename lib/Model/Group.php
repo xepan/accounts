@@ -160,6 +160,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Loan Given','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'Bank FD','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'GoodWill','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
+		['name'=>'TDS Recievable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'Provision (Assets)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		
 		// Assets(Deposit Assets)
