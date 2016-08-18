@@ -11,12 +11,17 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		parent::init();
 
 		$this->addField('name');
-		$this->addField('detail');
+		$this->addField('detail')->type('text');
 		$this->addField('unique_trnasaction_template_code')->PlaceHolder('If it is default for system, Insert Unique Default Template Transaction Code')->caption('Code')->hint('Place your unique template transaction code ');
 		$this->addField('is_system_default')->type('boolean')->defaultValue(false);
 		$this->addField('is_favourite_menu_lister')->type('boolean')->defaultValue(false);
 		// $this->addField('is_merge_transaction')->type('boolean');
 		$this->hasMany('xepan\accounts\EntryTemplateTransaction','template_id');
+		$this->addHook('beforeDelete',function($m){
+			$m->ref('xepan\accounts\EntryTemplateTransaction')->each(function($m1){
+				$m1->delete();
+			});
+		});
 	}
 
 	

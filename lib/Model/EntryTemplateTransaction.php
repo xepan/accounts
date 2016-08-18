@@ -17,6 +17,12 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 		
 		$this->addExpression('is_system_default')->set($this->refSQL('template_id')->fieldQuery('is_system_default'));
 
+		$this->addHook('beforeDelete',function($m){
+			$m->ref('xepan\accounts\EntryTemplateTransactionRow')->each(function($m1){
+				$m1->delete();
+			});
+		});
+
 		$this->is([
 			'type|required'
 			]);
