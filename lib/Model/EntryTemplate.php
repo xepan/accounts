@@ -276,6 +276,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 			foreach ($tr['rows'] as  $tr_row) {
 				$row=$this->add('xepan\accounts\Model_EntryTemplateTransactionRow');
 				$row['template_transaction_id']=$transaction->id;
+				$row['code']=$tr_row['code'];
 				$row['title']=$tr_row['title'];
 				$row['side']=$tr_row['side'];
 				$row['group']=$tr_row['group'];
