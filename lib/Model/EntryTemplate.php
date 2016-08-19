@@ -121,29 +121,29 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 						$field->set($row_ledger->id);
 				}
 
-				if(isset($pre_filled_values[$tr_no][$tr_row_no]['ledger'])){					
-					$ledger->addCondition('id',$pre_filled_values[$tr_no][$tr_row_no]['ledger']->id);
+				if(isset($pre_filled_values[$tr_no][$row['code']]['ledger'])){					
+					$ledger->addCondition('id',$pre_filled_values[$tr_no][$row['code']]['ledger']->id);
 				}
 
 				$field->setModel($ledger);
 				
-				if(isset($pre_filled_values[$tr_no][$tr_row_no]['ledger'])){					
-					$field->set($pre_filled_values[$tr_no][$tr_row_no]['ledger']->id);
+				if(isset($pre_filled_values[$tr_no][$row['code']]['ledger'])){					
+					$field->set($pre_filled_values[$tr_no][$row['code']]['ledger']->id);
 				}
 
 				if($row['is_include_currency']){
 					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name',null,$spot.'_currency_'.$row->id);
 					$form_currency->setModel('xepan\accounts\Currency');
-					if(isset($pre_filled_values[$tr_no][$tr_row_no]['currency'])){
-						$form_currency->set($pre_filled_values[$tr_no][$tr_row_no]['currency']->id);
+					if(isset($pre_filled_values[$tr_no][$row['code']]['currency'])){
+						$form_currency->set($pre_filled_values[$tr_no][$row['code']]['currency']->id);
 					}
 
 					$exchange_rate = $form->addField('line','to_exchange_rate_'.$row->id,'Currency Rate',null,$spot.'_exchange_rate_'.$row->id)->validateNotNull(true)->addClass('exchange-rate');
 				}
 				$field = $form->addField('line','amount_'.$row->id,'Amount',null,$spot.'_amount_'.$row->id);
 
-				if(isset($pre_filled_values[$tr_no][$tr_row_no]['amount'])){
-					$field->set($pre_filled_values[$tr_no][$tr_row_no]['amount']);
+				if(isset($pre_filled_values[$tr_no][$row['code']]['amount'])){
+					$field->set($pre_filled_values[$tr_no][$row['code']]['amount']);
 				}
 
 				$tr_row_no++;
