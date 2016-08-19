@@ -195,7 +195,6 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 			}
 			$this->execute($data);
-			$form->js()->reload()->univ()->successMessage('Done')->execute();		
 		}
 
 	}
@@ -209,6 +208,13 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$this->hook('beforeExecute',[$data]);
 		$transactions=[];
 		$total_amount=0;
+
+		// echo "<pre>";
+		// print_r($data);
+		// echo "</pre>";
+		// throw new \Exception("Error Processing Request", 1);
+		
+
 		foreach ($data as $transaction) {
 			$transactions[] = $new_transaction = $this->add('xepan\accounts\Model_Transaction');
 			$new_transaction->createNewTransaction($transaction['type'],null,$transaction['date'],$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],$transaction['related_id'],$transaction['related_type']);
