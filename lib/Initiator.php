@@ -256,6 +256,11 @@ class Initiator extends \Controller_Addon {
        	$config = $this->app->epan->ref('Configurations')->tryLoadAny();
        	$config->setConfig('DEFAULT_CURRENCY_ID',$default_currency->id,'accounts');
        	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config->getConfig('DEFAULT_CURRENCY_ID'));
+       
+       /*Default Balance Sheet Heads and groups*/
+       $this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
+       $this->add('xepan\accounts\Model_Group')->loadDefaults();
+       $this->add('xepan\accounts\Model_Ledger')->loadDefaults();
 	
        	/*Default Account Entry*/
        	
@@ -272,10 +277,6 @@ class Initiator extends \Controller_Addon {
        		}
        	}	
 
-       	/*Default Balance Sheet Heads and groups*/
-       $this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
-       $this->add('xepan\accounts\Model_Group')->loadDefaults();
-       $this->add('xepan\accounts\Model_Ledger')->loadDefaults();
        	
 	}
 
