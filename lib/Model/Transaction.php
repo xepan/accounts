@@ -219,13 +219,13 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			$e = $this->exception('Debit and Credit Must be Same');
 
 			foreach ($this->dr_accounts as $accountNumber => $dtl) {
-				$e->addMoreInfo('Debit: '.$accountNumber,$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].']');
+				$e->addMoreInfo('Debit: '.$accountNumber,$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].'] ' . $dtl['account']['name']);
 			}
 
 			$e->addMoreInfo('DebitSum',$total_debit_amount);
 
 			foreach ($this->cr_accounts as $accountNumber => $dtl) {
-				$e->addMoreInfo('Credit: '.$accountNumber,$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].']');
+				$e->addMoreInfo('Credit: '.$accountNumber,$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].'] ' . $dtl['account']['name']);
 			}
 			$e->addMoreInfo('CreditSum',$total_credit_amount);
 

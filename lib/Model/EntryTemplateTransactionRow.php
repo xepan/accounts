@@ -33,6 +33,7 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 		$this->addField('is_ledger_changable')->type('boolean');
 		$this->addField('is_allow_add_ledger')->type('boolean');
 		$this->addField('is_include_currency')->type('boolean');
+		$this->addField('code');
 
 		$this->addHook('beforeSave',$this);
 

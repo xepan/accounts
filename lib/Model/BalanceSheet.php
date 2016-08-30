@@ -76,7 +76,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		// Trading LT
 		['name'=>'Opening Stock','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>1],
 		['name'=>'Sales','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'CR','order'=>2],
-		['name'=>'InDirect Expenses For Sale','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>3],
+		['name'=>'Indirect Expenses For Sale','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>3],
 		['name'=>'Purchase Returns','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'CR','order'=>4],
 		
 		// Trading RT

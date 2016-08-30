@@ -11,7 +11,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		parent::init();
 
 		$this->addField('name');
-		$this->addField('detail');
+		$this->addField('detail')->type('text');
 		$this->addField('unique_trnasaction_template_code')->PlaceHolder('If it is default for system, Insert Unique Default Template Transaction Code')->caption('Code')->hint('Place your unique template transaction code ');
 		$this->addField('is_system_default')->type('boolean')->defaultValue(false);
 		$this->addField('is_favourite_menu_lister')->type('boolean')->defaultValue(false);
@@ -122,29 +122,29 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 						$field->set($row_ledger->id);
 				}
 
-				if(isset($pre_filled_values[$tr_no][$tr_row_no]['ledger'])){					
-					$ledger->addCondition('id',$pre_filled_values[$tr_no][$tr_row_no]['ledger']->id);
+				if(isset($pre_filled_values[$tr_no][$row['code']]['ledger'])){					
+					$ledger->addCondition('id',$pre_filled_values[$tr_no][$row['code']]['ledger']->id);
 				}
 
 				$field->setModel($ledger);
 				
-				if(isset($pre_filled_values[$tr_no][$tr_row_no]['ledger'])){					
-					$field->set($pre_filled_values[$tr_no][$tr_row_no]['ledger']->id);
+				if(isset($pre_filled_values[$tr_no][$row['code']]['ledger'])){					
+					$field->set($pre_filled_values[$tr_no][$row['code']]['ledger']->id);
 				}
 
 				if($row['is_include_currency']){
 					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name',null,$spot.'_currency_'.$row->id);
 					$form_currency->setModel('xepan\accounts\Currency');
-					if(isset($pre_filled_values[$tr_no][$tr_row_no]['currency'])){
-						$form_currency->set($pre_filled_values[$tr_no][$tr_row_no]['currency']->id);
+					if(isset($pre_filled_values[$tr_no][$row['code']]['currency'])){
+						$form_currency->set($pre_filled_values[$tr_no][$row['code']]['currency']->id);
 					}
 
 					$exchange_rate = $form->addField('line','to_exchange_rate_'.$row->id,'Currency Rate',null,$spot.'_exchange_rate_'.$row->id)->validateNotNull(true)->addClass('exchange-rate');
 				}
 				$field = $form->addField('line','amount_'.$row->id,'Amount',null,$spot.'_amount_'.$row->id);
 
-				if(isset($pre_filled_values[$tr_no][$tr_row_no]['amount'])){
-					$field->set($pre_filled_values[$tr_no][$tr_row_no]['amount']);
+				if(isset($pre_filled_values[$tr_no][$row['code']]['amount'])){
+					$field->set($pre_filled_values[$tr_no][$row['code']]['amount']);
 				}
 
 				$tr_row_no++;
@@ -196,7 +196,6 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 			}
 			$this->execute($data);
-			$form->js()->reload()->univ()->successMessage('Done')->execute();		
 		}
 
 	}
@@ -210,6 +209,13 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$this->hook('beforeExecute',[$data]);
 		$transactions=[];
 		$total_amount=0;
+
+		// echo "<pre>";
+		// print_r($data);
+		// echo "</pre>";
+		// throw new \Exception("Error Processing Request", 1);
+		
+
 		foreach ($data as $transaction) {
 			$transactions[] = $new_transaction = $this->add('xepan\accounts\Model_Transaction');
 			$new_transaction->createNewTransaction($transaction['type'],null,$transaction['date'],$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],$transaction['related_id'],$transaction['related_type']);
@@ -277,6 +283,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 			foreach ($tr['rows'] as  $tr_row) {
 				$row=$this->add('xepan\accounts\Model_EntryTemplateTransactionRow');
 				$row['template_transaction_id']=$transaction->id;
+				$row['code']=$tr_row['code'];
 				$row['title']=$tr_row['title'];
 				$row['side']=$tr_row['side'];
 				$row['group']=$tr_row['group'];

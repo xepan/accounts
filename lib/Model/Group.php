@@ -125,6 +125,9 @@ class Model_Group extends \xepan\base\Model_Table{
 
 		// Liabilities(Capital Account)
 		['name'=>'Capital Account','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Capital Account'],
+		['name'=>'Partner','root_group'=>null,'parent_group'=>'Capital Account','balance_sheet'=>'Capital Account'],
+		['name'=>'Individual','root_group'=>null,'parent_group'=>'Capital Account','balance_sheet'=>'Capital Account'],
+		['name'=>'Director','root_group'=>null,'parent_group'=>'Capital Account','balance_sheet'=>'Capital Account'],
 		['name'=>'Reserved & Surplus','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Capital Account'],
 		['name'=>'Share Capital','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Capital Account'],
 
@@ -151,8 +154,8 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Plants & Machinery','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Fixed Assets'],
 		['name'=>'Computers & Printers','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Fixed Assets'],
 		['name'=>'Furniture & Fixture','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Fixed Assets'],
-		['name'=>'Land(Apperication)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Fixed Assets'],
-		['name'=>'Building(Deprication)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Fixed Assets'],
+		['name'=>'Land (Appreciable)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Fixed Assets'],
+		['name'=>'Building (Depreciable)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Fixed Assets'],
 		
 		// Assets(Current Assets)
 		['name'=>'Cash In Hand','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
@@ -160,20 +163,21 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Loan Given','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'Bank FD','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'GoodWill','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
+		['name'=>'TDS Receivable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		['name'=>'Provision (Assets)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
 		
 		// Assets(Deposit Assets)
-		['name'=>'Mortgrage Deposit','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Deposit Assets'],
+		['name'=>'Mortgage Deposit','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Deposit Assets'],
 		['name'=>'Security Deposit','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Deposit Assets'],
 		
 		// Assets(Sundry Debtor)
 		['name'=>'Sundry Debtor','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Sundry Debtor'],
-		['name'=>'Bills Recievable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Sundry Debtor'],
+		['name'=>'Bills Receivable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Sundry Debtor'],
 		
 		// Trading LT
 		['name'=>'Opening Stock','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Opening Stock'],
 		['name'=>'Purchase','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Purchase'],
-		['name'=>'InDirect Expenses For Sale','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'InDirect Expenses For Sale'],
+		['name'=>'Indirect Expenses For Sale','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Indirect Expenses For Sale'],
 		['name'=>'Sales Returns','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Sales Returns'],
 				
 		// Trading RT
@@ -184,20 +188,28 @@ class Model_Group extends \xepan\base\Model_Table{
 		// Loss By Expenses
 		['name'=>'Indirect Expenses','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Expenses'],
 		// InDirect Expenses Group
-		['name'=>'Discount Given','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
-		['name'=>'Salary','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
-		['name'=>'Commision Given','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
+		['name'=>'Compensation To Employee (Indirect)','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
+		// Compensation To Employee Groups
+		['name'=>'Renumeration To Directors (Indirect)','root_group'=>null,'parent_group'=>'Compensation To Employee (Indirect)','balance_sheet'=>'Income'],
+		['name'=>'Salary (Indirect)','root_group'=>null,'parent_group'=>'Compensation To Employee (Indirect)','balance_sheet'=>'Income'],
+		
+		['name'=>'Commission Given','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
+		['name'=>'Power & Fuel','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
+		['name'=>'Interest Paid','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
+		['name'=>'Other Expenses','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Expenses'],
 		
 		['name'=>'Direct Expenses','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Expenses'],
 		// Direct Expenses Group
-		['name'=>'Miscellaneous Expenses','root_group'=>null,'parent_group'=>'Direct Expenses','balance_sheet'=>'Expenses'],
+		['name'=>'Compensation To Employee (Direct)','root_group'=>null,'parent_group'=>'Direct Expenses','balance_sheet'=>'Income'],
+		['name'=>'Salary (Direct)','root_group'=>null,'parent_group'=>'Compensation To Employee (Direct)','balance_sheet'=>'Income'],
 		
+
 		// Profit By Income
 		['name'=>'Indirect Income','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Income'],
 		// InDirect Income Group
-		['name'=>'Discount Received','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
+		['name'=>'Rebate & Discount','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
 		['name'=>'Interest Received','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
-		['name'=>'Commision Received','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
+		['name'=>'Commission Received','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
 		
 		['name'=>'Direct Income','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Income']
 		// Direct Income Group
