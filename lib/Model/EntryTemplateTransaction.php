@@ -21,5 +21,13 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 			'type|required'
 			]);
 		$this->setOrder('id');
+
+		$this->addHook('beforeDelete',function($m){
+			$m->ref('xepan\accounts\EntryTemplateTransactionRow')->each(function($m1){
+				$m1->delete();
+			});
+		});
+
+		
 	}
 }

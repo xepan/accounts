@@ -17,6 +17,12 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$this->addField('is_favourite_menu_lister')->type('boolean')->defaultValue(false);
 		// $this->addField('is_merge_transaction')->type('boolean');
 		$this->hasMany('xepan\accounts\EntryTemplateTransaction','template_id');
+
+		$this->addHook('beforeDelete',function($m){
+			$m->ref('xepan\accounts\EntryTemplateTransaction')->each(function($m1){
+				$m1->delete();
+			});
+		});
 	}
 
 	
