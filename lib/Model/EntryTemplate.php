@@ -7,6 +7,8 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 	public $acl=true;
 	public $acl_type = 'AccountEntryTemplate';
 
+	public $form = null;
+
 	function init(){
 		parent::init();
 
@@ -73,7 +75,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 		$template->loadTemplateFromString($template->render());
 
-		$form = $page->add('xepan\accounts\Form_EntryRunner',null,null,['form/stacked']);
+		$this->form  = $form = $page->add('xepan\accounts\Form_EntryRunner',null,null,['form/stacked']);
 		$form->setLayout($template);
 
 		$form->addField('DatePicker','date');
