@@ -24,8 +24,8 @@ class Model_TransactionType extends \xepan\base\Model_Table{
 
 		$type->addCondition(
 					$this->dsql->orExpr()
-							->where('name','BANK RECEIPT')
-							->where('name','CASH RECEIPT')
+							->where('name','Bank Receipt')
+							->where('name','Cash Receipt')
 					);
 		$array = [];
 		foreach ($type as $junk) {
