@@ -10,7 +10,7 @@ class page_amtreceived extends \xepan\base\Page {
 		$cash_received->loadBy('unique_trnasaction_template_code','PARTYCASHRECEIVED');
 		
 		$cash_received->addHook('afterExecute',function($cash_received,$transaction,$total_amount){
-			$this->app->page_action_result = $cash_received->form->js(true)->univ()->reload()->successMessage('Done');
+			$cash_received->form->js()->univ()->reload()->successMessage('Done')->execute();
 		});
 
 		$view_cash = $this->add('View',null,'cash_view');
@@ -21,7 +21,7 @@ class page_amtreceived extends \xepan\base\Page {
 		$bank_received->loadBy('unique_trnasaction_template_code','PARTYBANKRECEIVED');
 		
 		$bank_received->addHook('afterExecute',function($bank_received,$transaction,$total_amount){
-			$this->app->page_action_result = $bank_received->form->js(true)->univ()->reload()->successMessage('Done');
+			$bank_received->form->js()->univ()->reload()->successMessage('Done')->execute();
 		});
 		$view_bank = $this->add('View',null,'bank_view');
 		$bank_received->manageForm($view_bank,null,null,null);

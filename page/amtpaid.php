@@ -10,7 +10,7 @@ class page_amtpaid extends \xepan\base\Page {
 		$cash_payment->loadBy('unique_trnasaction_template_code','PARTYCASHPAYMENT');
 		
 		$cash_payment->addHook('afterExecute',function($cash_payment,$transaction,$total_amount){
-			$this->app->page_action_result = $cash_payment->form->js(true)->univ()->reload()->successMessage('Done');
+			$cash_payment->form->js()->univ()->reload()->successMessage('Done')->execute();
 		});
 
 		$view_cash = $this->add('View',null,'cash_view');
@@ -21,7 +21,7 @@ class page_amtpaid extends \xepan\base\Page {
 		$bank_payment->loadBy('unique_trnasaction_template_code','PARTYBANKPAYMENT');
 		
 		$bank_payment->addHook('afterExecute',function($bank_payment,$transaction,$total_amount){
-			$this->app->page_action_result = $bank_payment->form->js(true)->univ()->reload()->successMessage('Done');
+			$bank_payment->form->js()->univ()->reload()->successMessage('Done')->execute();
 		});
 		$view_bank = $this->add('View',null,'bank_view');
 		$bank_payment->manageForm($view_bank,null,null,null);

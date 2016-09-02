@@ -10,7 +10,7 @@ class page_contra extends \xepan\base\Page {
 		$cash_to_bank->loadBy('unique_trnasaction_template_code','CASHTOBANK');
 		
 		$cash_to_bank->addHook('afterExecute',function($cash_to_bank,$transaction,$total_amount){
-			$this->app->page_action_result = $cash_to_bank->form->js(true)->univ()->reload()->successMessage('Done');
+			$cash_to_bank->form->js()->univ()->reload()->successMessage('Done')->execute();
 		});
 
 		$view_bank = $this->add('View',null,'bank_view');
@@ -21,7 +21,7 @@ class page_contra extends \xepan\base\Page {
 		$bank_to_cash->loadBy('unique_trnasaction_template_code','BANKTOCASH');
 		
 		$bank_to_cash->addHook('afterExecute',function($bank_to_cash,$transaction,$total_amount){
-			$this->app->page_action_result = $bank_to_cash->form->js(true)->univ()->reload()->successMessage('Done');
+			$bank_to_cash->form->js()->univ()->reload()->successMessage('Done')->execute();
 		});
 		$view_cash = $this->add('View',null,'cash_view');
 		$bank_to_cash->manageForm($view_cash,null,null,null);
