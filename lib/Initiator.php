@@ -59,6 +59,10 @@ class Initiator extends \Controller_Addon {
 
 	}
 
+	function setup_pre_frontend(){
+		$this->addAppDateFunctions();
+	}
+
 	function setup_frontend(){
 		$this->app->epan->default_currency = $this->recall(
 											$this->app->epan->id.'_defaultCurrency',
