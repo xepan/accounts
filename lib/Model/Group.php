@@ -138,8 +138,8 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Staff Security','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Loans & Liabilities'],
 
 		// Liabilities(Current Liabilities)
-		['name'=>'TDS Payable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
-		['name'=>'Service Tax','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
+		// ['name'=>'TDS Payable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
+		// ['name'=>'Service Tax','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
 		['name'=>'Tax Payable','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
 		['name'=>'Provident Fund','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Liabilities'],
 		
