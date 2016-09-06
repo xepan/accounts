@@ -17,6 +17,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addField('side');
 		$this->addField('accounts_in_side')->type('int');
 		$this->addField('exchange_rate')->type('number');
+		$this->addField('remark')->type('text');
 
 		$this->addExpression('amountCr')->set($this->dsql()->expr('round(([0]*[1]),2)',[$this->getElement('_amountCr'),$this->getElement('exchange_rate')]));
 		$this->addExpression('amountDr')->set($this->dsql()->expr('round(([0]*[1]),2)',[$this->getElement('_amountDr'),$this->getElement('exchange_rate')]));

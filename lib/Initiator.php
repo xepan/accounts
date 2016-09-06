@@ -40,6 +40,7 @@ class Initiator extends \Controller_Addon {
 				$m->addItem(['Debit/Credit Note','icon'=>'fa fa-sticky-note-o'],'xepan_accounts_debitcreditnote');
 				$m->addItem(['Currency Management','icon'=>'fa fa-money'],$this->app->url('xepan_accounts_currency',['status'=>'Active']));
 				$m->addItem(['Configuration','icon'=>'fa fa-cog fa-spin'],'xepan_accounts_config');
+				$m->addItem(['Reports','icon'=>'fa fa-book'],'xepan_accounts_report');
 				
 			}
 
