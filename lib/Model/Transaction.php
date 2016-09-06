@@ -133,7 +133,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->create_called=true;
 	}
 
-	function addDebitLedger($account, $amount, $Currency=null, $exchange_rate=1.00){
+	function addDebitLedger($account, $amount, $Currency=null, $exchange_rate=1.00, $remark=null){
 		if(is_string($account)){
 			$account = $this->add('xepan\accounts\Model_Ledger')->load($account);
 		}
@@ -143,11 +143,11 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		}
 
 		$amount = $this->round($amount);						
-		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate));
+		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate,'remark'=>$remark));
 		
 	}
 
-	function addCreditLedger($account, $amount, $Currency=null, $exchange_rate=1.00){
+	function addCreditLedger($account, $amount, $Currency=null, $exchange_rate=1.00, $remark=null){
 		if(is_string($account)){
 			$account = $this->add('xepan\accounts\Model_Ledger')->load($account);
 		}
@@ -158,7 +158,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		$amount = $this->round($amount);
 		
-		$this->cr_accounts += array($account->id=>array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate));
+		$this->cr_accounts += array($account->id=>array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate,'remark'=>$remark));
 	}
 
 	function execute(){
@@ -195,7 +195,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// Foreach Dr add new TransactionRow (Dr wali)
 		foreach ($this->dr_accounts as $accountNumber => $dtl) {
 			if($dtl['amount'] ==0) continue;
-			$dtl['account']->debitWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate']);
+			$dtl['account']->debitWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate'], $dtl['remark']);
 			$total_debit_amount += ($dtl['amount']*$dtl['exchange_rate']);
 		}
 
@@ -206,7 +206,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// Foreach Cr add new Transactionrow (Cr Wala)
 		foreach ($this->cr_accounts as $accountNumber => $dtl) {
 			if($dtl['amount'] ==0) continue;
-			$dtl['account']->creditWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate']);
+			$dtl['account']->creditWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate'], $dtl['remark']);
 			$total_credit_amount += ($dtl['amount']*$dtl['exchange_rate']);
 		}
 		
