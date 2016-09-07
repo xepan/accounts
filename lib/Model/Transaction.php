@@ -72,6 +72,10 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// $this->addHook('afterSave',[$this,'searchStringAfterSave']);
 		// $this->add('dynamic_model/Controller_AutoCreator');
 
+		// $this->is([
+		// 	'created_at|required'
+		// 	]);
+
 		$this->addHook('beforeDelete',$this);
 	}
 
@@ -175,7 +179,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		try{
 				$this->api->db->beginTransaction();
-					return $this->executeSingleBranch();
+					$total_amount =  $this->executeSingleBranch();
 				$this->api->db->commit();
 			}catch(\Exception_StopInit $e){
 
@@ -187,6 +191,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 
 		$this->executed=true;
+		return $total_amount;
 	}
 
 	function executeSingleBranch(){
