@@ -52,7 +52,10 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 			$balancesheet_m=$this->add('xepan\accounts\Model_BalanceSheet');
 			$balancesheet_m->tryLoadBy('name',$this['balance_sheet']);
 			
-			if(!$balancesheet_m->loaded()) throw $this->exception("must be select Balance Sheet",'ValidityCheck')->setField('balance_sheet');
+			if(!$balancesheet_m->loaded()) throw $this->exception("must be select Balance Sheet",'ValidityCheck')
+														->setField('balance_sheet')
+														->addMoreInfo('balance_sheet',$this['balance_sheet'])
+														->addMoreInfo('group',$this['group']);
 			
 			$pg_m=$this->add('xepan\accounts\Model_ParentGroup');
 			$pg_m->tryLoadBy('name',$this['parent_group']);
