@@ -192,7 +192,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 					$transaction_row['ledger'] = $form['ledger_'.$row->id];//$this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]);
 					$transaction_row['amount'] = $form['amount_'.$row->id];
 
-					$transaction['rows'][] = $transaction_row;
+					$transaction['rows'][$row['code']] = $transaction_row;
 				}
 				$data[] = $transaction;
 
@@ -232,7 +232,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 			}
 			$new_transaction->execute();
 		}
-		$this->hook('afterExecute',[$transactions,$total_amount]);
+		$this->hook('afterExecute',[$transactions,$total_amount,$data]);
 	}
 
 	function exportJson(){
