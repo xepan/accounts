@@ -188,26 +188,27 @@ class Model_Group extends \xepan\base\Model_Table{
 		// Loss By Expenses
 		['name'=>'Indirect Expenses','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Expenses'],
 		// InDirect Expenses Group
-		['name'=>'Compensation To Employee (Indirect)','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
+		['name'=>'Compensation To Employee (Indirect)','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Expenses'],
+		['name'=>'Rebate & Discount Allowed','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Expenses'],
 		// Compensation To Employee Groups
-		['name'=>'Renumeration To Directors (Indirect)','root_group'=>null,'parent_group'=>'Compensation To Employee (Indirect)','balance_sheet'=>'Income'],
-		['name'=>'Salary (Indirect)','root_group'=>null,'parent_group'=>'Compensation To Employee (Indirect)','balance_sheet'=>'Income'],
+		['name'=>'Renumeration To Directors (Indirect)','root_group'=>null,'parent_group'=>'Compensation To Employee (Indirect)','balance_sheet'=>'Expenses'],
+		['name'=>'Salary (Indirect)','root_group'=>null,'parent_group'=>'Compensation To Employee (Indirect)','balance_sheet'=>'Expenses'],
 		
-		['name'=>'Commission Given','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
-		['name'=>'Power & Fuel','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
-		['name'=>'Interest Paid','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Income'],
+		['name'=>'Commission Given','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Expenses'],
+		['name'=>'Power & Fuel','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Expenses'],
+		['name'=>'Interest Paid','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Expenses'],
 		['name'=>'Other Expenses','root_group'=>null,'parent_group'=>'Indirect Expenses','balance_sheet'=>'Expenses'],
 		
 		['name'=>'Direct Expenses','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Expenses'],
 		// Direct Expenses Group
-		['name'=>'Compensation To Employee (Direct)','root_group'=>null,'parent_group'=>'Direct Expenses','balance_sheet'=>'Income'],
-		['name'=>'Salary (Direct)','root_group'=>null,'parent_group'=>'Compensation To Employee (Direct)','balance_sheet'=>'Income'],
+		['name'=>'Compensation To Employee (Direct)','root_group'=>null,'parent_group'=>'Direct Expenses','balance_sheet'=>'Expenses'],
+		['name'=>'Salary (Direct)','root_group'=>null,'parent_group'=>'Compensation To Employee (Direct)','balance_sheet'=>'Expenses'],
 		
 
 		// Profit By Income
 		['name'=>'Indirect Income','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Income'],
 		// InDirect Income Group
-		['name'=>'Rebate & Discount','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
+		['name'=>'Rebate & Discount Received','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
 		['name'=>'Interest Received','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
 		['name'=>'Commission Received','root_group'=>null,'parent_group'=>'Indirect Income','balance_sheet'=>'Income'],
 		
