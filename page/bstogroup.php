@@ -13,6 +13,7 @@ class page_bstogroup extends \xepan\base\Page{
 		
 		$bs_group = $this->add('xepan\accounts\Model_BSGroup',['from_date'=>$from_date,'to_date'=>$to_date]);
 		$bs_group->addCondition('balance_sheet_id',$bs_id);
+		$bs_group->addCondition('parent_group',null);
 
 		$grid = $this->add('xepan\hr\Grid',null,null,['view\grid\bstogroup']);
 		$grid->setModel($bs_group);
