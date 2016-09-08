@@ -9,7 +9,9 @@ class Initiator extends \Controller_Addon {
 	function setup_admin(){
 		
 		$this->routePages('xepan_accounts');
-		$this->addLocation(array('template'=>'templates'));
+		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
+			->setBaseURL('./vendor/xepan/accounts/')
+			;
 
 		if($this->app->auth->isLoggedIn()){
 		

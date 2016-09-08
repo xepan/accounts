@@ -57,6 +57,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 					$row_left_template->trySetHTML('amount','{$left_amount_'.$row->id.'}');
 					$row_left_template->trySetHTML('currency','{$left_currency_'.$row->id.'}');
 					$row_left_template->trySetHTML('exchange_rate','{$left_exchange_rate_'.$row->id.'}');
+					$row_left_template->trySetHTML('side','left');
 					$transaction_template->appendHTML('transaction_row_left',$row_left_template->render());
 					
 				}else{
@@ -66,6 +67,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 					$row_right_template->trySetHTML('amount','{$right_amount_'.$row->id.'}');
 					$row_right_template->trySetHTML('currency','{$right_currency_'.$row->id.'}');
 					$row_right_template->trySetHTML('exchange_rate','{$right_exchange_rate_'.$row->id.'}');
+					$row_right_template->trySetHTML('side','right');
 					$transaction_template->appendHTML('transaction_row_right',$row_right_template->render());
 				}	
 			}
@@ -97,6 +99,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				$spot = $row['side']=='DR'?'left':'right';			
 
 				$field = $form->addField($field_type,['name'=>'ledger_'.$row->id,'hint'=>'Select Ledger'], $row['title'],null,$spot.'_ledger_'.$row->id);
+				$field->addClass('ledger')->addClass($spot);
 				$field->show_fields= ['name'];
 
 				$row_ledger_present = $row['ledger']?true:false;
@@ -139,14 +142,17 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 				if($row['is_include_currency']){
 					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name',null,$spot.'_currency_'.$row->id);
+					$form_currency->addClass('currency')->addClass($spot);
 					$form_currency->setModel('xepan\accounts\Currency');
 					if(isset($pre_filled_values[$tr_no][$row['code']]['currency'])){
 						$form_currency->set($pre_filled_values[$tr_no][$row['code']]['currency']->id);
 					}
 
 					$exchange_rate = $form->addField('line','to_exchange_rate_'.$row->id,'Currency Rate',null,$spot.'_exchange_rate_'.$row->id)->validateNotNull(true)->addClass('exchange-rate');
+					$exchange_rate->addClass('exchange_rate')->addClass($spot);
 				}
 				$field = $form->addField('line','amount_'.$row->id,'Amount',null,$spot.'_amount_'.$row->id);
+				$field->addClass('amount')->addClass($spot);
 
 				if(isset($pre_filled_values[$tr_no][$row['code']]['amount'])){
 					$field->set($pre_filled_values[$tr_no][$row['code']]['amount']);
@@ -175,12 +181,16 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 					$transaction_row=[];
 					
-					$currency=null;
+					$currency=$this->app->epan->default_currency->id;
 					$exchange_rate = 1.0;
 
 					if($row['is_include_currency']){
 						$currency = $form['bank_currency_'.$row->id] ;//$this->add('xepan\accounts\Model_Currency')->load($form['bank_currency_'.$row->id]);
 						$exchange_rate = $form['to_exchange_rate_'.$row->id];
+						if($currency == $this->app->epan->default_currency->id && empty($exchange_rate))
+							$exchange_rate = 1.0;
+						elseif($currency != $this->app->epan->default_currency->id && empty($exchange_rate))
+							$form->displayError('to_exchange_rate_'.$row->id,'Please fill');
 					}
 
 					$transaction_row['currency'] = $currency;
@@ -202,6 +212,11 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 			}
 			$this->execute($data);
 		}
+
+		$this->app->js(true)
+					->_load('xepan_accounts_widget')
+					->_selector('.xepan-accounts-transaction-block')
+					->xepan_accounts_widget();
 
 	}
 
