@@ -5,12 +5,15 @@ namespace xepan\accounts;
 class Model_EntryTemplate extends \xepan\base\Model_Table{
 	public $table= "custom_account_entries_templates";
 	public $acl=true;
-	public $acl_type = 'AccountEntryTemplate';
+	public $acl_type = 'EntryTemplate';
 
 	public $form = null;
 
 	function init(){
 		parent::init();
+
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue(@$this->app->employee->id);
+		
 
 		$this->addField('name');
 		$this->addField('detail')->type('text');
