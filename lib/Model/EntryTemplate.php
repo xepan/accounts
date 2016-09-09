@@ -228,7 +228,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 	function execute($data=[]){ //transaction_no=>[dr=>[['acc'=>$acc,'amt'=>$amt,'currency'=>$curr,'exchange_rate'=>$exchange_rate],['acc'=>$acc ....]],cr=>[['acc'=>...]]]
 		$this->hook('beforeExecute',[$data]);
 		$transactions=[];
-		$total_amount=0;
+		$total_amount=[];
 
 		// echo "<pre>";
 		// print_r($data);
@@ -239,17 +239,17 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		foreach ($data as $transaction) {
 			$transactions[] = $new_transaction = $this->add('xepan\accounts\Model_Transaction');
 			$new_transaction->createNewTransaction($transaction['type'],null,$transaction['date'],$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],$transaction['related_id'],$transaction['related_type']);
-
+			$total_amount[$transaction['type']] = 0;
 			foreach ($transaction['rows'] as $row) {
 				if(strtolower($row['side'])=='dr'){
 					$new_transaction->addDebitLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
-					$total_amount += $row['amount'];
+					$total_amount[$transaction['type']] += $row['amount']* $row['exchange_rate'];
 				}else{
 					$new_transaction->addCreditLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
 				}
 			}
 			$new_transaction->execute();
-		}
+		}		
 		$this->hook('afterExecute',[$transactions,$total_amount,$data]);
 	}
 
