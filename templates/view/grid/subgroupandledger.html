@@ -1,6 +1,6 @@
 
 <div id="{$_name}" class="xepan-grid main-box clearfix atk-table atk-table-zebra atk-table-bordered {$class}">{Pannel}
-  <header class="main-box-header clearfix atk-actions  {$class} ">
+  <header class="main-box-header clearfix atk-actions {$class}">
     <div class="row">
       <div class="col-md-4"><strong>Parent Group : </strong><span>{$parent} </span></div>
       <div class="col-md-4"><strong>From Date : </strong><span>{$from_date} </span></div>
@@ -18,25 +18,21 @@
         <th><span>Amount DR  </span></th>
         <th><span>Amount CR</span></th>{/}{/}
       </thead>{/}
-      {$subheader}
+            {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td><span data-id="{$id}" data-type="{$type}" style="cursor:pointer; cursor: hand; max-width:600px;" class="{$class}">{$name}</span></td>
+          <td><span data-id="{$id}" data-type="{$type}" style="cursor:pointer; cursor: hand; max-width:600px;" class="{$class} {$type}">{$name}</span></td>
           <td><span>{$balancedr}                          </span></td>
-          <td><span>{$balancecr}                      	  </span></td>{/}
+          <td><span>{$balancecr}                         </span></td>{/}
         </tr>{/}{/}
-        {not_found}
+                {not_found}
         <div class="row">
-          <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle"> &nbsp;{$not_found_message}</span></div>
+          <div role="alert" class="col-md-12 text-center alert alert-warning"><span class="icon-attention fa fa-exclamation-triangle">  {$not_found_message}</span></div>
         </div>{/}
       </tbody>{totals}
       <tfoot>
-        <tr class="totals">
-          {cols}{col}
-          <td {$tdparam}>
-          {$content}
-          </td>
-          {/}{/}
+        <tr class="totals">{cols}{col}
+          <td {$tdparam}="">{$content}</td>          {/}{/}
         </tr>
       </tfoot>{/}
     </table>
@@ -60,3 +56,8 @@
     </div>{$Paginator}
   </div>
 </div>
+<style type="text/css">
+  .group {
+  font-weight: bold;
+  }
+</style>

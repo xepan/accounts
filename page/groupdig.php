@@ -12,7 +12,7 @@ class page_groupdig extends \xepan\base\Page{
 		$to_date = $this->api->stickyGET('to_date');
 		$from_date = $this->api->stickyGET('from_date');
 
-		$bs_group = $this->add('xepan\accounts\Model_BSGroup');
+		$bs_group = $this->add('xepan\accounts\Model_BSGroup',['from_date'=>$from_date,'to_date'=>$to_date]);
 		$bs_group->addCondition('parent_group_id',$group_id);
 
 		$dr_bal = 0;
@@ -28,7 +28,7 @@ class page_groupdig extends \xepan\base\Page{
 			$subgroupandledger[] = ['name'=>$group['name'],'type'=>'group','id'=>$group['id'],'class'=>'xepan-accounts-sub-group','balancecr'=>$group['ClosingBalanceCr'],'balancedr'=>$group['ClosingBalanceDr']]; 
 		}
 		
-		$bs_ledger = $this->add('xepan\accounts\Model_BSLedger');
+		$bs_ledger = $this->add('xepan\accounts\Model_BSLedger',['from_date'=>$from_date,'to_date'=>$to_date]);
 		$bs_ledger->addCondition('group_id',$group_id);
 
 		foreach ($bs_ledger as $led) {
