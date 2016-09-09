@@ -2,7 +2,8 @@
     {Pannel}
     header.main-box-header.clearfix.atk-actions(class=" {$class} ")
         div.filter-block( style="100%")
-            .pull-right {$grid_buttons} 
+            .pull-right {$grid_buttons}
+            .pull-right {$Print}
             .form-group.pull-right.xepan-filter-form
                 span(class="form-control pull-left")|{$quick_search}
                     i(class="fa fa-search search-icon")
@@ -19,7 +20,7 @@
                 th(data-hide="phone")
                     span Transaction Type
                 th(data-hide="phone")
-                    span Related Ledger
+                    span Affected Ledger
                 th(data-hide="phone")
                     span Created At
                 th
