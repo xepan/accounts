@@ -8,7 +8,7 @@ jQuery.widget("ui.xepan_accounts_widget", {
 
 		this.section=this.element;
 		// $(this.section).find('.amount,.exchange_rate').forceNumeric();
-		this.balance_output= $('<div class="balance_output text-center xepan-push-small " style="border:3px solid black;width:20%;margin:auto;padding:5px">').prependTo(this.element);
+		this.balance_output= $('<div class="balance_output text-center xepan-push-small " style="border:3px solid green;width:20%;margin:auto;padding:5px">').prependTo(this.element);
 		this.balance_output.html('====');
 		$(this.section).find('.amount,.exchange_rate').keyup(function(e){
 			// if(isNumber($(this).val())){
@@ -73,7 +73,7 @@ jQuery.widget("ui.xepan_accounts_widget", {
 		} 
 		if(self.left_sum === self.right_sum){
 			this.balance_output.html('====');
-			this.balance_output.css('border','3px solid red');
+			this.balance_output.css('border','3px solid green');
 			this.balance_output.css('margin','auto');
 		} 
 	}
