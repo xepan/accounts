@@ -31,7 +31,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 	}
 
 	
-	function manageForm($page, $related_id=null, $related_type=null, $pre_filled_values=[]){
+	function manageForm($page, $related_id=null, $related_type=null, $pre_filled_values=[],$default_narration=null){
 		// Pre filled values array format
 		// $pre_filled_values=[
 				// 'transaction_number'=>['transaction_row_number'=>['ledger'=>$ledger,'amount'=>$amount,'currency'=>$currency,'exchange_rate'=>$exchange_rate]],
@@ -42,6 +42,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$template = $this->add('GiTemplate');
 		$template->loadTemplate('view/form/entrytransaction');
 		$template->trySetHTML('date','{$date}');
+		$template->trySetHTML('narration','{$narration}');
 		
 		foreach ($transactions as $trans) {
 			$transaction_template = $this->add('GiTemplate');
@@ -163,6 +164,8 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 			$tr_no++;
 		}
 
+		$form->addField('Text','narration')->set($default_narration);
+
 		$form->addSubmit('DO')->addClass('btn btn-primary');
 
 		if($form->isSubmitted()){
@@ -174,6 +177,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				$transaction['narration'] = $form['narration'];
 				$transaction['related_id'] = $related_id;
 				$transaction['related_type'] = $related_type;
+				$transaction['narration'] = $form['narration'];
 				$transaction['rows']=[];
 
 				foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
@@ -248,7 +252,8 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 					$new_transaction->addCreditLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
 				}
 			}
-			$new_transaction->execute();
+			if($total_amount[$transaction['type']] > 0)
+				$new_transaction->execute();
 		}		
 		$this->hook('afterExecute',[$transactions,$total_amount,$data]);
 	}
