@@ -64,7 +64,11 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		})->type('money');
 
 		$this->addExpression('unlogged_amount')->set(function($m,$q){
-			return $q->expr("([0]-IF([1],[1],0))",[$m->getElement('cr_sum'),$m->getElement('logged_amount')]);
+			$party_row = $m->add('xepan\accounts\Model_TransactionRow');
+						$party_row->addCondition('root_group',['Sundry Creditor','Sundry Debtor']);
+						$party_row->addCondition('transaction_id',$q->getField('id'));
+
+			return $q->expr("(IFNULL([0],[1])-[2])",[$party_row->fieldQuery('_amountDr'),$party_row->fieldQuery('_amountCr'),$m->getElement('logged_amount')]);
 		})->type('money');
 
 
