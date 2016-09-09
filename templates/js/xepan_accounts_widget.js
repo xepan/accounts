@@ -11,12 +11,12 @@ jQuery.widget("ui.xepan_accounts_widget", {
 		this.balance_output= $('<div class="balance_output text-center xepan-push-small " style="border:3px solid black;width:20%;margin:auto;padding:5px">').prependTo(this.element);
 		this.balance_output.html('====');
 		$(this.section).find('.amount,.exchange_rate').keyup(function(e){
-			if(isNumber($(this).val())){
+			// if(isNumber($(this).val())){
 				self.left_sum=0;
 				self.right_sum=0;
 				self.doCalc();
 				self.showOutput();
-			}
+			// }
 		});
 	},
 
