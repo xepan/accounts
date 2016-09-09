@@ -60,15 +60,14 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->addExpression('logged_amount')->set(function($m,$q){
 			$lodge_model = $m->add('xepan\commerce\Model_Lodgement')
 						->addCondition('account_transaction_id',$q->getField('id'));
-			return $lodge_model->sum($q->expr('IFNULL([0],0)',[$lodge_model->getElement('amount')]));
+			return $q->expr('IFNULL([0],0)',[$lodge_model->sum('amount')]);
 		})->type('money');
 
 		$this->addExpression('unlogged_amount')->set(function($m,$q){
-			$party_row = $m->add('xepan\accounts\Model_TransactionRow');
-						$party_row->addCondition('root_group',['Sundry Creditor','Sundry Debtor']);
-						$party_row->addCondition('transaction_id',$q->getField('id'));
-
-			return $q->expr("(IFNULL([0],[1])-[2])",[$party_row->fieldQuery('_amountDr'),$party_row->fieldQuery('_amountCr'),$m->getElement('logged_amount')]);
+			$party_row = $m->add('xepan\accounts\Model_TransactionRow',['table_alias'=>'abcd']);
+			$party_row->addCondition('transaction_id',$q->getField('id'));
+			$party_row->addCondition('root_group',['Sundry Creditor','Sundry Debtor']);
+			return $q->expr("IFNULL([0],[1])-[2]",[$party_row->fieldQuery('_amountDr'),$party_row->fieldQuery('_amountCr'),$m->getElement('logged_amount')]);
 		})->type('money');
 
 
