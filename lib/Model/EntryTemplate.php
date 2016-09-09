@@ -248,7 +248,8 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 					$new_transaction->addCreditLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
 				}
 			}
-			$new_transaction->execute();
+			if($total_amount[$transaction['type']] > 0)
+				$new_transaction->execute();
 		}		
 		$this->hook('afterExecute',[$transactions,$total_amount,$data]);
 	}
