@@ -67,8 +67,19 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			$party_row = $m->add('xepan\accounts\Model_TransactionRow',['table_alias'=>'abcd']);
 			$party_row->addCondition('transaction_id',$q->getField('id'));
 			$party_row->addCondition('root_group',['Sundry Creditor','Sundry Debtor']);
+			// $party_row->setLimit(1);
+
+			// return $party_row->fieldQuery('_amountCr');
+
 			return $q->expr("IFNULL([0],[1])-[2]",[$party_row->fieldQuery('_amountDr'),$party_row->fieldQuery('_amountCr'),$m->getElement('logged_amount')]);
 		})->type('money');
+
+		$this->addExpression('party_currency_id')->set(function($m,$q){
+			$party_row = $m->add('xepan\accounts\Model_TransactionRow',['table_alias'=>'abcde']);
+			$party_row->addCondition('transaction_id',$q->getField('id'));
+			$party_row->addCondition('root_group',['Sundry Creditor','Sundry Debtor']);
+			return $party_row->fieldQuery('currency_id');
+		});
 
 
 		// $this->addHook('beforeDelete',[$this,'deleteAllTransactionRow']);
