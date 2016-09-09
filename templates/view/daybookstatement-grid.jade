@@ -19,6 +19,8 @@
                 th(data-hide="phone")
                     span Transaction Type
                 th(data-hide="phone")
+                    span Related Ledger
+                th(data-hide="phone")
                     span Created At
                 th
                     span Narration
@@ -42,6 +44,8 @@
                         {$voucher_no}
                     td
                         {$transaction_type}
+                    td
+                        {$related_ledger_name}
                     td
                         {$created_at}
                     td

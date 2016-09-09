@@ -15,6 +15,12 @@ class page_daybook extends \xepan\base\Page{
 
 		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
 			
+		$transaction_row->addExpression('related_ledger_name')->set(function($m,$q){
+			$model_ledger = $this->add('xepan\accounts\Model_Ledger');
+			$model_ledger->addCondition('id',$m->getElement('ledger_id'));
+			$model_ledger->setLimit(1);
+			return $model_ledger->fieldQuery('name');
+		});
 		// Remove Cash entries from day book
 		// $group=$this->add('xepan\accounts\Model_Group')->loadRootCashGroup();
 		// $transaction_row->addCondition('root_group_id','<>',$group['id']);
