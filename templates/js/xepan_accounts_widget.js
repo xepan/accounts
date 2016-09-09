@@ -8,6 +8,8 @@ jQuery.widget("ui.xepan_accounts_widget", {
 
 		this.section=this.element;
 		// $(this.section).find('.amount,.exchange_rate').forceNumeric();
+		this.balance_output= $('<div class="balance_output text-center xepan-push-small " style="border:3px solid black;width:20%;margin:auto;padding:5px">').prependTo(this.element);
+		this.balance_output.html('====');
 		$(this.section).find('.amount,.exchange_rate').keyup(function(e){
 			if(isNumber($(this).val())){
 				self.left_sum=0;
@@ -52,8 +54,28 @@ jQuery.widget("ui.xepan_accounts_widget", {
 
 	showOutput: function(){
 		var self=this;
-		console.log(self.left_sum);
-		console.log(self.right_sum);
+		// console.log(self.left_sum);
+		// console.log(self.right_sum);
+
+		if(self.left_sum > self.right_sum){
+			this.balance_output.html('+ Left ' + (self.left_sum - self.right_sum));
+			this.balance_output.css('border','3px solid red');
+			this.balance_output.css('margin-left','0');
+			this.balance_output.css('margin-right','auto');
+		} 
+			
+		if(self.left_sum < self.right_sum){
+			this.balance_output.html('+ Right ' + (self.right_sum - self.left_sum));
+			this.balance_output.css('border','3px solid red');
+			this.balance_output.css('margin-left','auto');
+			this.balance_output.css('margin-right','0');
+			
+		} 
+		if(self.left_sum === self.right_sum){
+			this.balance_output.html('====');
+			this.balance_output.css('border','3px solid red');
+			this.balance_output.css('margin','auto');
+		} 
 	}
 
 });
