@@ -24,7 +24,7 @@
                 tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
                     td
-                      span.xepan-accounts-bs-group(data-id="{$id}" style= "cursor:pointer; cursor: hand; max-width:600px;") {$name}
+                      span.xepan-accounts-bs-group(data-id="{$id}" style= "cursor:pointer; cursor: hand; max-width:600px;" class="{$type}")  {$name}
                     td
                       span {$amount}                      	  
                     {/}
@@ -33,7 +33,7 @@
                 div.row
                     .col-md-12.text-center.alert.alert-warning(role="alert")
                         span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
-                {/}
+                 {/}
 
             {totals}
             tfoot
