@@ -129,7 +129,7 @@ class page_statement extends \xepan\base\Page {
 		});
 		
 		$crud->grid->addHook('formatRow',function($g){
-			if($g->model['related_id']){
+			if(!$g->model['transaction_template_id']){
 				$g->current_row_html['edit'] = ' ';				
 				$g->current_row_html['delete'] = ' ';				
 			}
