@@ -223,7 +223,18 @@ class Form_EntryRunner extends \Form {
                 $data[] = $transaction;
 
             }
-            $new_id = $this->execute($data, $this['editing_transaction_id']);
+
+            try{
+                $this->api->db->beginTransaction();
+                    $new_id = $this->execute($data, $this['editing_transaction_id']);
+                $this->api->db->commit();
+            }catch(\Exception_StopInit $e){
+
+            }catch(\Exception $e){
+                $this->api->db->rollback();
+                throw $e;
+            }
+
             if($this['editing_transaction_id']){
                 // Most probabaly you are comming from CRUD in editing mode
                 // Oops ;) last transactions was deleted and this is all new transaction..
