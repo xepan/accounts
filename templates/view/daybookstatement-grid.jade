@@ -15,16 +15,14 @@
                 {cols}{col}
                 th 
                     span SNo
+                th(data-hide="phone")
+                    span Created At
                 th
                     span Voucher No
                 th(data-hide="phone")
                     span Transaction Type
                 th(data-hide="phone")
                     span Affected Ledger
-                th(data-hide="phone")
-                    span Created At
-                th
-                    span Narration
                 th
                     span Debit
                 th
@@ -42,15 +40,14 @@
                     td 
                         {$s_no}
                     td
+                        {$created_at}
+                    td
                         {$voucher_no}
                     td
                         {$transaction_type}
+                        span.user-subhead {$Narration}
                     td
                         {$related_ledger_name}
-                    td
-                        {$created_at}
-                    td
-                        {$Narration}
                     td
                         {$amountDr}
                         .xepan-push
