@@ -10,13 +10,13 @@
     <table style="width:100%" class="table user-list table-hover footable toggle-circle-filled">{header}
       <thead>{cols}{col}
         <th> <span>SNo</span></th>
+        <th data-hide="phone"><span>Date</span></th>
         <th><span>Voucher No</span></th>
-        <th data-hide="phone"><span>Transaction Type</span></th>
-        <th data-hide="phone"><span>Created At</span></th>
-        <th><span>Narration</span></th>
+        <th data-hide="phone"><span>Transaction</span></th>
         <th><span>Debit</span></th>
         <th><span>Credit</span></th>
-        <th><span>Balance                                                </span></th>{/}{/}
+        <th><span>Balance </span></th>
+        <th>                                                  </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
@@ -25,10 +25,11 @@
              
             {$s_no}
           </td>
-          <td>{$voucher_no}</td>
-          <td>{$transaction_type}</td>
           <td>{$created_at}</td>
-          <td>{$Narration}</td>
+          <td>{$voucher_no}</td>
+          <td>{$transaction_type}
+            <div> <span>{$Narration}</span></div>
+          </td>
           <td>{$amountDr}
             <div class="xepan-push"></div><small>
               {$currency}
@@ -39,7 +40,11 @@
               {$currency}
               {$original_amount_cr}</small>
           </td>
-          <td>{$Balance}</td>{/}
+          <td>{$Balance}</td>
+          <td>
+            {$edit}
+            {$delete}    
+          </td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">

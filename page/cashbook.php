@@ -11,8 +11,8 @@ class page_cashbook extends \xepan\base\Page{
 		$form->addField('DatePicker','to_date')->validateNotNull();
 		$form->addSubmit('Open Cash Book')->addClass('btn btn-primary');
 
-		$grid = $this->add('xepan\accounts\Grid_AccountsBase',['no_records_message'=>'No cash book statement found'],null,['view/cashbookstatement-grid']);
-
+		$crud=$this->add('xepan\hr\CRUD',['grid_class'=>'xepan\accounts\Grid_AccountsBase'],null,['view/cashbookstatement-grid']);
+		
 		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
 		$group=$this->add('xepan\accounts\Model_Group')->load("Cash In Hand");
 
@@ -48,36 +48,34 @@ class page_cashbook extends \xepan\base\Page{
 			$opening_side = 'CR';
 		}
 
-		$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
-		$grid->addCurrentBalanceInEachRow();
+		$crud->grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
+		$crud->grid->addCurrentBalanceInEachRow();
 
-		$grid->setModel($transaction_row,['voucher_no','transaction_type','created_at','Narration','account','amountDr','amountCr','root_group_name']);
-		$grid->addSno();
-		$grid->removeColumn('account');
+		$crud->grid->setModel($transaction_row,['voucher_no','transaction_type','created_at','Narration','account','amountDr','amountCr','root_group_name']);
+		$crud->grid->addSno();
+		$crud->grid->removeColumn('account');
 
-		$grid->addMethod('format_transaction_type',function($g,$f){
+		$crud->grid->addMethod('format_transaction_type',function($g,$f){
 			if($g->model->transaction()->customer()){
-				$g->current_row_html[$f]=$g->model['transaction_type']."::".$g->model->transaction()->customer()->get('organization_name');
+				$g->current_row_html[$f]=$g->model['transaction_type']." :: ".$g->model->transaction()->customer()->get('organization_name');
 			}else
 			$g->current_row_html[$f]=$g->model['transaction_type'];
 		});
-		$grid->addFormatter('transaction_type','transaction_type');
+		$crud->grid->addFormatter('transaction_type','transaction_type');
 
-		$js=[
-		$this->js()->_selector('.atk-cells-gutter-large')->parent()->parent()->toggle(),
-		$this->js()->_selector('.atk-box')->toggle(),
-		$this->js()->_selector('.navbar1')->toggle(),
-			// $this->js()->_selector('.atk-text-nowrap')->toggle(),
-		$this->js()->_selector('.atk-form')->toggle(),
-		];
+		// $js=[
+		// $this->js()->_selector('.atk-cells-gutter-large')->parent()->parent()->toggle(),
+		// $this->js()->_selector('.atk-box')->toggle(),
+		// $this->js()->_selector('.navbar1')->toggle(),
+		// 	// $this->js()->_selector('.atk-text-nowrap')->toggle(),
+		// $this->js()->_selector('.atk-form')->toggle(),
+		// ];
 
-		$grid->js('click',$js);
+		// $crud->grid->js('click',$js);
 
 		// $grid->addTotals(array('amountCr','amountDr'));
 		if($form->isSubmitted()){
-			$grid->js()->reload(['from_date'=>$form['from_date']?:0,'to_date'=>$form['to_date']?:0])->execute();
+			$crud->grid->js()->reload(['from_date'=>$form['from_date']?:0,'to_date'=>$form['to_date']?:0])->execute();
 		}
-
-
 	}
 }
