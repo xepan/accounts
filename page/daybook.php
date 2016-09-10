@@ -87,6 +87,10 @@ class page_daybook extends \xepan\base\Page{
 					$g->current_row_html['created_at']='';
 					$g->current_row_html['voucher_no']='';
 					$g->current_row_html['s_no']='';
+					$g->current_row_html['transaction_type']='';
+					$g->current_row_html['Narration']='';
+					$g->current_row_html['edit']=' ';
+					$g->current_row_html['delete']=' ';
 					$g->sno--;
 				}
 
