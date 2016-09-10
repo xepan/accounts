@@ -10,13 +10,14 @@ class Form_EntryRunner extends \Form {
     function setModel($model,$related_id=null, $related_type=null, $pre_filled_values=[],$default_narration=null){
         $date = $this->app->today;
         $narration=$default_narration;
+
         if($model instanceof \xepan\accounts\Model_Transaction){
             if($model['related_transaction_id']){
                 $model->load($model['related_transaction_id']);
             }
             $transaction_to_edit = $model;
 
-            if($model['related_id']){
+            if(!$model['transaction_template_id']){
                 $this->owner->add('View')->set('It is related document');
                 throw $this->exception('','StopInit');
             }
