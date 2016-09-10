@@ -3,6 +3,10 @@ namespace xepan\accounts;
 
 class Model_TransactionRow extends \xepan\base\Model_Table{
 	public $table="account_transaction_row";
+	
+	public $acl='xepan\accounts\Model_Transaction';
+	public $acl_type= 'Model_Transaction';
+
 	function init(){
 		parent::init();
 		

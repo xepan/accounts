@@ -1,8 +1,9 @@
 <?php
 namespace xepan\accounts;
 class page_statement extends \xepan\base\Page {
+	
 	public $title="Account Statement";
-	public $acl=false;
+	
 	function init(){
 		parent::init();
 
@@ -33,6 +34,7 @@ class page_statement extends \xepan\base\Page {
 					'grid_class'=>'xepan\accounts\Grid_AccountsBase',
 					'grid_options'=>['no_records_message'=>'No account statement found'],
 					'form_class' => 'xepan\accounts\Form_EntryRunner',
+					'allow_add'=> false
 				],null,['view/accountstatement-grid']);
 
 		$transactions = $this->add('xepan\accounts\Model_Transaction');
@@ -133,6 +135,7 @@ class page_statement extends \xepan\base\Page {
 		}
 
 		$crud->setModel($transactions);
+
 			// ,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		// $grid->addPaginator(10);
 

@@ -3,7 +3,9 @@ namespace xepan\accounts;
 
 class Model_Transaction extends \xepan\base\Model_Table{
 	public $table="account_transaction";
-	public $acl=false;
+	public $acl=true;
+	public $acl_type= 'Transaction';
+
 	public $dr_accounts=array();
 	public $cr_accounts=array();
 
@@ -22,6 +24,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		parent::init();
 
 		$this->hasOne('xepan\base\Epan','epan_id');
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id);
 		$this->hasOne('xepan\accounts\TransactionType','transaction_type_id');
 		$this->hasOne('xepan\accounts\Currency','currency_id');
 		$this->hasOne('xepan\accounts\EntryTemplate','transaction_template_id');
