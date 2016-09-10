@@ -12,6 +12,8 @@ class Grid_AccountsBase extends \xepan\base\Grid{
 	function init(){
 		parent::init();
 		$this->order = $this->addOrder();
+		$this->addClass('account_grid');
+		$this->js('reload')->reload();
 	}
 
 	function addSno(){

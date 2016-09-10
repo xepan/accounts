@@ -127,6 +127,11 @@ class page_statement extends \xepan\base\Page {
 									->addCondition('id',$m->getElement('related_id'));
 			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
 		});
+
+		if($crud->isEditing()){
+			$transactions->load($crud->id);
+		}
+
 		$crud->setModel($transactions);
 			// ,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		// $grid->addPaginator(10);
