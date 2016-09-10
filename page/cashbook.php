@@ -11,8 +11,14 @@ class page_cashbook extends \xepan\base\Page{
 		$form->addField('DatePicker','to_date')->validateNotNull();
 		$form->addSubmit('Open Cash Book')->addClass('btn btn-primary');
 
-		$crud=$this->add('xepan\hr\CRUD',['grid_class'=>'xepan\accounts\Grid_AccountsBase'],null,['view/cashbookstatement-grid']);
-		
+		$crud = $this->add('xepan\hr\CRUD',
+				[
+					'grid_class'=>'xepan\accounts\Grid_AccountsBase',
+					'grid_options'=>['no_records_message'=>'No cash statement found'],
+					'form_class' => 'xepan\accounts\Form_EntryRunner',
+					'allow_add'=> false
+				],null,['view/cashbookstatement-grid']);
+
 		$transaction_row = $this->add('xepan\accounts\Model_Transaction');
 		$transaction_row->getElement('exchange_rate')->destroy();
 		$transaction_r_j = $transaction_row->join('account_transaction_row.transaction_id','id');
@@ -70,6 +76,27 @@ class page_cashbook extends \xepan\base\Page{
 			$g->current_row_html[$f]=$g->model['transaction_type'];
 		});
 		$crud->grid->addFormatter('transaction_type','transaction_type');
+
+		$crud->grid->addHook('formatRow',function($g){
+			if(!$g->model['original_amount_cr']){								
+				$g->current_row_html['currency_cr'] = ' ';
+			}else{
+				$g->current_row_html['currency_cr'] = $g->model['currency'];
+			}
+
+			if(!$g->model['original_amount_dr']){								
+				$g->current_row_html['currency_dr'] = ' ';
+			}else{
+				$g->current_row_html['currency_dr'] = $g->model['currency'];
+			}
+
+			if($g->model['currency_id'] == $this->app->epan->default_currency->id){
+				$g->current_row_html['currency_dr'] = ' ';
+				$g->current_row_html['original_amount_dr'] = ' ';
+				$g->current_row_html['currency_cr'] = ' ';
+				$g->current_row_html['original_amount_cr'] = ' ';
+			}								
+		});	
 
 		if($form->isSubmitted()){
 			$crud->grid->js()->reload(['from_date'=>$form['from_date']?:0,'to_date'=>$form['to_date']?:0])->execute();
