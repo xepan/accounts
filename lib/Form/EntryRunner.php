@@ -223,15 +223,20 @@ class Form_EntryRunner extends \Form {
 
             }
             $new_id = $this->execute($data, $this['editing_transaction_id']);
-            $js=[];
             if($this['editing_transaction_id']){
-                $js[] = $this->js()->_selector('.account_grid')->trigger('reload');
+                // Most probabaly you are comming from CRUD in editing mode
+                // Oops ;) last transactions was deleted and this is all new transaction..
+                // Don't reload form with old id, or you will see EXCEPTIONS .. hahahahaha
+
+                $js=[];
                 $js[] = $this->js()->univ()->closeDialog();
+                $js[] = $this->js()->_selector('.account_grid')->trigger('reload');
+                if($this->app->db->inTransaction()) $this->app->db->commit();
+                $this->js(null,$js)->execute();
             }else{
-                $js[] = $this->js()->reload();
-                $js[] = $this->js()->univ()->successMessage('Done');
+                // Most probabely you are doing new entry so its ok to reload form.
+                $this->app->page_action_result = $this->js(null,$this->js()->univ()->closeDialog())->reload();
             }
-            $this->js(null,$js)->execute();
         }
 
         $this->app->js(true)

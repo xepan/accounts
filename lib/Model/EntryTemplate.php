@@ -39,6 +39,10 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		// ]
 
 		$this->form  = $form = $page->add('xepan\accounts\Form_EntryRunner');
+		$form->addHook('afterExecute',function($et,$transaction,$total_amount,$row_data){
+			$this->hook('afterExecute',[$transaction,$total_amount,$row_data]);
+		});
+
 		$form->setModel($this,$related_id, $related_type, $pre_filled_values,$default_narration);
 		
 	}
