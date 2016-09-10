@@ -7,23 +7,29 @@ class Form_EntryRunner extends \Form {
 
     public $template_id=null;
 
-    function setModel($transaction_m,$related_id=null, $related_type=null, $pre_filled_values=[],$default_narration=null){
-
+    function setModel($model,$related_id=null, $related_type=null, $pre_filled_values=[],$default_narration=null){
         $date = $this->app->today;
         $narration=$default_narration;
-        if($transaction_m instanceof \xepan\accounts\Model_Transaction){
-            if($transaction_m['related_transaction_id']){
-                $transaction_m->load($transaction_m['related_transaction_id']);
+        if($model instanceof \xepan\accounts\Model_Transaction){
+            if($model['related_transaction_id']){
+                $model->load($model['related_transaction_id']);
             }
-            $transaction_to_edit = $transaction_m;
+            $transaction_to_edit = $model;
+
+            if($model['related_id']){
+                $this->owner->add('View')->set('It is related document');
+                throw $this->exception('','StopInit');
+            }
+
             $transaction_m = $transaction_to_edit->ref('transaction_template_id');
             $transactions = $transaction_m->ref('xepan\accounts\EntryTemplateTransaction');
             $related_id = $transaction_to_edit['related_id'];
             $related_type = $transaction_to_edit['related_type'];
             $date = $transaction_to_edit['created_at'];
             $narration= $transaction_to_edit['Narration'];
-        }elseif($transaction_m instanceof \xepan\accounts\Model_EntryTemplate){
-            $transactions = $transaction_m->ref('xepan\accounts\EntryTemplateTransaction');
+        }elseif($model instanceof \xepan\accounts\Model_EntryTemplate){
+            $transaction_m = $model;
+            $transactions = $model->ref('xepan\accounts\EntryTemplateTransaction');
             $transaction_to_edit=null;
         }else{
             throw $this->exception('Only Loaded, Transaction and Entry Template Models permitted')
@@ -31,7 +37,7 @@ class Form_EntryRunner extends \Form {
         }
 
 
-        $this->template_id = $transaction_m->id;        
+        $this->template_id = $transaction_m->id;
 
         $template = $this->add('GiTemplate');
         $template->loadTemplate('view/form/entrytransaction');
@@ -81,7 +87,7 @@ class Form_EntryRunner extends \Form {
         }
 
         $this->addField('DatePicker','date')->set($date);
-        $this->addField('Hidden','editing_transaction_id')->set($transaction_to_edit->id);
+        $this->addField('Hidden','editing_transaction_id')->set($transaction_to_edit?$transaction_to_edit->id:0);
 
         
         $tr_no=1;
@@ -216,8 +222,16 @@ class Form_EntryRunner extends \Form {
                 $data[] = $transaction;
 
             }
-            $this->execute($data, $this['editing_transaction_id']);
-            $this->js(null,$this->js()->univ()->successMessage('Done'))->reload()->execute();
+            $new_id = $this->execute($data, $this['editing_transaction_id']);
+            $js=[];
+            if($this['editing_transaction_id']){
+                $js[] = $this->js()->_selector('.account_grid')->trigger('reload');
+                $js[] = $this->js()->univ()->closeDialog();
+            }else{
+                $js[] = $this->js()->reload();
+                $js[] = $this->js()->univ()->successMessage('Done');
+            }
+            $this->js(null,$js)->execute();
         }
 
         $this->app->js(true)
@@ -226,7 +240,7 @@ class Form_EntryRunner extends \Form {
                     ->xepan_accounts_widget();
 
 
-        return $transaction_m;
+        return $model;
     }
 
     // As per given rules of this template, ie groups accounts etc.
@@ -247,7 +261,11 @@ class Form_EntryRunner extends \Form {
 
         if($editing_transaction_id){
             $this->add('xepan\accounts\Model_Transaction')->load($editing_transaction_id)->delete();
-            $this->add('xepan\accounts\Model_Transaction')->loadBy('related_transaction_id',$editing_transaction_id)->delete();
+            $this->add('xepan\accounts\Model_Transaction')
+                    ->addCondition('related_transaction_id',$editing_transaction_id)
+                    ->each(function($m){
+                        $m->delete();
+                    });
         }
         
 
@@ -269,6 +287,7 @@ class Form_EntryRunner extends \Form {
                 $related_transaction_id = $new_transaction->id;
         }       
         $this->hook('afterExecute',[$transactions,$total_amount,$data]);
+        return $related_transaction_id;
     }
 
     function populatePreFilledValues($transaction_model){
