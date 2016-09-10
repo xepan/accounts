@@ -28,6 +28,12 @@ class page_daybook extends \xepan\base\Page{
 
 		$transaction->addExpression('amountDr')->set($transaction->dsql()->expr('round(([0]*[1]),2)',[$transaction->getElement('original_amount_dr'),$transaction->getElement('exchange_rate')]));
 		$transaction->addExpression('amountCr')->set($transaction->dsql()->expr('round(([0]*[1]),2)',[$transaction->getElement('original_amount_cr'),$transaction->getElement('exchange_rate')]));
+		$transaction->addExpression('related_ledger_name')->set(function($m,$q){
+			return $this->add('xepan\accounts\Model_Ledger')
+						->addCondition('id',$m->getElement('ledger_id'))
+						->setLimit(1)
+						->fieldQuery('name');
+		});	
 
 		if($_GET['date_selected']){
 			$transaction->addCondition('created_at','>=',$_GET['date_selected']);
@@ -42,9 +48,12 @@ class page_daybook extends \xepan\base\Page{
 			$grid->addSno();
 			$grid->removeColumn('account');
 
+			$grid->current_transaction_id=null;
+			
 			$grid->addHook('formatRow',function($g){
-				$g->current_row_html['created_at'] = date('F jS Y', strtotime($g->model['created_at']));				
-				
+
+				$g->current_row_html['created_at'] = date('d-M-y',strtotime($g->model['created_at']));
+
 				if(!$g->model['transaction_template_id']){
 					$g->current_row_html['edit'] = '<span class="fa-stack table-link"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-pencil fa-stack-1x fa-inverse"></i></span>';				
 					$g->current_row_html['delete'] = '<span class="table-link fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span>';				
@@ -72,7 +81,17 @@ class page_daybook extends \xepan\base\Page{
 					$g->current_row_html['original_amount_dr'] = ' ';
 					$g->current_row_html['currency_cr'] = ' ';
 					$g->current_row_html['original_amount_cr'] = ' ';
-				}								
+				}
+
+				if($g->current_transaction_id == $g->model->id){
+					$g->current_row_html['created_at']='';
+					$g->current_row_html['voucher_no']='';
+					$g->current_row_html['s_no']='';
+					$g->sno--;
+				}
+
+				$g->current_transaction_id = $g->model->id;
+
 			});
 		}
 

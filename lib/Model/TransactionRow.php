@@ -102,7 +102,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 						->fieldQuery('positive_side');
 		});
 		
-		$this->addHook('beforeDelete',[$this,'deleteTransactionAndthis']);
+		// $this->addHook('beforeDelete',[$this,'deleteTransactionAndthis']);
 
 	}
 

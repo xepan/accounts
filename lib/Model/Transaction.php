@@ -99,6 +99,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	}
 
 	function beforeDelete(){
+		$this->add('xepan\accounts\Model_TransactionRow')
+			 ->addCondition('transaction_id',$this->id)	
+			 ->deleteAll();	
 		$this->app->hook('deleteTransaction',[$this]);
 	}
 
