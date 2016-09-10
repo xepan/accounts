@@ -27,8 +27,7 @@
                     span Debit
                 th
                     span Credit
-                th
-                    span Balance                                                
+                th                                              
                 {/}{/}
             {/}
             {$subheader}
@@ -45,23 +44,24 @@
                         {$voucher_no}
                     td
                         {$transaction_type}
-                        span.user-subhead {$Narration}
+                        div.user-subhead {$Narration}
                     td
                         {$related_ledger_name}
                     td
                         {$amountDr}
                         .xepan-push
                         small
-                            {$currency}
+                            {$currency_dr}
                             {$original_amount_dr}
                     td
                         {$amountCr}
                         .xepan-push
                         small
-                            {$currency}
+                            {$currency_cr}
                             {$original_amount_cr}
                     td
-                        {$Balance}
+                        {$edit}
+                        {$delete}
                     {/}
                 {/}{/}
                 {not_found}

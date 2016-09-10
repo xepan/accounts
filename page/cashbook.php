@@ -66,6 +66,7 @@ class page_cashbook extends \xepan\base\Page{
 			$grid->removeColumn('account');
 
 			$grid->addHook('formatRow',function($g){
+				$g->current_row_html['created_at'] = date('F jS Y', strtotime($g->model['created_at']));
 				if($g->model->customer()){
 					$g->current_row_html['transaction_type']=$g->model['transaction_type']." :: ".$g->model->customer()->get('organization_name');
 				}else

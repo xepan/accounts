@@ -131,6 +131,7 @@ class page_statement extends \xepan\base\Page {
 		});
 		
 		$crud->grid->addHook('formatRow',function($g){
+			$g->current_row_html['created_at'] = date('F jS Y', strtotime($g->model['created_at']));
 			if(!$g->model['transaction_template_id']){
 				$g->current_row_html['edit'] = '<span class="fa-stack table-link"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-pencil fa-stack-1x fa-inverse"></i></span>';				
 				$g->current_row_html['delete'] = '<span class="table-link fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-trash-o fa-stack-1x fa-inverse"></i></span>';				

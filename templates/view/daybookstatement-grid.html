@@ -17,7 +17,7 @@
         <th data-hide="phone"><span>Affected Ledger</span></th>
         <th><span>Debit</span></th>
         <th><span>Credit</span></th>
-        <th><span>Balance                                                </span></th>{/}{/}
+        <th>                                             </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
@@ -28,19 +28,24 @@
           </td>
           <td>{$created_at}</td>
           <td>{$voucher_no}</td>
-          <td>{$transaction_type}<span class="user-subhead">{$Narration}</span></td>
+          <td>{$transaction_type}
+            <div class="user-subhead">{$Narration}</div>
+          </td>
           <td>{$related_ledger_name}</td>
           <td>{$amountDr}
             <div class="xepan-push"></div><small>
-              {$currency}
+              {$currency_dr}
               {$original_amount_dr}</small>
           </td>
           <td>{$amountCr}
             <div class="xepan-push"></div><small>
-              {$currency}
+              {$currency_cr}
               {$original_amount_cr}</small>
           </td>
-          <td>{$Balance}</td>{/}
+          <td>
+            {$edit}
+            {$delete}
+          </td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">
