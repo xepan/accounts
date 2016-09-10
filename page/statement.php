@@ -127,6 +127,32 @@ class page_statement extends \xepan\base\Page {
 									->addCondition('id',$m->getElement('related_id'));
 			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
 		});
+		
+		$crud->grid->addHook('formatRow',function($g){
+			if($g->model['related_id']){
+				$g->current_row_html['edit'] = ' ';				
+				$g->current_row_html['delete'] = ' ';				
+			}
+
+			if(!$g->model['original_amount_cr']){								
+				$g->current_row_html['currency_cr'] = ' ';
+			}else{
+				$g->current_row_html['currency_cr'] = $g->model['currency'];
+			}
+
+			if(!$g->model['original_amount_dr']){								
+				$g->current_row_html['currency_dr'] = ' ';
+			}else{
+				$g->current_row_html['currency_dr'] = $g->model['currency'];
+			}
+
+			if($g->model['currency_id'] == $this->app->epan->default_currency->id){
+				$g->current_row_html['currency_dr'] = ' ';
+				$g->current_row_html['original_amount_dr'] = ' ';
+				$g->current_row_html['currency_cr'] = ' ';
+				$g->current_row_html['original_amount_cr'] = ' ';
+			}								
+		});		
 
 		if($crud->isEditing()){
 			$transactions->load($crud->id);
