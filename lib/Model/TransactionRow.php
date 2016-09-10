@@ -14,6 +14,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 
 		$this->addField('_amountDr')->caption('Debit')->type('money');
 		$this->addField('_amountCr')->caption('Credit')->type('money');
+		$this->addField('code');
 		$this->addField('side');
 		$this->addField('accounts_in_side')->type('int');
 		$this->addField('exchange_rate')->type('number');

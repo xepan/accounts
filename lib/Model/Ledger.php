@@ -248,7 +248,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	];	
 
 
-	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate, $remark=null){
+	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate, $remark=null,$code=null){
 
 		$transaction_row=$this->add('xepan\accounts\Model_TransactionRow');
 		$transaction_row['_amountDr']=$amount;
@@ -258,13 +258,14 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$transaction_row['currency_id']=$currency_id;
 		$transaction_row['exchange_rate']=$exchange_rate;
 		$transaction_row['remark']=$remark;
+		$transaction_row['code']=$code;
 		// $transaction_row['accounts_in_side']=$no_of_accounts_in_side;
 		$transaction_row->save();
 
 		$this->debitOnly($amount);
 	}
 
-	function creditWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate,$remark=null){
+	function creditWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate,$remark=null, $code=null){
 
 		$transaction_row=$this->add('xepan\accounts\Model_TransactionRow');
 		$transaction_row['_amountCr']=$amount;
@@ -274,6 +275,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$transaction_row['currency_id']=$currency_id;
 		$transaction_row['exchange_rate']=$exchange_rate;
 		$transaction_row['remark']=$remark;
+		$transaction_row['code']=$code;
 		// $transaction_row['accounts_in_side']=$no_of_accounts_in_side;
 		$transaction_row->save();
 
