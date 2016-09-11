@@ -251,7 +251,7 @@ class Form_EntryRunner extends \Form {
             }
         }
 
-        $this->owner->js(true)
+        $this->js(true)
                     ->_load('xepan_accounts_widget')
                     ->_selector('.xepan-accounts-transaction-block')
                     ->xepan_accounts_widget();
