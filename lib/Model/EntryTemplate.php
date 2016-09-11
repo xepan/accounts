@@ -40,6 +40,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 
 		$this->form  = $form = $page->add('xepan\accounts\Form_EntryRunner');
 		$form->addHook('afterExecute',function($et,$transaction,$total_amount,$row_data){
+			if($this->app->db->inTransaction()) $this->app->db->commit();
 			$this->hook('afterExecute',[$transaction,$total_amount,$row_data]);
 		});
 
