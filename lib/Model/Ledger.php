@@ -231,17 +231,17 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	public $defaultLedger=[
 
-		['name'=>'Miscellaneous Expenses','group'=>'Direct Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Miscellaneous Expenses'],
+		['name'=>'Miscellaneous Expenses','group'=>'Miscellaneous Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Miscellaneous Expenses'],
 		['name'=>'Sales Account','group'=>'Sales','ledger_type'=>'Sales','LedgerDisplayName'=>'Sales Account'],
 		['name'=>'Purchase Account','group'=>'Purchase','ledger_type'=>'Purchase','LedgerDisplayName'=>'Purchase Account'],
-		['name'=>'Round Account','group'=>'Indirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
+		['name'=>'Round Account','group'=>'Round Income','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
 		['name'=>'Tax Account','group'=>'Tax Payable','ledger_type'=>'Tax','LedgerDisplayName'=>'Tax Name'],
 		['name'=>'Rebate & Discount Allowed','group'=>'Rebate & Discount Allowed','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Allowed'],
 		['name'=>'Rebate & Discount Received','group'=>'Rebate & Discount Received','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Received'],
-		['name'=>'Shipping Account','group'=>'Indirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Shipping Account'],
-		['name'=>'Exchange Rate Different Loss','group'=>'Indirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Exchange Loss'],
-		['name'=>'Exchange Rate Different Gain','group'=>'Indirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
-		['name'=>'Bank Charges','group'=>'InDirect Expenses','ledger_type'=>'Bank Charges','LedgerDisplayName'=>'Bank Charges'],
+		['name'=>'Shipping Account','group'=>'Shipping Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Shipping Account'],
+		['name'=>'Exchange Rate Different Loss','group'=>'Exchange Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Exchange Loss'],
+		['name'=>'Exchange Rate Different Gain','group'=>'Exchange Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
+		['name'=>'Bank Charges','group'=>'Bank Charges Expenses','ledger_type'=>'Bank Charges','LedgerDisplayName'=>'Bank Charges'],
 		['name'=>'Cash Account','group'=>'Cash In Hand','ledger_type'=>'Cash Account','LedgerDisplayName'=>'Cash Account'],
 		['name'=>'Your Default Bank Account','group'=>'Bank Account','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account']
 	

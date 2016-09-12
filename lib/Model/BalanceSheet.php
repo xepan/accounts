@@ -60,34 +60,43 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 	public $defaultHeads=[
 
 		// Liabilities
-		['name'=>'Capital Account','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
-		['name'=>'Loans & Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>2],
-		['name'=>'Current Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>3],
-		['name'=>'Sundry Creditor','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>4],
-		['name'=>'Suspense Account','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>5],
+		
+		['name'=>'Share Holder Fund','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
+		['name'=>'Non Current Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
+		['name'=>'Current Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
+		
+		// ['name'=>'Capital Account','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
+		// ['name'=>'Loans & Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>2],
+		// ['name'=>'Current Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>3],
+		// ['name'=>'Sundry Creditor','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>4],
+		// ['name'=>'Suspense Account','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>5],
 		
 		// Assets
-		['name'=>'Fixed Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>1],
-		['name'=>'Current Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>2],
-		['name'=>'Deposit Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>3],
-		['name'=>'Sundry Debtor','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>4],
-		['name'=>'Stock In Hand','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>5],
+		
+		['name'=>'Non Current Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>1],
+		['name'=>'Current Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>1],
+		// ['name'=>'Fixed Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>1],
+		// ['name'=>'Current Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>2],
+		// ['name'=>'Deposit Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>3],
+		// ['name'=>'Sundry Debtor','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>4],
+		// ['name'=>'Stock In Hand','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>5],
 		
 		// Trading LT
 		['name'=>'Opening Stock','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>1],
 		['name'=>'Sales','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'CR','order'=>2],
-		['name'=>'Indirect Expenses For Sale','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>3],
+		['name'=>'Direct Expenses','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>3],
 		['name'=>'Purchase Returns','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'CR','order'=>4],
 		
 		// Trading RT
 		['name'=>'Purchase','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'DR','order'=>2],
 		['name'=>'Closing Stock','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'DR','order'=>3],
 		['name'=>'Sales Returns','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'DR','order'=>4],
+		['name'=>'Indirect Income','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'DR','order'=>4],
 
 		// Expenses 
-		['name'=>'Expenses','positive_side'=>'LT','report_name'=>'Profit & Loss','subtract_from'=>'DR','order'=>1],
+		['name'=>'Indirect Expenses','positive_side'=>'LT','report_name'=>'Profit & Loss','subtract_from'=>'DR','order'=>1],
 		// Income 
-		['name'=>'Income','positive_side'=>'RT','report_name'=>'Profit & Loss','subtract_from'=>'CR','order'=>1]
+		['name'=>'Indirect Income','positive_side'=>'RT','report_name'=>'Profit & Loss','subtract_from'=>'CR','order'=>1]
 
 	];
 
