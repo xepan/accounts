@@ -243,7 +243,8 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Sales','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Sales'],
 		['name'=>'Purchase Returns','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Purchase Returns'],
 		['name'=>'Closing Stock','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Closing Stock'],
-		
+		['name'=>'Direct Income','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Direct Income'],
+
 		/**
 
 		P&L Expense/Loss Section

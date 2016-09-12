@@ -91,7 +91,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		['name'=>'Purchase','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'DR','order'=>2],
 		['name'=>'Closing Stock','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'DR','order'=>3],
 		['name'=>'Sales Returns','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'DR','order'=>4],
-		['name'=>'Indirect Income','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'DR','order'=>4],
+		['name'=>'Direct Income','positive_side'=>'RT','report_name'=>'Trading','subtract_from'=>'DR','order'=>4],
 
 		// Expenses 
 		['name'=>'Indirect Expenses','positive_side'=>'LT','report_name'=>'Profit & Loss','subtract_from'=>'DR','order'=>1],
