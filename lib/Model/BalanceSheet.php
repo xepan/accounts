@@ -57,6 +57,12 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		return $this['name']===$name;
 	}
 
+	function getBalance($from_date=null,$to_date=null){
+		// if(!$this->loaded()) throw new \Exception("Balancesheet Model Must Be Loaded", 1);
+		
+		return rand(999,99999);
+	}
+
 	public $defaultHeads=[
 
 		// Liabilities
@@ -88,5 +94,4 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		['name'=>'Indirect Income','positive_side'=>'RT','report_name'=>'Profit & Loss','subtract_from'=>'CR','order'=>1]
 
 	];
-
 }

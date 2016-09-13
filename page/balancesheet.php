@@ -11,6 +11,7 @@ class page_balancesheet extends \xepan\base\Page{
 
 		// return;
 
+
 		$fy=$this->app->getFinancialYear();
 		
 		$from_date = $this->api->stickyGET('from_date')?:$fy['start_date'];

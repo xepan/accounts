@@ -5,8 +5,27 @@ class page_report_balancesheet extends page_report{
 
 	function init(){
 		parent::init();
+		$f=$this->add('Form',null,null,['form/empty']);
+		$f->addField('DatePicker','from_date');
+		$f->addField('DatePicker','to_date');
+		$f->addSubmit('Go');
 
-		$this->add('xepan\accounts\View_BalanceSheetFormatted');
+		$this->app->stickyGET('from_date');
+		$this->app->stickyGET('to_date');
+
+		$view = $this->add('xepan\accounts\View_BalanceSheetFormatted',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
+
+		if($f->isSubmitted()){
+			$f->js(null,$view->js()->reload())
+					->reload(
+								[
+									'from_date'=>$f['from_date']?:0,
+									'to_date'=>$f['to_date']?:0,
+								]
+							)->execute();
+		}
+
+		
 
 	}
 }
