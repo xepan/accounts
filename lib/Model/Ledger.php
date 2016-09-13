@@ -407,5 +407,11 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return $this->ref('group_id');
 	}
 
+	function getBalance($from_date=null,$to_date=null){
+		// if(!$this->loaded()) throw new \Exception("Ledger Model Must Be Loaded", 1);
+		
+		return rand(999,99999);	
+	}
+
 	
 }
