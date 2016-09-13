@@ -23,6 +23,7 @@ class page_config extends \xepan\base\Page{
 		}
 
 		$tabs->addTabURL('xepan_accounts_custom_accountentries','Custom Accounts Entry');
+		$tabs->addTabURL('xepan_accounts_financialyear','Financial Year Start Month');
 	}
 
 	function defaultTemplate(){
