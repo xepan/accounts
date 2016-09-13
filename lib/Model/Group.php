@@ -298,11 +298,10 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Others (Short Term Loans & Advances)','root_group'=>null,'parent_group'=>'Short Term Loan And Advances','balance_sheet'=>'Current Assets'],
 
 		// Assets(Current Assets -> Trade Receivables)
-		['name'=>'Sundry Debtor (With In Trade)','root_group'=>null,'parent_group'=>'Trade Receivables','balance_sheet'=>'Current Assets'],
+		['name'=>'Sundry Debtor','root_group'=>null,'parent_group'=>'Trade Receivables','balance_sheet'=>'Current Assets'],
 		
 		// Assets(Current Assets -> Other Current Assets)
 		['name'=>'Tax Receivable','root_group'=>null,'parent_group'=>'Other Current Assets','balance_sheet'=>'Current Assets'],
-		['name'=>'Sundry Debtor (Without Trade)','root_group'=>null,'parent_group'=>'Other Current Assets','balance_sheet'=>'Current Assets'],
 		
 		/**
 
