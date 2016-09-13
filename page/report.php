@@ -6,5 +6,6 @@ class page_report extends \xepan\base\Page{
 		parent::init();
 
 		$this->app->side_menu->addItem([' Tax Report','icon'=>' fa fa-tax'],'xepan_accounts_report_subtax')->setAttr(['title'=>'Tax Report ']);		
+		$this->app->side_menu->addItem([' BalanceSheet Formatted','icon'=>' fa fa-tax'],'xepan_accounts_report_balancesheet')->setAttr(['title'=>'Tax Report ']);		
 	}
 }
