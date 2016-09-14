@@ -227,11 +227,11 @@ class Form_EntryRunner extends \Form {
             try{
                 $this->api->db->beginTransaction();
                     $new_id = $this->execute($data, $this['editing_transaction_id']);
-                $this->api->db->commit();
+                if($this->app->db->inTransaction()) $this->api->db->commit();
             }catch(\Exception_StopInit $e){
 
             }catch(\Exception $e){
-                $this->api->db->rollback();
+                if($this->app->db->inTransaction()) $this->api->db->rollback();
                 throw $e;
             }
 
@@ -245,9 +245,11 @@ class Form_EntryRunner extends \Form {
                 $js[] = $this->js()->_selector('.account_grid')->trigger('reload');
                 if($this->app->db->inTransaction()) $this->app->db->commit();
                 $this->js(null,$js)->execute();
-            }else{
+            }elseif(isset($this->app->inAction)){
                 // Most probabely you are doing new entry so its ok to reload form.
                 $this->app->page_action_result = $this->js(null,$this->js()->univ()->closeDialog())->reload();
+            }else{
+                $this->js(null,$this->js()->univ()->successMessage('Done'))->reload()->execute();
             }
         }
 
