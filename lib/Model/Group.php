@@ -261,14 +261,13 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Allowance For Bad And Doubtful Advances','root_group'=>null,'parent_group'=>'Long Term Loans And Advances','balance_sheet'=>'Non Current Assets'],
 		
 		// Assets(Non Current Assets -> Other Non Current Assets)
-		['name'=>'Long-term Trade Receivables','root_group'=>null,'parent_group'=>'Other Non Current Assets','balance_sheet'=>'Non Current Assets'],
 		['name'=>'Others (Other Non Current Assets)','root_group'=>null,'parent_group'=>'Other Non Current Assets','balance_sheet'=>'Non Current Assets'],
-		['name'=>'Long term Trade Receivables','root_group'=>null,'parent_group'=>'Other Non Current Assets','balance_sheet'=>'Non Current Assets'],
+		['name'=>'Long Term Trade Receivables','root_group'=>null,'parent_group'=>'Other Non Current Assets','balance_sheet'=>'Non Current Assets'],
 		
 		// Assets(Non Current Assets -> Other Non Current Assets -> Long term Trade Receivables)
-		['name'=>'Unsecured','root_group'=>'Other Non Current Assets','parent_group'=>'Long term Trade Receivables','balance_sheet'=>'Non Current Assets'],
-		['name'=>'Secured','root_group'=>'Other Non Current Assets','parent_group'=>'Long term Trade Receivables','balance_sheet'=>'Non Current Assets'],
-		['name'=>'Doubtful','root_group'=>'Other Non Current Assets','parent_group'=>'Long term Trade Receivables','balance_sheet'=>'Non Current Assets'],
+		['name'=>'Unsecured','root_group'=>'Other Non Current Assets','parent_group'=>'Long Term Trade Receivables','balance_sheet'=>'Non Current Assets'],
+		['name'=>'Secured','root_group'=>'Other Non Current Assets','parent_group'=>'Long Term Trade Receivables','balance_sheet'=>'Non Current Assets'],
+		['name'=>'Doubtful','root_group'=>'Other Non Current Assets','parent_group'=>'Long Term Trade Receivables','balance_sheet'=>'Non Current Assets'],
 
 		// Assets(Current Assets)
 		['name'=>'Current Investments','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Current Assets'],
