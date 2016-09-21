@@ -73,7 +73,7 @@ class View_BalanceSheetFormatted extends \View {
 		foreach ($r as $key => $value) {
 			$result = str_replace($key, $value, $result);
 		}
-		// echo $result;
+		$this->setHTML($result);
 
 		parent::recursiveRender();
 

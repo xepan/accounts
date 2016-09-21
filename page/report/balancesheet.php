@@ -16,13 +16,10 @@ class page_report_balancesheet extends page_report{
 		$view = $this->add('xepan\accounts\View_BalanceSheetFormatted',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
 
 		if($f->isSubmitted()){
-			$f->js(null,$view->js()->reload())
-					->reload(
-								[
+			$view->js()->reload([
 									'from_date'=>$f['from_date']?:0,
 									'to_date'=>$f['to_date']?:0,
-								]
-							)->execute();
+								])->execute();
 		}
 
 		
