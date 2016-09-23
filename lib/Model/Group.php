@@ -189,6 +189,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		// Liabilities(Current Liabilities -> Short Term Borrowing -> Loans Repayable On Demand)
 		['name'=>'Loans From Banks','root_group'=>'Short Term Borrowing','parent_group'=>'Loans Repayable On Demand','balance_sheet'=>'Current Liabilities'],
 		['name'=>'Loans From Other Parties','root_group'=>'Short Term Borrowing','parent_group'=>'Loans Repayable On Demand','balance_sheet'=>'Current Liabilities'],
+		['name'=>'Bank OD','root_group'=>'Short Term Borrowing','parent_group'=>'Loans Repayable On Demand','balance_sheet'=>'Current Liabilities'],
 		
 		// Liabilities(Current Liabilities -> Other Current Liabilities)
 		['name'=>'Current Maturities Of Long Term Debt','root_group'=>null,'parent_group'=>'Other Current Liabilities','balance_sheet'=>'Current Liabilities'],
