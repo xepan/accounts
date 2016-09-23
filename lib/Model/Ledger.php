@@ -243,7 +243,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		['name'=>'Exchange Rate Different Gain','group'=>'Exchange Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
 		['name'=>'Bank Charges','group'=>'Bank Charges Expenses','ledger_type'=>'Bank Charges','LedgerDisplayName'=>'Bank Charges'],
 		['name'=>'Cash Account','group'=>'Cash In Hand','ledger_type'=>'Cash Account','LedgerDisplayName'=>'Cash Account'],
-		['name'=>'Your Default Bank Account','group'=>'Bank Account','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account']
+		['name'=>'Your Default Bank Account','group'=>'Bank Account','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account'],
+		['name'=>'Profit & Loss','group'=>'Profit & Loss','ledger_type'=>'Profit & Loss','LedgerDisplayName'=>'Profit & Loss']
 	
 	];	
 
