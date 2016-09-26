@@ -72,9 +72,13 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		['name'=>'Non Current Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
 		['name'=>'Current Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
 		
+		// Profit & Loss For Opening Balance
+		['name'=>'Profit & Loss','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
+		
 		// Assets
 		['name'=>'Non Current Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>1],
 		['name'=>'Current Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>1],
+		
 		
 		// Trading LT
 		['name'=>'Opening Stock','positive_side'=>'LT','report_name'=>'Trading','subtract_from'=>'CR','order'=>1],
@@ -91,10 +95,8 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		// Expenses 
 		['name'=>'Indirect Expenses','positive_side'=>'LT','report_name'=>'Profit & Loss','subtract_from'=>'DR','order'=>1],
 		// Income 
-		['name'=>'Indirect Income','positive_side'=>'RT','report_name'=>'Profit & Loss','subtract_from'=>'CR','order'=>1],
+		['name'=>'Indirect Income','positive_side'=>'RT','report_name'=>'Profit & Loss','subtract_from'=>'CR','order'=>1]
 		
-		// Profit & Loss For Opening Balance
-		['name'=>'Profit & Loss','positive_side'=>'LT','report_name'=>'Profit & Loss','subtract_from'=>'DR','order'=>1]
 
 	];
 }
