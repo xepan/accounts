@@ -241,9 +241,11 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 			if($bs['subtract_from']=='CR'){
 				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
 				$openning_balances_cr += $bs['OpeningBalanceCr'];
+				$openning_balances_dr += $bs['OpeningBalanceDr'];
 			}else{
 				$side = 'DR';
 				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
+				$openning_balances_cr += $bs['OpeningBalanceCr'];
 				$openning_balances_dr += $bs['OpeningBalanceDr'];
 			}
 			if($amount >=0 && $side == $bs['subtract_from']){
@@ -287,6 +289,7 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		}
 
 		$opening_balance_diff=$openning_balances_dr - $openning_balances_cr;
+		
 		
 		if($opening_balance_diff>0){
 			$left[] = ['name'=>'Opp. Balance Diff','amount'=>abs($opening_balance_diff),'id'=>'opening_balnce_diff'];
