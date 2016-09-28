@@ -10,17 +10,29 @@ class page_config extends \xepan\base\Page{
 		$tabs = $this->add('Tabs');
 		$currency_tab = $tabs->addTab('Currency');
 		
-		$config=$this->app->epan->config;
-		$default_currency=$config->getConfig('DEFAULT_CURRENCY_ID','accounts');
-		$form=$currency_tab->add('Form');
+		$default_currency = $this->add('xepan\base\Model_ConfigJsonModel',
+			[
+				'fields'=>[
+							'currency_id'=>'DropDown'
+							],
+					'config_key'=>'FIRM_DEFAULT_CURRENCY_ID',
+					'application'=>'accounts'
+			]);
+		$default_currency->add('xepan\hr\Controller_ACL');
+		$default_currency->tryLoadAny();		
 
-		$currency_field=$form->addField('Dropdown','currency_id')->set($default_currency);
-		$currency_field->setModel('xepan\accounts\Model_Currency');
+		$form = $this->add('Form',null,'currency_id');
+		$form->setModel($default_currency);
+
+		$default_currency_id=$form->getElement('currency_id')->set($default_currency['currency_id']);
+		$default_currency_id->setModel('xepan\accounts\Model_Currency');
 		$form->addSubmit('Update')->addClass('btn btn-primary');
+
 		if($form->isSubmitted()){
-			$config->setConfig('DEFAULT_CURRENCY_ID',$form['currency_id'],'accounts');
-			$form->js(null,$form->js()->reload())->univ()->successMessage('Update Information')->execute();
+			$form->save();
+			$form->js(null,$form->js()->reload())->univ()->successMessage('Currency Information Successfully Updated')->execute();
 		}
+
 
 		$tabs->addTabURL('xepan_accounts_custom_accountentries','Custom Accounts Entry');
 		$tabs->addTabURL('xepan_accounts_financialyear','Financial Year Start Month');
