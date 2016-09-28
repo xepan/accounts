@@ -21,7 +21,7 @@ class page_config extends \xepan\base\Page{
 		$default_currency->add('xepan\hr\Controller_ACL');
 		$default_currency->tryLoadAny();		
 
-		$form = $this->add('Form',null,'currency_id');
+		$form = $currency_tab->add('Form');
 		$form->setModel($default_currency);
 
 		$default_currency_id=$form->getElement('currency_id')->set($default_currency['currency_id']);
