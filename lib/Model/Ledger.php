@@ -152,7 +152,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$outsource = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['name'],$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_for['name'],'contact_id'=>$outsource_party_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['name'],$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_party_for['name'],'contact_id'=>$outsource_party_for->id]);
 	}
 
 	function createTaxLedger($tax_obj){
