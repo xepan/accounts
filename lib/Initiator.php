@@ -15,11 +15,20 @@ class Initiator extends \Controller_Addon {
 
 		if($this->app->auth->isLoggedIn()){
 		
+			$default_currency_id = $this->add('xepan\base\Model_ConfigJsonModel',
+			[
+				'fields'=>[
+							'currency_id'=>'DropDown'
+							],
+					'config_key'=>'FIRM_DEFAULT_CURRENCY_ID',
+					'application'=>'accounts'
+			]);
+			$default_currency_id->tryLoadAny();
 			$this->app->epan->default_currency = $this->recall(
 											$this->app->epan->id.'_defaultCurrency',
 											$this->memorize(
 												$this->app->epan->id.'_defaultCurrency',
-												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'))
+												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$default_currency_id['currency_id'])
 												)
 											);
 			if(!$this->app->isAjaxOutput()){
@@ -66,11 +75,21 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function setup_frontend(){
+		$default_currency_id = $this->add('xepan\base\Model_ConfigJsonModel',
+			[
+				'fields'=>[
+							'currency_id'=>'DropDown'
+							],
+					'config_key'=>'FIRM_DEFAULT_CURRENCY_ID',
+					'application'=>'accounts'
+			]);
+			$default_currency_id->tryLoadAny();
+
 		$this->app->epan->default_currency = $this->recall(
 											$this->app->epan->id.'_defaultCurrency',
 											$this->memorize(
 												$this->app->epan->id.'_defaultCurrency',
-												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'))
+												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$default_currency_id['currency_id'])
 												)
 											);
 		return $this;
@@ -259,20 +278,20 @@ class Initiator extends \Controller_Addon {
        			->save();
 
        	$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
-		[
-			'fields'=>[
-						'default_currency_id'=>'Line',
-					],
-				'config_key'=>'COMPANY_DEFAULT_CURRENCY',
-				'application'=>'accounts'
-		]);
+			[
+				'fields'=>[
+							'currency_id'=>'DropDown'
+							],
+					'config_key'=>'FIRM_DEFAULT_CURRENCY_ID',
+					'application'=>'accounts'
+			]);
 		$config_m->tryLoadAny();
 
        	$config = $this->app->epan->ref('Configurations')->tryLoadAny();
-       	$config_m['default_currency_id'] = $default_currency->id;
+       	$config_m['currency_id'] = $default_currency->id;
        	$config_m->save();
        	
-       	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config_m['default_currency_id']);
+       	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config_m['currency_id']);
        
        /*Default Balance Sheet Heads and groups*/
        $this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
