@@ -236,19 +236,18 @@ class Initiator extends \Controller_Addon {
 
 	function resetDB(){
 		// Clear DB
-		if(!isset($this->app->old_epan)) $this->app->old_epan = $this->app->epan;
-        if(!isset($this->app->new_epan)) $this->app->new_epan = $this->app->epan;
+		// if(!isset($this->app->old_epan)) $this->app->old_epan = $this->app->epan;
+  //       if(!isset($this->app->new_epan)) $this->app->new_epan = $this->app->epan;
         
-		$this->app->epan=$this->app->old_epan;
-        $truncate_models = ['EntryTemplateTransactionRow','EntryTemplateTransaction','EntryTemplate','TransactionType','TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
-        foreach ($truncate_models as $t) {
-            $m=$this->add('xepan\accounts\Model_'.$t);
-            foreach ($m as $mt) {
-                $mt->delete();
-            }
-        }
-		$this->app->epan=$this->app->new_epan;
-
+		// $this->app->epan=$this->app->old_epan;
+  //       $truncate_models = ['EntryTemplateTransactionRow','EntryTemplateTransaction','EntryTemplate','TransactionType','TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
+  //       foreach ($truncate_models as $t) {
+  //           $m=$this->add('xepan\accounts\Model_'.$t);
+  //           foreach ($m as $mt) {
+  //               $mt->delete();
+  //           }
+  //       }
+		// $this->app->epan=$this->app->new_epan;
 		// Orphan currencies
 		$d = $this->app->db->dsql();
         $d->sql_templates['delete'] = "delete [table] from  [table] [join] [where]";
@@ -259,9 +258,21 @@ class Initiator extends \Controller_Addon {
        			->set('value',1)
        			->save();
 
+       	$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
+		[
+			'fields'=>[
+						'default_currency_id'=>'Line',
+					],
+				'config_key'=>'COMPANY_DEFAULT_CURRENCY',
+				'application'=>'accounts'
+		]);
+		$config_m->tryLoadAny();
+
        	$config = $this->app->epan->ref('Configurations')->tryLoadAny();
-       	$config->setConfig('DEFAULT_CURRENCY_ID',$default_currency->id,'accounts');
-       	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config->getConfig('DEFAULT_CURRENCY_ID'));
+       	$config_m['default_currency_id'] = $default_currency->id;
+       	$config_m->save();
+       	
+       	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config_m['default_currency_id']);
        
        /*Default Balance Sheet Heads and groups*/
        $this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
