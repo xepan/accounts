@@ -7,8 +7,18 @@ class page_financialyear extends \xepan\base\Page{
 	function init(){
 		parent::init();
 
-		$config=$this->app->epan->config;
-		$default_financial_year_start_month=$config->getConfig('DEFAULT_FINANCIAL_YEAR_START_MONTH','accounts');
+		$financial_year_mdl = $this->add('xepan\base\Model_ConfigJsonModel',
+			[
+				'fields'=>[
+							'default_financial_year_start_month'=>'DropDown',
+							'default_financial_year_end_month'=>'DropDown'
+							],
+					'config_key'=>'DEFAULT_FINANCIAL_YEAR_AND_MONTH',
+					'application'=>'accounts'
+			]);
+		$financial_year_mdl->add('xepan\hr\Controller_ACL');
+		$financial_year_mdl->tryLoadAny();
+
 		$form=$this->add('Form');
 
 		$financial_year_month_array = array('01' =>'January',
@@ -27,15 +37,16 @@ class page_financialyear extends \xepan\base\Page{
 		$starting_month=$form->addField('Dropdown','starting_month')->setValueList($financial_year_month_array);
 		$form->addSubmit('Update')->addClass('btn btn-primary');
 		if($form->isSubmitted()){
-			$config->setConfig('DEFAULT_FINANCIAL_YEAR_START_MONTH',$form['starting_month'],'accounts');
+			$financial_year_mdl['default_financial_year_start_month'] = $form['starting_month'];
 			if($form['starting_month'] == 1)
 				$ending_month = '12';
 			else
 				$month = $form['starting_month'] - 1;
 				$ending_month = "0" . $month;
 
-			$config->setConfig('DEFAULT_FINANCIAL_YEAR_END_MONTH',$ending_month,'accounts');
-			$form->js(null,$form->js()->reload())->univ()->successMessage('Update Information')->execute();
+			$financial_year_mdl['default_financial_year_end_month'] = $ending_month;
+			$financial_year_mdl->save();
+			$form->js(null,$form->js()->reload())->univ()->successMessage('Successfully updated financial year information')->execute();
 		}
 	}
 
