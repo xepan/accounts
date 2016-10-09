@@ -366,7 +366,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		['name'=>'Exchange Income','root_group'=>null,'parent_group'=>'Other Income','balance_sheet'=>'Indirect Income'],
 		
 		// Profit & Loss For Opening Balance
-		['name'=>'Profit & Loss','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Profit & Loss']
+		['name'=>'Profit & Loss (Opening)','root_group'=>null,'parent_group'=>null,'balance_sheet'=>'Profit & Loss (Opening)']
 	];
 
 }
