@@ -108,17 +108,21 @@ class page_custom_accountentries extends \xepan\base\Page {
 		if($crud->isEditing()){
 			$form=$crud->form;
 			$grp_fld = $form->getElement('group');
+			$grp_fld->setAttr(['multiple'=>'multiple']);
+
+			$grp_fld->set(explode(",",$form->model['group']))->js(true)->trigger('changed');
+
 			$grp_fld->select_menu_options=['tags'=>true];
 
-			$group_m=$this->add('xepan\accounts\Model_Group');
-			foreach ($group_m as $g) {
-				$x[$g['name']]=[];
-			}
-			$x['*']=['parent_group','balance_sheet'];
+			// $group_m=$this->add('xepan\accounts\Model_Group');
+			// foreach ($group_m as $g) {
+			// 	$x[$g['name']]=[];
+			// }
+			// $x['*']=['parent_group','balance_sheet'];
 
-			$grp_fld->js(true)->univ()->bindConditionalShow(
-				$x,
-			'div.atk-form-row');
+			// $grp_fld->js(true)->univ()->bindConditionalShow(
+			// 	$x,
+			// 'div.atk-form-row');
 
 			$prnt_grp = $form->getElement('parent_group');
 			$prnt_grp->select_menu_options=['tags'=>true];
@@ -126,15 +130,15 @@ class page_custom_accountentries extends \xepan\base\Page {
 			$ledger_fld = $form->getElement('ledger');
 			$ledger_fld->select_menu_options=['tags'=>true];
 			
-			$ledger_m=$this->add('xepan\accounts\Model_Ledger');
-			foreach ($ledger_m as $ledg) {
-				$y[$ledg['name']]=[];
-			}
-			$y['*']=['ledger_type'];
+			// $ledger_m=$this->add('xepan\accounts\Model_Ledger');
+			// foreach ($ledger_m as $ledg) {
+			// 	$y[$ledg['name']]=[];
+			// }
+			// $y['*']=['ledger_type'];
 
-			$ledger_fld->js(true)->univ()->bindConditionalShow(
-				$y,
-			'div.atk-form-row');
+			// $ledger_fld->js(true)->univ()->bindConditionalShow(
+			// 	$y,
+			// 'div.atk-form-row');
 
 
 			$balancesheet_field=$form->getElement('balance_sheet');
