@@ -106,7 +106,7 @@ class Form_EntryRunner extends \Form {
 
                 $field = $this->addField($field_type,['name'=>'ledger_'.$row->id,'hint'=>'Select Ledger'], $row['title'],null,$spot.'_ledger_'.$row->id);
                 $field->addClass('ledger')->addClass($spot);
-                $field->show_fields= ['name'];
+                $field->show_fields= ['name','group_id'];
 
                 $row_ledger_present = $row['ledger']?true:false;
                 $row_ledger=null;
@@ -115,18 +115,25 @@ class Form_EntryRunner extends \Form {
                 }
 
                 $row_group_present = $row['group']?true:false;
+                $group_ids=[];
                 if($row_group_present){
-                    $row_group = $this->add('xepan\accounts\Model_Group')->tryLoadBy('name',$row['group']);
+                    $row_group = $this->add('xepan\accounts\Model_Group')->addCondition('name',explode(",",$row['group']));
+                    foreach ($row_group as $rg) {
+                        $group_ids[] = $rg->id;
+                    }
+
                 }else{
-                    $row_group = $row_ledger->ref('group_id');
+                    $group_ids=[$row_ledger['group_id']];
                 }
 
                 $ledger = $this->add('xepan\accounts\Model_Ledger');
 
+                $ledger->getElement('group_id')->getModel()->addCondition('id',$group_ids);
+
                 // if($row['is_include_subgroup_ledger_account']){
                 //  $ledger->addCondition('root_group_id',$row_group['root_group_id']);
                 // }else{
-                    $ledger->addCondition('group_id',$row_group->id);
+                    $ledger->addCondition('group_id',$group_ids);
                 // }
 
                 if(!$row['is_ledger_changable']){
