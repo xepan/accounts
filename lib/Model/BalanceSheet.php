@@ -73,7 +73,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		['name'=>'Current Liabilities','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
 		
 		// Profit & Loss For Opening Balance
-		['name'=>'Profit & Loss','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
+		['name'=>'Profit & Loss (Opening)','positive_side'=>'LT','report_name'=>'BalanceSheet','subtract_from'=>'CR','order'=>1],
 		
 		// Assets
 		['name'=>'Non Current Assets','positive_side'=>'RT','report_name'=>'BalanceSheet','subtract_from'=>'DR','order'=>1],
