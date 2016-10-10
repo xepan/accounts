@@ -20,6 +20,7 @@ class page_financialyear extends \xepan\base\Page{
 		$financial_year_mdl->tryLoadAny();
 
 		$form=$this->add('Form');
+		$form->setModel($financial_year_mdl,['default_financial_year_start_month']);
 
 		$financial_year_month_array = array('01' =>'January',
 									 '02' =>'February',
@@ -34,14 +35,14 @@ class page_financialyear extends \xepan\base\Page{
 									 '11' =>'November',
 									 '12' =>'December');
 
-		$starting_month=$form->addField('Dropdown','starting_month')->setValueList($financial_year_month_array);
+		$starting_month=$form->getElement('default_financial_year_start_month')->setValueList($financial_year_month_array)->set($financial_year_mdl['default_financial_year_start_month']);
 		$form->addSubmit('Update')->addClass('btn btn-primary');
 		if($form->isSubmitted()){
-			$financial_year_mdl['default_financial_year_start_month'] = $form['starting_month'];
-			if($form['starting_month'] == 1)
+			$financial_year_mdl['default_financial_year_start_month'] = $form['default_financial_year_start_month'];
+			if($form['default_financial_year_start_month'] == 1)
 				$ending_month = '12';
 			else
-				$month = $form['starting_month'] - 1;
+				$month = $form['default_financial_year_start_month'] - 1;
 				$ending_month = "0" . $month;
 
 			$financial_year_mdl['default_financial_year_end_month'] = $ending_month;
