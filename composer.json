@@ -19,6 +19,7 @@
     },
     "require": {
         "xepan/base" : "dev-master",
+        "webit/eval-math": "^1.0",
         "php": ">=5.3"
     },
     "autoload": {
