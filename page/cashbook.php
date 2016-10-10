@@ -11,31 +11,41 @@ class page_cashbook extends \xepan\base\Page{
 		$form->addField('DatePicker','to_date')->validateNotNull();
 		$form->addSubmit('Open Cash Book')->addClass('btn btn-primary');
 
-		$grid = $this->add('xepan\accounts\Grid_AccountsBase',['no_records_message'=>'No cash book statement found'],null,['view/cashbookstatement-grid']);
+		$crud = $this->add('xepan\hr\CRUD',
+				[
+					'grid_class'=>'xepan\accounts\Grid_AccountsBase',
+					'grid_options'=>['no_records_message'=>'No cash statement found'],
+					'form_class' => 'xepan\accounts\Form_EntryRunner',
+					'allow_add'=> false
+				],null,['view/cashbookstatement-grid']);
 
-		$transaction_row = $this->add('xepan\accounts\Model_TransactionRow');
+		$transaction = $this->add('xepan\accounts\Model_Transaction');
+		$transaction->getElement('exchange_rate')->destroy();
+		$transaction_r_j = $transaction->join('account_transaction_row.transaction_id','id');
+		$transaction_r_j->addField('ledger_id');		
+		$transaction_r_j->addField('exchange_rate');
+		$transaction_r_j->addField('original_amount_dr','_amountDr');
+		$transaction_r_j->addField('original_amount_cr','_amountCr');
+		$ledger_j = $transaction_r_j->join('ledger.id','ledger_id');
+		$ledger_j->addField('group_id');
+
+		$transaction->addExpression('group_path')->set($this->add('xepan\accounts\Model_Group')->addCondition('id',$transaction->getElement('group_id'))->fieldQuery('path'));
+		$transaction->addExpression('amountDr')->set($transaction->dsql()->expr('round(([0]*[1]),2)',[$transaction->getElement('original_amount_dr'),$transaction->getElement('exchange_rate')]));
+		$transaction->addExpression('amountCr')->set($transaction->dsql()->expr('round(([0]*[1]),2)',[$transaction->getElement('original_amount_cr'),$transaction->getElement('exchange_rate')]));
+
 		$group=$this->add('xepan\accounts\Model_Group')->load("Cash In Hand");
 
-		$transaction_row->addCondition('root_group_id',$group['id']);
-		
-		if($_GET['from_date']){
-			$this->api->stickyGET('from_date');
-			$this->api->stickyGET('to_date');
-			$transaction_row->addCondition('created_at','>=',$_GET['from_date']);
-			$transaction_row->addCondition('created_at','<',$this->api->nextDate($_GET['to_date']));
-			$cash_account = $this->add('xepan\accounts\Model_Ledger')->load("Cash Account");
-			$opening_balance = $cash_account->getOpeningBalance($_GET['from_date']);
-		}else{			
-			$transaction_row->addCondition('created_at','>=',$this->api->today);
-			$transaction_row->addCondition('created_at','<',$this->app->nextDate($this->api->today));
-			// throw new \Exception($transaction_row->count()->getOne());
-			// throw new \Exception($this->api->nextDate($this->api->today));
-			$cash_account = $this->add('xepan\accounts\Model_Ledger')->load("Cash Account");
-			$opening_balance = $cash_account->getOpeningBalance($this->api->today);
-		}
-		
-		
-		// throw new \Exception("Error Processing Request", 1);
+		$transaction->addCondition('group_path','like',$group['path'].'%');
+			
+		$from_date = $this->app->stickyGET('from_date')?:$this->app->today;
+		$to_date = $this->app->stickyGET('to_date')?:$this->app->nextDate($this->app->today);
+
+		$transaction->addCondition('created_at','>=',$from_date);
+		$transaction->addCondition('created_at','<',$to_date);
+
+		$cash_account = $this->add('xepan\accounts\Model_Ledger')->load("Cash Account");
+		$opening_balance = $cash_account->getOpeningBalance($this->api->today);
+				
 		if(($opening_balance['DR'] - $opening_balance['CR']) > 0){
 			$opening_column = 'amountDr';
 			$opening_amount = $opening_balance['DR'] - $opening_balance['CR'];
@@ -48,36 +58,49 @@ class page_cashbook extends \xepan\base\Page{
 			$opening_side = 'CR';
 		}
 
-		$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
-		$grid->addCurrentBalanceInEachRow();
+		if(!$crud->isEditing()){
+			$grid= $crud->grid;
+			$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
+			$grid->addCurrentBalanceInEachRow();
+			$grid->addSno();
+			$grid->removeColumn('account');
 
-		$grid->setModel($transaction_row,['voucher_no','transaction_type','created_at','Narration','account','amountDr','amountCr','root_group_name']);
-		$grid->addSno();
-		$grid->removeColumn('account');
+			$grid->addHook('formatRow',function($g){
+				$g->current_row_html['created_at'] = date('F jS Y', strtotime($g->model['created_at']));
+				if($g->model->customer()){
+					$g->current_row_html['transaction_type']=$g->model['transaction_type']." :: ".$g->model->customer()->get('organization_name');
+				}else
+					$g->current_row_html['transaction_type']=$g->model['transaction_type'];
 
-		$grid->addMethod('format_transaction_type',function($g,$f){
-			if($g->model->transaction()->customer()){
-				$g->current_row_html[$f]=$g->model['transaction_type']."::".$g->model->transaction()->customer()->get('organization_name');
-			}else
-			$g->current_row_html[$f]=$g->model['transaction_type'];
-		});
-		$grid->addFormatter('transaction_type','transaction_type');
+				if(!$g->model['original_amount_cr']){								
+					$g->current_row_html['currency_cr'] = ' ';
+				}else{
+					$g->current_row_html['currency_cr'] = $g->model['currency'];
+				}
 
-		$js=[
-		$this->js()->_selector('.atk-cells-gutter-large')->parent()->parent()->toggle(),
-		$this->js()->_selector('.atk-box')->toggle(),
-		$this->js()->_selector('.navbar1')->toggle(),
-			// $this->js()->_selector('.atk-text-nowrap')->toggle(),
-		$this->js()->_selector('.atk-form')->toggle(),
-		];
+				if(!$g->model['original_amount_dr']){								
+					$g->current_row_html['currency_dr'] = ' ';
+				}else{
+					$g->current_row_html['currency_dr'] = $g->model['currency'];
+				}
 
-		$grid->js('click',$js);
-
-		// $grid->addTotals(array('amountCr','amountDr'));
-		if($form->isSubmitted()){
-			$grid->js()->reload(['from_date'=>$form['from_date']?:0,'to_date'=>$form['to_date']?:0])->execute();
+				if($g->model['currency_id'] == $this->app->epan->default_currency->id){
+					$g->current_row_html['currency_dr'] = ' ';
+					$g->current_row_html['original_amount_dr'] = ' ';
+					$g->current_row_html['currency_cr'] = ' ';
+					$g->current_row_html['original_amount_cr'] = ' ';
+				}								
+			});	
 		}
 
+		if($crud->isEditing()){
+			$transaction->load($crud->id);
+		}
+		
+		$crud->setModel($transaction);
 
+		if($form->isSubmitted()){
+			$crud->js()->reload(['from_date'=>$form['from_date']?:0,'to_date'=>$form['to_date']?:0])->execute();
+		}
 	}
 }

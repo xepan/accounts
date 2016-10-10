@@ -14,32 +14,34 @@ div(id="{$_name}" class="{$class}")
 						.col-md-12.col-lg-12
 							.atk-form-row.atk-form-field{$title}
 					.row.xepan-push
-						.col-md-4.col-lg-4
-							cite
-								strong Side
-							.atk-form-row.atk-form-field{$side}
-						.col-md-4.col-lg-4
-							cite 
-								strong  Group
-							.atk-form-row.atk-form-field{$group}
-						.col-md-4.col-lg-4
-							cite 
-								strong  Balance Sheet
-							.atk-form-row.atk-form-field{$balance_sheet}
-					.row.xepan-push
-						.col-md-4.col-lg-4
-							cite 
-								strong  Parent Group
-							.atk-form-row.atk-form-field{$parent_group}
-						.col-md-4.col-lg-4
-							cite
-								strong   Ledger
-							.atk-form-row.atk-form-field{$ledger}
-						.col-md-4.col-lg-4
-							cite 
-								strong  Ledger Type
-							.atk-form-row.atk-form-field{$ledger_type}
-						
+						.col-md-6.col-lg-6
+							.panel.panel-primary.panel-heading.strong
+								.xepan-push
+								cite
+									strong Side
+								.atk-form-row.atk-form-field{$side}
+								.xepan-push
+								cite 
+									strong  Group
+								.atk-form-row.atk-form-field{$group}
+								.xepan-push
+								cite
+									strong   Ledger
+								.atk-form-row.atk-form-field{$ledger}
+						.col-md-6.col-lg-6
+							.panel.panel-primary.panel-heading.strong
+								.xepan-push
+								cite 
+									strong  Balance Sheet (For New Groups)
+								.atk-form-row.atk-form-field{$balance_sheet}
+								.xepan-push
+								cite 
+									strong  Parent Group (For New Groups)
+								.atk-form-row.atk-form-field{$parent_group}
+								.xepan-push
+								cite 
+									strong  Ledger Type (For New Ledger)
+								.atk-form-row.atk-form-field{$ledger_type}
 					.row.xepan-push
 						.col-md-4.col-lg-4
 							cite

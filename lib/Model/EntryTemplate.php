@@ -5,10 +5,15 @@ namespace xepan\accounts;
 class Model_EntryTemplate extends \xepan\base\Model_Table{
 	public $table= "custom_account_entries_templates";
 	public $acl=true;
-	public $acl_type = 'AccountEntryTemplate';
+	public $acl_type = 'EntryTemplate';
+
+	public $form = null;
 
 	function init(){
 		parent::init();
+
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue(@$this->app->employee->id);
+		
 
 		$this->addField('name');
 		$this->addField('detail')->type('text');
@@ -17,6 +22,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$this->addField('is_favourite_menu_lister')->type('boolean')->defaultValue(false);
 		// $this->addField('is_merge_transaction')->type('boolean');
 		$this->hasMany('xepan\accounts\EntryTemplateTransaction','template_id');
+		$this->hasMany('xepan\accounts\Transaction','transaction_template_id');
 
 		$this->addHook('beforeDelete',function($m){
 			$m->ref('xepan\accounts\EntryTemplateTransaction')->each(function($m1){
@@ -26,211 +32,20 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 	}
 
 	
-	function manageForm($page, $related_id=null, $related_type=null, $pre_filled_values=[]){
+	function manageForm($page, $related_id=null, $related_type=null, $pre_filled_values=[],$default_narration=null){
 		// Pre filled values array format
 		// $pre_filled_values=[
-				// 'transaction_number'=>['transaction_row_number'=>['ledger'=>$ledger,'amount'=>$amount,'currency'=>$currency,'exchange_rate'=>$exchange_rate]],
+				// 'transaction_number'=>['tranasction_row_code'=>['ledger'=>$ledger,'amount'=>$amount,'currency'=>$currency,'exchange_rate'=>$exchange_rate]],
 		// ]
 
-		$transactions = $this->ref('xepan\accounts\EntryTemplateTransaction');
+		$this->form  = $form = $page->add('xepan\accounts\Form_EntryRunner');
+		$form->addHook('afterExecute',function($et,$transaction,$total_amount,$row_data){
+			if($this->app->db->inTransaction()) $this->app->db->commit();
+			$this->hook('afterExecute',[$transaction,$total_amount,$row_data]);
+		});
 
-		$template = $this->add('GiTemplate');
-		$template->loadTemplate('view/form/entrytransaction');
-		$template->trySetHTML('date','{$date}');
+		$form->setModel($this,$related_id, $related_type, $pre_filled_values,$default_narration);
 		
-		foreach ($transactions as $trans) {
-			$transaction_template = $this->add('GiTemplate');
-			$transaction_template->loadTemplate('view/form/entrytransactionsides');
-
-			$transaction_template->trySetHTML('transaction_name','{$transaction_name_'.$trans->id.'}');
-
-			foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
-				if($row['side']=="DR"){
-					$row_left_template = $this->add('GiTemplate');
-					$row_left_template->loadTemplate('view/form/entrytransactionsiderows');
-					$row_left_template->trySetHTML('ledger','{$left_ledger_'.$row->id.'}');
-					$row_left_template->trySetHTML('amount','{$left_amount_'.$row->id.'}');
-					$row_left_template->trySetHTML('currency','{$left_currency_'.$row->id.'}');
-					$row_left_template->trySetHTML('exchange_rate','{$left_exchange_rate_'.$row->id.'}');
-					$transaction_template->appendHTML('transaction_row_left',$row_left_template->render());
-					
-				}else{
-					$row_right_template = $this->add('GiTemplate');
-					$row_right_template->loadTemplate('view/form/entrytransactionsiderows');
-					$row_right_template->trySetHTML('ledger','{$right_ledger_'.$row->id.'}');
-					$row_right_template->trySetHTML('amount','{$right_amount_'.$row->id.'}');
-					$row_right_template->trySetHTML('currency','{$right_currency_'.$row->id.'}');
-					$row_right_template->trySetHTML('exchange_rate','{$right_exchange_rate_'.$row->id.'}');
-					$transaction_template->appendHTML('transaction_row_right',$row_right_template->render());
-				}	
-			}
-			$template->appendHTML('transactions',$transaction_template->render());
-
-		}
-
-		// echo (htmlentities($template->render()));
-		// exit;
-
-		$template->loadTemplateFromString($template->render());
-
-		$form = $page->add('xepan\accounts\Form_EntryRunner',null,null,['form/stacked']);
-		$form->setLayout($template);
-
-		$form->addField('DatePicker','date');
-		
-		$tr_no=1;
-		foreach ($transactions as $trans) {
-			$form->layout->add('View',null,'transaction_name_'.$trans->id)->set($trans['name']);
-			$tr_row_no=1;
-			foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
-
-				if($row['is_allow_add_ledger'])
-					$field_type= 'xepan\base\Plus';
-				else
-					$field_type= 'autocomplete\Basic';
-				
-				$spot = $row['side']=='DR'?'left':'right';			
-
-				$field = $form->addField($field_type,['name'=>'ledger_'.$row->id,'hint'=>'Select Ledger'], $row['title'],null,$spot.'_ledger_'.$row->id);
-				$field->show_fields= ['name'];
-
-				$row_ledger_present = $row['ledger']?true:false;
-				$row_ledger=null;
-				if($row_ledger_present){
-					$row_ledger = $this->add('xepan\accounts\Model_Ledger')->tryLoadBy('name',$row['ledger']);
-				}
-
-				$row_group_present = $row['group']?true:false;
-				if($row_group_present){
-					$row_group = $this->add('xepan\accounts\Model_Group')->tryLoadBy('name',$row['group']);
-				}else{
-					$row_group = $row_ledger->ref('group_id');
-				}
-
-				$ledger = $this->add('xepan\accounts\Model_Ledger');
-
-				// if($row['is_include_subgroup_ledger_account']){
-				// 	$ledger->addCondition('root_group_id',$row_group['root_group_id']);
-				// }else{
-					$ledger->addCondition('group_id',$row_group->id);
-				// }
-
-				if(!$row['is_ledger_changable']){
-					$ledger->addCondition('name',$row['ledger']);
-
-					if($row_ledger_present)
-						$field->set($row_ledger->id);
-				}
-
-				if(isset($pre_filled_values[$tr_no][$row['code']]['ledger'])){					
-					$ledger->addCondition('id',$pre_filled_values[$tr_no][$row['code']]['ledger']->id);
-				}
-
-				$field->setModel($ledger);
-				
-				if(isset($pre_filled_values[$tr_no][$row['code']]['ledger'])){					
-					$field->set($pre_filled_values[$tr_no][$row['code']]['ledger']->id);
-				}
-
-				if($row['is_include_currency']){
-					$form_currency = $form->addField('Dropdown','bank_currency_'.$row->id,'Currency Name',null,$spot.'_currency_'.$row->id);
-					$form_currency->setModel('xepan\accounts\Currency');
-					if(isset($pre_filled_values[$tr_no][$row['code']]['currency'])){
-						$form_currency->set($pre_filled_values[$tr_no][$row['code']]['currency']->id);
-					}
-
-					$exchange_rate = $form->addField('line','to_exchange_rate_'.$row->id,'Currency Rate',null,$spot.'_exchange_rate_'.$row->id)->validateNotNull(true)->addClass('exchange-rate');
-				}
-				$field = $form->addField('line','amount_'.$row->id,'Amount',null,$spot.'_amount_'.$row->id);
-
-				if(isset($pre_filled_values[$tr_no][$row['code']]['amount'])){
-					$field->set($pre_filled_values[$tr_no][$row['code']]['amount']);
-				}
-
-				$tr_row_no++;
-			}
-			$tr_no++;
-		}
-
-		$form->addSubmit('DO')->addClass('btn btn-primary');
-
-		if($form->isSubmitted()){
-			$data=[];
-			foreach ($transactions as $trans) {
-				$transaction = [];
-				$transaction['type'] = $trans['type'];
-				$transaction['date'] = $form['date'];
-				$transaction['narration'] = $form['narration'];
-				$transaction['related_id'] = $related_id;
-				$transaction['related_type'] = $related_type;
-				$transaction['rows']=[];
-
-				foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
-					if(!$form['ledger_'.$row->id]) continue;
-
-					$transaction_row=[];
-					
-					$currency=null;
-					$exchange_rate = 1.0;
-
-					if($row['is_include_currency']){
-						$currency = $form['bank_currency_'.$row->id] ;//$this->add('xepan\accounts\Model_Currency')->load($form['bank_currency_'.$row->id]);
-						$exchange_rate = $form['to_exchange_rate_'.$row->id];
-					}
-
-					$transaction_row['currency'] = $currency;
-					$transaction_row['exchange_rate'] = $exchange_rate;
-
-
-					if($row['side']=='CR')
-						$transaction_row['side']='CR';
-					else
-						$transaction_row['side']='DR';
-
-					$transaction_row['ledger'] = $form['ledger_'.$row->id];//$this->add('xepan\accounts\Model_Ledger')->load($form['ledger_'.$row->id]);
-					$transaction_row['amount'] = $form['amount_'.$row->id];
-
-					$transaction['rows'][] = $transaction_row;
-				}
-				$data[] = $transaction;
-
-			}
-			$this->execute($data);
-		}
-
-	}
-
-	// As per given rules of this template, ie groups accounts etc.
-	function verifyData($data){ //dr=>[['acc'=>'amt'],['acc'=>amt]],cr=>[['acc'=>amt]]
-
-	}
-
-	function execute($data=[]){ //transaction_no=>[dr=>[['acc'=>$acc,'amt'=>$amt,'currency'=>$curr,'exchange_rate'=>$exchange_rate],['acc'=>$acc ....]],cr=>[['acc'=>...]]]
-		$this->hook('beforeExecute',[$data]);
-		$transactions=[];
-		$total_amount=0;
-
-		// echo "<pre>";
-		// print_r($data);
-		// echo "</pre>";
-		// throw new \Exception("Error Processing Request", 1);
-		
-
-		foreach ($data as $transaction) {
-			$transactions[] = $new_transaction = $this->add('xepan\accounts\Model_Transaction');
-			$new_transaction->createNewTransaction($transaction['type'],null,$transaction['date'],$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],$transaction['related_id'],$transaction['related_type']);
-
-			foreach ($transaction['rows'] as $row) {
-				if(strtolower($row['side'])=='dr'){
-					$new_transaction->addDebitLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
-					$total_amount += $row['amount'];
-				}else{
-					$new_transaction->addCreditLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']);
-				}
-			}
-			$new_transaction->execute();
-		}
-		$this->hook('afterExecute',[$transactions,$total_amount]);
 	}
 
 	function exportJson(){

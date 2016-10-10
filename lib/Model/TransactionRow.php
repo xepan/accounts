@@ -3,6 +3,10 @@ namespace xepan\accounts;
 
 class Model_TransactionRow extends \xepan\base\Model_Table{
 	public $table="account_transaction_row";
+	
+	public $acl='xepan\accounts\Model_Transaction';
+	public $acl_type= 'Model_Transaction';
+
 	function init(){
 		parent::init();
 		
@@ -14,9 +18,11 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 
 		$this->addField('_amountDr')->caption('Debit')->type('money');
 		$this->addField('_amountCr')->caption('Credit')->type('money');
+		$this->addField('code');
 		$this->addField('side');
 		$this->addField('accounts_in_side')->type('int');
 		$this->addField('exchange_rate')->type('number');
+		$this->addField('remark')->type('text');
 
 		$this->addExpression('amountCr')->set($this->dsql()->expr('round(([0]*[1]),2)',[$this->getElement('_amountCr'),$this->getElement('exchange_rate')]));
 		$this->addExpression('amountDr')->set($this->dsql()->expr('round(([0]*[1]),2)',[$this->getElement('_amountDr'),$this->getElement('exchange_rate')]));
@@ -96,7 +102,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 						->fieldQuery('positive_side');
 		});
 		
-		$this->addHook('beforeDelete',[$this,'deleteTransactionAndthis']);
+		// $this->addHook('beforeDelete',[$this,'deleteTransactionAndthis']);
 
 	}
 

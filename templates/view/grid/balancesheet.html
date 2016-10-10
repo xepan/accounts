@@ -9,13 +9,13 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th><span>{$rheading}  </span></th>
+        <th><span>{$lheading}{$rheading} </span></th>
         <th><span>Amount  </span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="xepan-accounts-bs-group">{$name}</span></td>
+          <td><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="xepan-accounts-bs-group {$type}"> {$name}</span></td>
           <td><span>{$amount}                      	  </span></td>{/}
         </tr>{/}{/}
         {not_found}

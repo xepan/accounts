@@ -53,19 +53,19 @@ class page_voucherprint extends \Page{
 			$grid->setModel($transaction->ref('TransactionRows')->setOrder('amountDr desc, amountCr desc'),['ledger','amountDr','amountCr']);
 			$d_c=$this->add('Columns');
 			$ld=$d_c->addColumn(8)->addClass('col-md-8');
-			$ld->add('View')->set([$transaction['Narration']])->addClass('fa fa-pencil');
+			$ld->add('View')->set([$transaction['Narration']])/*->addClass('fa fa-pencil')*/;
 			$rd=$d_c->addColumn(4)->addClass('col-md-4');
 
-			$del=$rd->add('Button')->setHTML('<i class="fa fa-trash-o"></i>')->addClass('pull-right');
+			// $del=$rd->add('Button')->setHTML('<i class="fa fa-trash-o"></i>')->addClass('pull-right');
 
-			$del->on('click',function($js,$data){
-				// throw new \Exception($_GET['transaction_id'], 1);
-				$transaction = $this->add('xepan\accounts\Model_Transaction');
-				$transaction->load($_GET['transaction_id']);
-				$transaction->ref('TransactionRows')->deleteAll();
-				$transaction->delete();
-				return $js->univ()->location();
-			});
+			// $del->on('click',function($js,$data){
+			// 	// throw new \Exception($_GET['transaction_id'], 1);
+			// 	$transaction = $this->add('xepan\accounts\Model_Transaction');
+			// 	$transaction->load($_GET['transaction_id']);
+			// 	$transaction->ref('TransactionRows')->deleteAll();
+			// 	$transaction->delete();
+			// 	return $js->univ()->location();
+			// });
 	}
 
 	function relatedDocumentLink(){

@@ -13,10 +13,13 @@ class Model_TransactionType extends \xepan\base\Model_Table{
 		$this->addField('FromAC');
 		$this->addField('ToAC');
 		$this->addField('Default_Narration');
+
+		$this->hasMany('xepan\accounts\Transaction','transaction_type_id');
 	}
 
 	function newVoucherNumber(){
-		return rand(10000,99999);
+		$tr = $this->ref('xepan\accounts\Transaction');
+		return $tr->_dsql()->del('fields')->field($this->dsql()->expr('(IFNULL(max(cast([0] as unsigned)),0)+1)',[$tr->getElement('name')]))->getOne();
 	}	
 
 	function getReceiptIDs(){
@@ -24,8 +27,8 @@ class Model_TransactionType extends \xepan\base\Model_Table{
 
 		$type->addCondition(
 					$this->dsql->orExpr()
-							->where('name','BANK RECEIPT')
-							->where('name','CASH RECEIPT')
+							->where('name','Bank Receipt')
+							->where('name','Cash Receipt')
 					);
 		$array = [];
 		foreach ($type as $junk) {

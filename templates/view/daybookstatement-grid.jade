@@ -2,7 +2,8 @@
     {Pannel}
     header.main-box-header.clearfix.atk-actions(class=" {$class} ")
         div.filter-block( style="100%")
-            .pull-right {$grid_buttons} 
+            .pull-right {$grid_buttons}
+            .pull-right {$Print}
             .form-group.pull-right.xepan-filter-form
                 span(class="form-control pull-left")|{$quick_search}
                     i(class="fa fa-search search-icon")
@@ -14,20 +15,19 @@
                 {cols}{col}
                 th 
                     span SNo
+                th(data-hide="phone")
+                    span Created At
                 th
                     span Voucher No
                 th(data-hide="phone")
                     span Transaction Type
                 th(data-hide="phone")
-                    span Created At
-                th
-                    span Narration
+                    span Affected Ledger
                 th
                     span Debit
                 th
                     span Credit
-                th
-                    span Balance                                                
+                th                                              
                 {/}{/}
             {/}
             {$subheader}
@@ -39,27 +39,29 @@
                     td 
                         {$s_no}
                     td
+                        {$created_at}
+                    td
                         {$voucher_no}
                     td
                         {$transaction_type}
+                        div.user-subhead {$Narration}
                     td
-                        {$created_at}
-                    td
-                        {$Narration}
+                        {$related_ledger_name}
                     td
                         {$amountDr}
                         .xepan-push
                         small
-                            {$currency}
+                            {$currency_dr}
                             {$original_amount_dr}
                     td
                         {$amountCr}
                         .xepan-push
                         small
-                            {$currency}
+                            {$currency_cr}
                             {$original_amount_cr}
                     td
-                        {$Balance}
+                        {$edit}
+                        {$delete}
                     {/}
                 {/}{/}
                 {not_found}

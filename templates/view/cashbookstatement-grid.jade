@@ -14,20 +14,19 @@
                 {cols}{col}
                 th 
                     span SNo
+                th(data-hide="phone")
+                    span Date
                 th
                     span Voucher No
                 th(data-hide="phone")
-                    span Transaction Type
-                th(data-hide="phone")
-                    span Created At
-                th
-                    span Narration
+                    span Transaction
                 th
                     span Debit
                 th
                     span Credit
                 th
-                    span Balance                                                
+                    span Balance 
+                th                                                   
                 {/}{/}
             {/}
             {$subheader}
@@ -39,27 +38,30 @@
                     td 
                         {$s_no}
                     td
+                        {$created_at}
+                    td
                         {$voucher_no}
                     td
                         {$transaction_type}
-                    td
-                        {$created_at}
-                    td
-                        {$Narration}
+                        div 
+                            span.user-subhead {$Narration}
                     td
                         {$amountDr}
                         .xepan-push
                         small
-                            {$currency}
+                            {$currency_dr}
                             {$original_amount_dr}
                     td
                         {$amountCr}
                         .xepan-push
                         small
-                            {$currency}
+                            {$currency_cr}
                             {$original_amount_cr}
                     td
                         {$Balance}
+                    td
+                        {$edit}
+                        {$delete}    
                     {/}
                 {/}{/}
                 {not_found}

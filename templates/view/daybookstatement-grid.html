@@ -2,7 +2,8 @@
 <div id="{$_name}" class="xepan-grid main-box clearfix atk-table atk-table-zebra atk-table-bordered {$class}">{Pannel}
   <header class="main-box-header clearfix atk-actions  {$class} ">
     <div style="100%" class="filter-block">
-      <div class="pull-right">{$grid_buttons} </div>
+      <div class="pull-right">{$grid_buttons}</div>
+      <div class="pull-right">{$Print}</div>
       <div class="form-group pull-right xepan-filter-form"><span class="form-control pull-left">{$quick_search}<i class="fa fa-search search-icon"></i></span></div>
     </div>
   </header>{/Pannel}
@@ -10,13 +11,13 @@
     <table style="width:100%" class="table user-list table-hover footable toggle-circle-filled">{header}
       <thead>{cols}{col}
         <th> <span>SNo</span></th>
+        <th data-hide="phone"><span>Created At</span></th>
         <th><span>Voucher No</span></th>
         <th data-hide="phone"><span>Transaction Type</span></th>
-        <th data-hide="phone"><span>Created At</span></th>
-        <th><span>Narration</span></th>
+        <th data-hide="phone"><span>Affected Ledger</span></th>
         <th><span>Debit</span></th>
         <th><span>Credit</span></th>
-        <th><span>Balance                                                </span></th>{/}{/}
+        <th>                                             </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
@@ -25,21 +26,26 @@
              
             {$s_no}
           </td>
-          <td>{$voucher_no}</td>
-          <td>{$transaction_type}</td>
           <td>{$created_at}</td>
-          <td>{$Narration}</td>
+          <td>{$voucher_no}</td>
+          <td>{$transaction_type}
+            <div class="user-subhead">{$Narration}</div>
+          </td>
+          <td>{$related_ledger_name}</td>
           <td>{$amountDr}
             <div class="xepan-push"></div><small>
-              {$currency}
+              {$currency_dr}
               {$original_amount_dr}</small>
           </td>
           <td>{$amountCr}
             <div class="xepan-push"></div><small>
-              {$currency}
+              {$currency_cr}
               {$original_amount_cr}</small>
           </td>
-          <td>{$Balance}</td>{/}
+          <td>
+            {$edit}
+            {$delete}
+          </td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">

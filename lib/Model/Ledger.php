@@ -152,7 +152,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$outsource = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['name'],$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_for['name'],'contact_id'=>$outsource_party_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['name'],$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_party_for['name'],'contact_id'=>$outsource_party_for->id]);
 	}
 
 	function createTaxLedger($tax_obj){
@@ -231,23 +231,25 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	public $defaultLedger=[
 
-		['name'=>'Miscellaneous Expenses','group'=>'Direct Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Miscellaneous Expenses'],
+		['name'=>'Miscellaneous Expenses','group'=>'Miscellaneous Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Miscellaneous Expenses'],
 		['name'=>'Sales Account','group'=>'Sales','ledger_type'=>'Sales','LedgerDisplayName'=>'Sales Account'],
 		['name'=>'Purchase Account','group'=>'Purchase','ledger_type'=>'Purchase','LedgerDisplayName'=>'Purchase Account'],
-		['name'=>'Round Account','group'=>'Indirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
-		['name'=>'Tax Account','group'=>'Service Tax','ledger_type'=>'Tax','LedgerDisplayName'=>'Tax Name'],
-		['name'=>'Rebate & Discount','group'=>'Rebate & Discount','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount'],
-		['name'=>'Shipping Account','group'=>'Indirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Shipping Account'],
-		['name'=>'Exchange Rate Different Loss','group'=>'Indirect Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Exchange Loss'],
-		['name'=>'Exchange Rate Different Gain','group'=>'Indirect Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
-		['name'=>'Bank Charges','group'=>'InDirect Expenses','ledger_type'=>'Bank Charges','LedgerDisplayName'=>'Bank Charges'],
+		['name'=>'Round Account','group'=>'Round Income','ledger_type'=>'Income','LedgerDisplayName'=>'Round Account'],
+		['name'=>'Tax Account','group'=>'Tax Payable','ledger_type'=>'Tax','LedgerDisplayName'=>'Tax Name'],
+		['name'=>'Rebate & Discount Allowed','group'=>'Rebate & Discount Allowed','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Allowed'],
+		['name'=>'Rebate & Discount Received','group'=>'Rebate & Discount Received','ledger_type'=>'Discount','LedgerDisplayName'=>'Discount Received'],
+		['name'=>'Shipping Account','group'=>'Shipping Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Shipping Account'],
+		['name'=>'Exchange Rate Different Loss','group'=>'Exchange Expenses','ledger_type'=>'Expenses','LedgerDisplayName'=>'Exchange Loss'],
+		['name'=>'Exchange Rate Different Gain','group'=>'Exchange Income','ledger_type'=>'Income','LedgerDisplayName'=>'Exchange Gain'],
+		['name'=>'Bank Charges','group'=>'Bank Charges Expenses','ledger_type'=>'Bank Charges','LedgerDisplayName'=>'Bank Charges'],
 		['name'=>'Cash Account','group'=>'Cash In Hand','ledger_type'=>'Cash Account','LedgerDisplayName'=>'Cash Account'],
-		['name'=>'Your Default Bank Account','group'=>'Bank Account','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account']
+		['name'=>'Your Default Bank Account','group'=>'Bank Account','ledger_type'=>'Bank','LedgerDisplayName'=>'Your Default Bank Account'],
+		['name'=>'Profit & Loss (Opening)','group'=>'Profit & Loss (Opening)','ledger_type'=>'Profit & Loss (Opening)','LedgerDisplayName'=>'Profit & Loss (Opening)']
 	
 	];	
 
 
-	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate){
+	function debitWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate, $remark=null,$code=null){
 
 		$transaction_row=$this->add('xepan\accounts\Model_TransactionRow');
 		$transaction_row['_amountDr']=$amount;
@@ -256,13 +258,15 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$transaction_row['ledger_id']=$this->id;
 		$transaction_row['currency_id']=$currency_id;
 		$transaction_row['exchange_rate']=$exchange_rate;
+		$transaction_row['remark']=$remark;
+		$transaction_row['code']=$code;
 		// $transaction_row['accounts_in_side']=$no_of_accounts_in_side;
 		$transaction_row->save();
 
 		$this->debitOnly($amount);
 	}
 
-	function creditWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate){
+	function creditWithTransaction($amount,$transaction_id,$currency_id,$exchange_rate,$remark=null, $code=null){
 
 		$transaction_row=$this->add('xepan\accounts\Model_TransactionRow');
 		$transaction_row['_amountCr']=$amount;
@@ -271,6 +275,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$transaction_row['ledger_id']=$this->id;
 		$transaction_row['currency_id']=$currency_id;
 		$transaction_row['exchange_rate']=$exchange_rate;
+		$transaction_row['remark']=$remark;
+		$transaction_row['code']=$code;
 		// $transaction_row['accounts_in_side']=$no_of_accounts_in_side;
 		$transaction_row->save();
 
@@ -400,6 +406,12 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	function group(){
 		return $this->ref('group_id');
+	}
+
+	function getBalance($from_date=null,$to_date=null){
+		// if(!$this->loaded()) throw new \Exception("Ledger Model Must Be Loaded", 1);
+		
+		return rand(999,99999);	
 	}
 
 	

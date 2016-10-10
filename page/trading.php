@@ -34,17 +34,17 @@ class page_trading extends \xepan\base\Page{
 		$right_sum = $report['right_sum'];
 
 
-		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet-liablity']);
+		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet']);
 		$grid_l->setSource($left);
 		$grid_l->template->trySet('lheading','Expenditure');
 		
-		$grid_a = $view->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet-assets']);
+		$grid_a = $view->add('xepan\hr\Grid',null,'balancesheet_assets',['view\grid\balancesheet']);
 		$grid_a->template->trySet('rheading','Income');
 		$grid_a->setSource($right);
 
 		$view->template->trySet('ltotal',$left_sum);
 		$view->template->trySet('atotal',$right_sum);
 
-        $view->js('click')->_selector('.xepan-accounts-bs-group')->univ()->frameURL('BalanceSheet Head Groups',[$this->api->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
+        $view->js('click')->_selector('.xepan-accounts-bs-group.tradingrow')->univ()->frameURL('BalanceSheet Head Groups',[$this->api->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
 	}
 }

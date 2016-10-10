@@ -44,31 +44,38 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 
 	function beforeSave(){
 		/*Check  Group*/
-		$group_m=$this->add('xepan\accounts\Model_Group');
-		$group_m->addCondition('name',$this['group']);
-		$group_m->tryLoadAny();
 
-		if(!$group_m->loaded()){
-			$balancesheet_m=$this->add('xepan\accounts\Model_BalanceSheet');
-			$balancesheet_m->tryLoadBy('name',$this['balance_sheet']);
+		foreach (explode(",",$this['group']) as $group) {
 			
-			if(!$balancesheet_m->loaded()) throw $this->exception("must be select Balance Sheet",'ValidityCheck')->setField('balance_sheet');
-			
-			$pg_m=$this->add('xepan\accounts\Model_ParentGroup');
-			$pg_m->tryLoadBy('name',$this['parent_group']);
+			$group_m=$this->add('xepan\accounts\Model_Group');
+			$group_m->addCondition('name',$group);
+			$group_m->tryLoadAny();
 
-			if(!$pg_m->loaded()){
-				$pg_m['name'] = $this['parent_group'];
-				$pg_m['balance_sheet_id'] = $balancesheet_m->id;
-				$pg_m->save();			
+			if(!$group_m->loaded()){
+				$balancesheet_m=$this->add('xepan\accounts\Model_BalanceSheet');
+				$balancesheet_m->tryLoadBy('name',$this['balance_sheet']);
+				
+				if(!$balancesheet_m->loaded()) throw $this->exception("must be select Balance Sheet",'ValidityCheck')
+															->setField('balance_sheet')
+															->addMoreInfo('balance_sheet',$this['balance_sheet'])
+															->addMoreInfo('group',$group);
+				
+				$pg_m=$this->add('xepan\accounts\Model_ParentGroup');
+				$pg_m->tryLoadBy('name',$this['parent_group']);
+
+				if(!$pg_m->loaded()){
+					$pg_m['name'] = $this['parent_group'];
+					$pg_m['balance_sheet_id'] = $balancesheet_m->id;
+					$pg_m->save();			
+				}
+				// if(!$pg_m['name']) throw $this->exception("must be define Parent Group",'ValidityCheck')->setField('parent_group');
+
+				$group_m['parent_group_id']=$pg_m->id;
+				$group_m['balance_sheet_id']=$balancesheet_m->id;
+				$group_m->save();
 			}
-			// if(!$pg_m['name']) throw $this->exception("must be define Parent Group",'ValidityCheck')->setField('parent_group');
-
-			$group_m['parent_group_id']=$pg_m->id;
-			$group_m['balance_sheet_id']=$balancesheet_m->id;
-			$group_m->save();
-		}
 		
+		}
 		/*Check Ledger*/
 		if($this['ledger']){
 			$ledger_m = $this->add('xepan\accounts\Model_Ledger');

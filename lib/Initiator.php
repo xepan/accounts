@@ -9,15 +9,26 @@ class Initiator extends \Controller_Addon {
 	function setup_admin(){
 		
 		$this->routePages('xepan_accounts');
-		$this->addLocation(array('template'=>'templates'));
+		$this->addLocation(array('template'=>'templates','js'=>'templates/js'))
+			->setBaseURL('./vendor/xepan/accounts/')
+			;
 
 		if($this->app->auth->isLoggedIn()){
 		
+			$default_currency_id = $this->add('xepan\base\Model_ConfigJsonModel',
+			[
+				'fields'=>[
+							'currency_id'=>'DropDown'
+							],
+					'config_key'=>'FIRM_DEFAULT_CURRENCY_ID',
+					'application'=>'accounts'
+			]);
+			$default_currency_id->tryLoadAny();
 			$this->app->epan->default_currency = $this->recall(
 											$this->app->epan->id.'_defaultCurrency',
 											$this->memorize(
 												$this->app->epan->id.'_defaultCurrency',
-												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'))
+												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$default_currency_id['currency_id'])
 												)
 											);
 			if(!$this->app->isAjaxOutput()){
@@ -29,7 +40,6 @@ class Initiator extends \Controller_Addon {
 				$m->addItem(['Payment Received','icon'=>'fa fa-cc-paypal'],'xepan_accounts_amtreceived');
 				$m->addItem(['Cash <=> Bank','icon'=>'fa fa-exchange'],'xepan_accounts_contra');
 				$m->addItem(['Transaction Lister','icon'=>'fa fa-list'],'xepan_accounts_accounttransactionlister');
-				$m->addItem(['Favouite Transaction','icon'=>'fa fa-list'],'#');
 				$m->addItem(['Account Statement','icon'=>'fa fa-file-excel-o'],'xepan_accounts_statement');
 				$m->addItem(['Cash Book','icon'=>'fa fa-book'],'xepan_accounts_cashbook');
 				$m->addItem(['Day Book','icon'=>'fa fa-bookmark'],'xepan_accounts_daybook');
@@ -40,6 +50,7 @@ class Initiator extends \Controller_Addon {
 				$m->addItem(['Debit/Credit Note','icon'=>'fa fa-sticky-note-o'],'xepan_accounts_debitcreditnote');
 				$m->addItem(['Currency Management','icon'=>'fa fa-money'],$this->app->url('xepan_accounts_currency',['status'=>'Active']));
 				$m->addItem(['Configuration','icon'=>'fa fa-cog fa-spin'],'xepan_accounts_config');
+				$m->addItem(['Reports','icon'=>'fa fa-book'],'xepan_accounts_report');
 				
 			}
 
@@ -59,12 +70,26 @@ class Initiator extends \Controller_Addon {
 
 	}
 
+	function setup_pre_frontend(){
+		$this->addAppDateFunctions();
+	}
+
 	function setup_frontend(){
+		$default_currency_id = $this->add('xepan\base\Model_ConfigJsonModel',
+			[
+				'fields'=>[
+							'currency_id'=>'DropDown'
+							],
+					'config_key'=>'FIRM_DEFAULT_CURRENCY_ID',
+					'application'=>'accounts'
+			]);
+			$default_currency_id->tryLoadAny();
+
 		$this->app->epan->default_currency = $this->recall(
 											$this->app->epan->id.'_defaultCurrency',
 											$this->memorize(
 												$this->app->epan->id.'_defaultCurrency',
-												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$this->app->epan->config->getConfig('DEFAULT_CURRENCY_ID'))
+												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$default_currency_id['currency_id'])
 												)
 											);
 		return $this;
@@ -230,19 +255,18 @@ class Initiator extends \Controller_Addon {
 
 	function resetDB(){
 		// Clear DB
-		if(!isset($this->app->old_epan)) $this->app->old_epan = $this->app->epan;
-        if(!isset($this->app->new_epan)) $this->app->new_epan = $this->app->epan;
+		// if(!isset($this->app->old_epan)) $this->app->old_epan = $this->app->epan;
+  //       if(!isset($this->app->new_epan)) $this->app->new_epan = $this->app->epan;
         
-		$this->app->epan=$this->app->old_epan;
-        $truncate_models = ['EntryTemplateTransactionRow','EntryTemplateTransaction','EntryTemplate','TransactionType','TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
-        foreach ($truncate_models as $t) {
-            $m=$this->add('xepan\accounts\Model_'.$t);
-            foreach ($m as $mt) {
-                $mt->delete();
-            }
-        }
-		$this->app->epan=$this->app->new_epan;
-
+		// $this->app->epan=$this->app->old_epan;
+  //       $truncate_models = ['EntryTemplateTransactionRow','EntryTemplateTransaction','EntryTemplate','TransactionType','TransactionRow','Transaction','Ledger','Group','BalanceSheet','Currency'];
+  //       foreach ($truncate_models as $t) {
+  //           $m=$this->add('xepan\accounts\Model_'.$t);
+  //           foreach ($m as $mt) {
+  //               $mt->delete();
+  //           }
+  //       }
+		// $this->app->epan=$this->app->new_epan;
 		// Orphan currencies
 		$d = $this->app->db->dsql();
         $d->sql_templates['delete'] = "delete [table] from  [table] [join] [where]";
@@ -253,9 +277,21 @@ class Initiator extends \Controller_Addon {
        			->set('value',1)
        			->save();
 
+       	$config_m = $this->add('xepan\base\Model_ConfigJsonModel',
+			[
+				'fields'=>[
+							'currency_id'=>'DropDown'
+							],
+					'config_key'=>'FIRM_DEFAULT_CURRENCY_ID',
+					'application'=>'accounts'
+			]);
+		$config_m->tryLoadAny();
+
        	$config = $this->app->epan->ref('Configurations')->tryLoadAny();
-       	$config->setConfig('DEFAULT_CURRENCY_ID',$default_currency->id,'accounts');
-       	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config->getConfig('DEFAULT_CURRENCY_ID'));
+       	$config_m['currency_id'] = $default_currency->id;
+       	$config_m->save();
+       	
+       	$this->app->epan->default_currency = $this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$config_m['currency_id']);
        
        /*Default Balance Sheet Heads and groups*/
        $this->add('xepan\accounts\Model_BalanceSheet')->loadDefaults();
