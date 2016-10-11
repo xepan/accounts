@@ -1,7 +1,7 @@
 <?php
 namespace xepan\accounts;
 class page_balancesheet extends \xepan\base\Page{
-	public $title="Account Balance Sheet";
+	public $title="Balance Sheet";
 	function init(){
 		parent::init();
 
