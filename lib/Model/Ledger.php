@@ -8,6 +8,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 	function init(){
 		parent::init();
 		
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue(@$this->app->employee->id);
+		
 		$this->hasOne('xepan\base\Contact','contact_id');
 		$this->hasOne('xepan\accounts\Group','group_id')->mandatory(true);
 		$this->hasOne('xepan\base\Epan','epan_id');

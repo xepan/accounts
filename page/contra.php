@@ -7,7 +7,7 @@ class page_contra extends \xepan\base\Page {
 
 		// ============ CASH => BANK =================
 		$cash_to_bank = $this->add('xepan\accounts\Model_EntryTemplate');
-		$cash_to_bank->loadBy('unique_trnasaction_template_code','CASHTOBANK');
+		$cash_to_bank->loadBy('unique_trnasaction_template_code','CASHDEPOSITINBANK');
 		
 		$cash_to_bank->addHook('afterExecute',function($cash_to_bank,$transaction,$total_amount){
 			$cash_to_bank->form->js()->univ()->reload()->successMessage('Done')->execute();
@@ -18,7 +18,7 @@ class page_contra extends \xepan\base\Page {
 
 		// ============ BANK => CASH =================
 		$bank_to_cash = $this->add('xepan\accounts\Model_EntryTemplate');
-		$bank_to_cash->loadBy('unique_trnasaction_template_code','BANKTOCASH');
+		$bank_to_cash->loadBy('unique_trnasaction_template_code','CASHWITHDRAWFROMBANK');
 		
 		$bank_to_cash->addHook('afterExecute',function($bank_to_cash,$transaction,$total_amount){
 			$bank_to_cash->form->js()->univ()->reload()->successMessage('Done')->execute();
