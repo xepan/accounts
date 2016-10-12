@@ -54,7 +54,7 @@ class Initiator extends \Controller_Addon {
 				
 			}
 
-			$this->addAppDateFunctions();
+			// $this->addAppDateFunctions();
 
 			$ledger = $this->add('xepan\accounts\Model_Ledger');
 			$this->app->addHook('employee_update',[$ledger,'createEmployeeLedger']);
@@ -71,7 +71,7 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function setup_pre_frontend(){
-		$this->addAppDateFunctions();
+		// $this->addAppDateFunctions();
 	}
 
 	function setup_frontend(){
