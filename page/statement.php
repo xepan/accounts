@@ -10,6 +10,7 @@ class page_statement extends \xepan\base\Page {
 		$ledger_id= $this->api->stickyGET('ledger_id')?:0;
 		$to_date = $this->api->stickyGET('to_date');
 		$from_date = $this->api->stickyGET('from_date');
+		$ledger_amount = $this->api->stickyGET('amount');
 
 		$form=$this->add('Form',null,null);
 		$form->setLayout('view/form/actstatement-grid-info-form');
@@ -26,6 +27,7 @@ class page_statement extends \xepan\base\Page {
 
 		$form->addField('DatePicker','from_date')->set($from_date);
 		$form->addField('DatePicker','to_date')->set($to_date);
+		$form->addField('Line','amount')->set($to_date);
 		
 		$form->addSubmit('Get Statement')->addClass('btn btn-primary');
 
@@ -49,10 +51,16 @@ class page_statement extends \xepan\base\Page {
 		$transactions->addExpression('amountCr')->set($transactions->dsql()->expr('round(([0]*[1]),2)',[$transactions->getElement('original_amount_cr'),$transactions->getElement('exchange_rate')]));
 
 		if($ledger_id){
-			
 			$ledger_id = $this->api->stickyGET('ledger_id');
 			$this->api->stickyGET('from_date');
 			$this->api->stickyGET('to_date');
+
+			if($ledger_amount){
+				$transactions->addCondition($transactions->dsql()->orExpr()
+								->where('_amountDr',$ledger_amount)
+								->where('_amountCr',$ledger_amount)
+					);
+			}
 		
 			if($ledger_id)
 				$transactions->addCondition('ledger_id',$_GET['ledger_id']);
@@ -173,6 +181,7 @@ class page_statement extends \xepan\base\Page {
 						'ledger_id'=>$ledger_id?:$form['ledger'],
 						'from_date'=>($form['from_date'])?:0,
 						'to_date'=>($form['to_date'])?:0,
+						'amount'=>($form['amount'])?:0,
 						]
 					)->execute();
 		}
