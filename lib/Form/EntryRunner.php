@@ -143,9 +143,9 @@ class Form_EntryRunner extends \Form {
                         $field->set($row_ledger->id);
                 }
 
-                if(isset($pre_filled_values[$tr_no][$row['code']]['ledger'])){                  
-                    $ledger->addCondition('id',is_numeric($pre_filled_values[$tr_no][$row['code']]['ledger'])?$pre_filled_values[$tr_no][$row['code']]['ledger']:$pre_filled_values[$tr_no][$row['code']]['ledger']->id);
-                }
+                // if(isset($pre_filled_values[$tr_no][$row['code']]['ledger'])){                  
+                //     $ledger->addCondition('id',is_numeric($pre_filled_values[$tr_no][$row['code']]['ledger'])?$pre_filled_values[$tr_no][$row['code']]['ledger']:$pre_filled_values[$tr_no][$row['code']]['ledger']->id);
+                // }
 
                 $field->setModel($ledger);
                 
