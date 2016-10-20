@@ -1,6 +1,6 @@
 <?php
 namespace xepan\accounts;
-class Model_Currency extends \xepan\base\Model_Document{
+class Model_Currency extends \xepan\hr\Model_Document{
 	public $status=['Active','InActive'];
 	
 	public $actions = [
