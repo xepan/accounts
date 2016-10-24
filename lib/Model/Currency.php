@@ -21,6 +21,8 @@ class Model_Currency extends \xepan\hr\Model_Document{
 		$currency_j->addField('value')->sortable(true);
 		$currency_j->addField('integer_part');
 		$currency_j->addField('fractional_part');
+		$currency_j->addField('prefix');
+		$currency_j->addField('postfix');
 
 		$this->addCondition('type','Currency');
 		$this->addHook('beforeSave',[$this,'updateSearchString']);

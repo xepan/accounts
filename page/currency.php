@@ -12,6 +12,6 @@ class page_currency extends \xepan\base\Page{
 	$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/currency']);
 	$crud->grid->addQuickSearch(['name']);
 	$crud->grid->addPaginator(10);
-	$crud->setModel($currency,['name','value','icon','integer_part','fractional_part']);
+	$crud->setModel($currency,['name','value','icon','integer_part','fractional_part','prefix','postfix']);
 	}
 }
