@@ -15,7 +15,7 @@ class Form_EntryRunner extends \Form {
         if($model instanceof \xepan\accounts\Model_Transaction){
             
             if($model['related_transaction_id']){
-                $model->load($model['related_transaction_id']);
+                $model  = $model->newInstance()->load($model['related_transaction_id']);
             }
             $transaction_to_edit = $model;
 
