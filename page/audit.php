@@ -13,12 +13,15 @@ class page_audit extends \xepan\base\Page {
 		$ldgr_for_remove = $form->addField('autocomplete/Basic','ldgr_for_remove')->validateNotNull();
 		$new_merged_ldgr = $form->addField('autocomplete/Basic','new_merged_ldgr')->validateNotNull();
 		
-		$ledger = $this->add('xepan\accounts\Model_Ledger');
-		$ledger->loadBy('id',$form['ldgr_for_remove']);
+		$group_name = $form->addField('Line','ldgr_for_remove_group_name');
+		$ldgr_for_remove->other_field->js('change',$group_name->js()->reload(null,null,[$this->app->url(null,['cut_object'=>$group_name]),'ledger_name'=>$ldgr_for_remove->other_field->js()->val()]));
+
+		// $ledger = $this->add('xepan\accounts\Model_Ledger');
+		// $ledger->loadBy('id',$form['ldgr_for_remove']);
+
 		
 
 		$form->addField('Line','ldgr_for_remove_ledger_type');
-		$form->addField('Line','ldgr_for_remove_group_name');
 		$form->addField('Line','ldgr_for_remove_OpeningBalanceDr');
 		$form->addField('Line','ldgr_for_remove_OpeningBalanceCr');
 		
