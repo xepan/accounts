@@ -92,10 +92,9 @@ class Form_EntryRunner extends \Form {
         $this->addField('Hidden','editing_transaction_id')->set($transaction_to_edit?$transaction_to_edit->id:0);
 
         
-        $tr_no=1;
         foreach ($transactions as $trans) {
+            $tr_no = $trans['type'];
             $this->layout->add('View',null,'transaction_name_'.$trans->id)->set($trans['name']);
-            $tr_row_no=1;
             foreach ($trans->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
 
                 if($row['is_allow_add_ledger'])
@@ -174,10 +173,7 @@ class Form_EntryRunner extends \Form {
                 if(isset($pre_filled_values[$tr_no][$row['code']]['amount'])){
                     $field->set($pre_filled_values[$tr_no][$row['code']]['amount']);
                 }
-
-                $tr_row_no++;
             }
-            $tr_no++;
         }
 
         $this->addField('Text','narration')->set($narration);
@@ -320,8 +316,8 @@ class Form_EntryRunner extends \Form {
     function populatePreFilledValues($transaction_model){
         // self tranasction pre load
         $pre_filled_values=[];
-        $tr_no=1;
         foreach ($transaction_model->ref('TransactionRows') as $transaction_row) {
+            $tr_no=$transaction_model['transaction_type'];
             $pre_filled_values[$tr_no][$transaction_row['code']]=[
                                                 'ledger'=>$transaction_row['ledger_id'],
                                                 'amount'=>$transaction_row['_amountCr']?:$transaction_row['_amountDr'],
@@ -334,8 +330,8 @@ class Form_EntryRunner extends \Form {
                                     ->addCondition('related_transaction_id',$transaction_model->id)
                                     ->setOrder('id')
                                     ;
-        $tr_no++;
         foreach ($related_transactions  as $tr) {
+            $tr_no = $tr['transaction_type'];
             foreach ($tr->ref('TransactionRows') as $transaction_row) {
                 $pre_filled_values[$tr_no][$transaction_row['code']]=[
                                                     'ledger'=>$transaction_row['ledger_id'],
