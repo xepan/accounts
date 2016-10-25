@@ -1,0 +1,55 @@
+{$Content}
+.row
+	.col-lg-12
+		.main-box
+			header.main-box-header.clearfix
+				h2 Merge Accounts 
+			.main-box-body.clearfix
+				.row.xepan-push
+					.col-lg-6
+						label  
+						strong Account Name (For Removing) :
+						div.atk-form-row.atk-form-field {$ldgr_for_remove}
+					.col-lg-6
+						label  
+						strong Account Name (For Merging Removed Ledger Into Existing):
+						div.atk-form-row.atk-form-field {$new_merged_ldgr}
+				.row.xepan-push
+					.col-lg-6
+						label  
+						strong Ledger Type :
+						div.atk-form-row.atk-form-field {$ldgr_for_remove_ledger_type}
+					.col-lg-6
+						label  
+						strong Ledger Type :
+						div.atk-form-row.atk-form-field {$new_merged_ldgr_ledger_type}
+				.row.xepan-push
+					.col-lg-6
+						label  
+						strong Group Name :
+						div.atk-form-row.atk-form-field {$ldgr_for_remove_group_name}
+					.col-lg-6
+						label  
+						strong Group Name :
+						div.atk-form-row.atk-form-field {$new_merged_ldgr_group_name}
+				.row.xepan-push
+					.col-lg-6
+						label  
+						strong Opening Balance Dr :
+						div.atk-form-row.atk-form-field {$ldgr_for_remove_OpeningBalanceDr}
+					.col-lg-6
+						label  
+						strong Opening Balance Dr :
+						div.atk-form-row.atk-form-field {$new_merged_ldgr_OpeningBalanceDr}
+				.row.xepan-push
+					.col-lg-6
+						label  
+						strong Opening Balance Cr :
+						div.atk-form-row.atk-form-field {$ldgr_for_remove_OpeningBalanceCr}
+					.col-lg-6
+						label  
+						strong Opening Balance Cr :
+						div.atk-form-row.atk-form-field {$new_merged_ldgr_OpeningBalanceCr}
+				.row.xepan-push
+					.col-lg-12
+						{$FormButtons}
