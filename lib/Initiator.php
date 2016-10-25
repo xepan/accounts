@@ -41,6 +41,7 @@ class Initiator extends \Controller_Addon {
 				$m->addItem(['Cash <=> Bank','icon'=>'fa fa-exchange'],'xepan_accounts_contra');
 				$m->addItem(['Transaction Lister','icon'=>'fa fa-list'],'xepan_accounts_accounttransactionlister');
 				$m->addItem(['Account Statement','icon'=>'fa fa-file-excel-o'],'xepan_accounts_statement');
+				$m->addItem(['Account Audit','icon'=>'fa fa-file-excel-o'],'xepan_accounts_audit');
 				$m->addItem(['Cash Book','icon'=>'fa fa-book'],'xepan_accounts_cashbook');
 				$m->addItem(['Day Book','icon'=>'fa fa-bookmark'],'xepan_accounts_daybook');
 				$m->addItem(['Group','icon'=>'fa fa-group'],'xepan_accounts_group');
