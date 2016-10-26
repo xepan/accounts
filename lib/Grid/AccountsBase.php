@@ -2,7 +2,7 @@
 
 namespace xepan\accounts;
 
-class Grid_AccountsBase extends \xepan\base\Grid{
+class Grid_AccountsBase extends \xepan\hr\Grid{
 	
 	public $sno=1;
 	public $order=null;
