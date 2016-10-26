@@ -19,6 +19,10 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	public $other_branches_involved = array();
 
 	public $executed=false;
+
+	public $actions=[
+		'All'=>['edit','delete','view']
+	];
 	
 	function init(){
 		parent::init();
