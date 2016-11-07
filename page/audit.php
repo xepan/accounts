@@ -43,7 +43,7 @@ class page_audit extends \xepan\base\Page {
 			$rem_ldgr_group->set($rem_ldgr_mdl['group']);
 			$rem_ldgr_op_bal_dr->set($rem_ldgr_mdl['OpeningBalanceDr']);
 			$rem_ldgr_op_bal_cr->set($rem_ldgr_mdl['OpeningBalanceCr']);
-			$rem_ldgr_contact->set($rem_ldgr_mdl['contact_id']);
+			$rem_ldgr_contact->set($rem_ldgr_mdl['contact']);
 		}
 
 		$new_ldgr_name = $form->addField('Readonly','new_merged_ldgr_ledger_name');
@@ -62,7 +62,7 @@ class page_audit extends \xepan\base\Page {
 			$new_ldgr_group->set($new_ldgr_mdl['group']);
 			$new_ldgr_op_bal_dr->set($new_ldgr_mdl['OpeningBalanceDr']);
 			$new_ldgr_op_bal_cr->set($new_ldgr_mdl['OpeningBalanceCr']);
-			$new_ldgr_contact->set($new_ldgr_mdl['contact_id']);
+			$new_ldgr_contact->set($new_ldgr_mdl['contact']);
 		}
 
 		$form->addSubmit('Merge Ledger')->addClass('btn btn-primary');
