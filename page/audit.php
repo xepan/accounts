@@ -27,17 +27,18 @@ class page_audit extends \xepan\base\Page {
 		$form->addField('CheckBox','update_in_account_transaction');
 		$form->addField('CheckBox','update_in_account_entry_template');
 		
-		$rem_ldgr_name = $form->addField('Readonly','ldgr_for_remove_ledger_name');
-		$rem_ldgr_type = $form->addField('Readonly','ldgr_for_remove_ledger_type');
-		$rem_ldgr_group = $form->addField('Readonly','ldgr_for_remove_group_name');
-		$rem_ldgr_op_bal_dr = $form->addField('Readonly','ldgr_for_remove_OpeningBalanceDr');
-		$rem_ldgr_op_bal_cr = $form->addField('Readonly','ldgr_for_remove_OpeningBalanceCr');
-		$rem_ldgr_contact = $form->addField('Readonly','ldgr_for_remove_contact');
+		$rem_ldgr_name = $form->addField('Line','ldgr_for_remove_ledger_name')->setAttr('disabled','disabled');
+		$rem_ldgr_type = $form->addField('Line','ldgr_for_remove_ledger_type')->setAttr('disabled','disabled');
+		$rem_ldgr_group = $form->addField('Line','ldgr_for_remove_group_name')->setAttr('disabled','disabled');
+		$rem_ldgr_op_bal_dr = $form->addField('Line','ldgr_for_remove_OpeningBalanceDr')->setAttr('disabled','disabled');
+		$rem_ldgr_op_bal_cr = $form->addField('Line','ldgr_for_remove_OpeningBalanceCr')->setAttr('disabled','disabled');
+		$rem_ldgr_contact = $form->addField('Line','ldgr_for_remove_contact')->setAttr('disabled','disabled');
 
 		if($rem_ldgr_id){
 			$rem_ldgr_mdl = $this->add('xepan\accounts\Model_Ledger');
 			$rem_ldgr_mdl->load($rem_ldgr_id);
 
+			// $ldgr_for_remove->set($rem_ldgr_id);
 			$rem_ldgr_name->set($rem_ldgr_mdl['name']);
 			$rem_ldgr_type->set($rem_ldgr_mdl['ledger_type']);
 			$rem_ldgr_group->set($rem_ldgr_mdl['group']);
@@ -46,17 +47,18 @@ class page_audit extends \xepan\base\Page {
 			$rem_ldgr_contact->set($rem_ldgr_mdl['contact']);
 		}
 
-		$new_ldgr_name = $form->addField('Readonly','new_merged_ldgr_ledger_name');
-		$rew_ldgr_type = $form->addField('Readonly','new_merged_ldgr_ledger_type');
-		$new_ldgr_group = $form->addField('Readonly','new_merged_ldgr_group_name');
-		$new_ldgr_op_bal_dr = $form->addField('Readonly','new_merged_ldgr_OpeningBalanceDr');
-		$new_ldgr_op_bal_cr = $form->addField('Readonly','new_merged_ldgr_OpeningBalanceCr');
-		$new_ldgr_contact = $form->addField('Readonly','new_merged_ldgr_contact');
+		$new_ldgr_name = $form->addField('Line','new_merged_ldgr_ledger_name')->setAttr('disabled','disabled');
+		$rew_ldgr_type = $form->addField('Line','new_merged_ldgr_ledger_type')->setAttr('disabled','disabled');
+		$new_ldgr_group = $form->addField('Line','new_merged_ldgr_group_name')->setAttr('disabled','disabled');
+		$new_ldgr_op_bal_dr = $form->addField('Line','new_merged_ldgr_OpeningBalanceDr')->setAttr('disabled','disabled');
+		$new_ldgr_op_bal_cr = $form->addField('Line','new_merged_ldgr_OpeningBalanceCr')->setAttr('disabled','disabled');
+		$new_ldgr_contact = $form->addField('Line','new_merged_ldgr_contact')->setAttr('disabled','disabled');
 
 		if($new_ldgr_id){
 			$new_ldgr_mdl = $this->add('xepan\accounts\Model_Ledger');
 			$new_ldgr_mdl->load($new_ldgr_id);
 
+			// $new_merged_ldgr->set($new_ldgr_id);
 			$new_ldgr_name->set($new_ldgr_mdl['name']);
 			$rew_ldgr_type->set($new_ldgr_mdl['ledger_type']);
 			$new_ldgr_group->set($new_ldgr_mdl['group']);
