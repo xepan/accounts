@@ -7,12 +7,14 @@ class Model_Group extends \xepan\base\Model_Table{
 	function init(){
 		parent::init();
 
-		$this->hasOne('xepan\base\Epan','epan_id');
+		// $this->hasOne('xepan\base\Epan','epan_id');
 
 		$this->hasOne('xepan\accounts\BalanceSheet','balance_sheet_id')->sortable(true);
 
-		$this->hasOne('xepan\accounts\ParentGroup','parent_group_id')->sortable(true);
-		$this->hasOne('xepan\accounts\RootGroup','root_group_id')->sortable(true);
+		$this->hasOne('xepan\accounts\Group','parent_group_id')->sortable(true);
+		$this->addField('root_group_id')->system(true);
+		// $rg = $this->hasOne('xepan\accounts\Group','root_group_id')->sortable(true);
+		// $this->debug();
 
 		$this->addField('name')->caption('Group Name')->mandatory(true)->sortable(true);
 		$this->addField('created_at')->type('date')->defaultValue(date('Y-m-d'))->sortable(true);
@@ -21,13 +23,14 @@ class Model_Group extends \xepan\base\Model_Table{
 
 		$this->hasMany('xepan\accounts\Ledger','group_id');
 
+		
+		$this->hasMany('xepan\accounts\ParentGroup','parent_group_id',null,'ParentGroup');
+		$this->hasMany('xepan\accounts\RootGroup','root_group_id',null,'RootGroup');
+
 		$this->is([
 			'name!|to_trim|unique'
 			]
 			);
-		
-		$this->hasMany('xepan\accounts\Group','parent_group_id',null,'ParentGroup');
-		$this->hasMany('xepan\accounts\Group','root_group_id',null,'RootGroup');
 
 		$this->addHook('beforeDelete',[$this,'checkLedgerExistance']);
 		$this->addHook('afterSave',[$this,'manageRootGroupIdAndPath']);
