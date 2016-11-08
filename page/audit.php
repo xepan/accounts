@@ -7,6 +7,37 @@ class page_audit extends \xepan\base\Page {
 	function init(){
 		parent::init();
 
+	
+		$form = $this->add('Form');
+		$form->setLayout('view/form/act-merge-form');
+		$ldgr_for_remove = $form->addField('Dropdown','ldgr_for_remove');
+		$ldgr_for_remove->setModel('xepan\accounts\Ledger');
+		$new_merged_ldgr = $form->addField('Dropdown','new_merged_ldgr');
+		$new_merged_ldgr->setModel('xepan\accounts\Ledger');	
+
+		$rm_model = $this->add('xepan\accounts\Model_Ledger');
+		$nw_model = $this->add('xepan\accounts\Model_Ledger');
+		
+		if($_GET['rem_ldgr_id'])
+			$rm_model->load($_GET['rem_ldgr_id']);
+
+		if($_GET['new_ldgr_id'])
+			$nw_model->load($_GET['new_ldgr_id']);
+
+		$rv = $this->add('View');
+		$nv = $this->add('View');
+
+		$rv->setModel($rm_model);
+		$nv->setModel($nw_model);
+
+		$rv->set($rm_model['name']);
+
+
+		$ldgr_for_remove->js('change',$rv->js()->reload(['rem_ldgr_id'=>$ldgr_for_remove->js()->val()]));
+		$new_merged_ldgr->js('change',$nv->js()->reload(['new_ldgr_id'=>$new_merged_ldgr->js()->val()]));
+
+		return;
+
 		$rem_ldgr_id = $this->app->stickyGET('rem_ldgr_id');
 		$new_ldgr_id = $this->app->stickyGET('new_ldgr_id');
 
