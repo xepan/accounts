@@ -45,11 +45,9 @@ class page_audit extends \xepan\base\Page {
 
 		if($form->isSubmitted()){
 			$new_merged_ldgr_mdl = $this->add('xepan\accounts\Model_Ledger');
-			// $new_merged_ldgr_mdl->loadBy('id',$new_ldgr_id);
 			$new_merged_ldgr_mdl->loadBy('id',$form['new_merged_ldgr']);
 			
 			$removed_ledger_mdl = $this->add('xepan\accounts\Model_Ledger');
-			// $removed_ledger_mdl->loadBy('id',$rem_ldgr_id);
 			$removed_ledger_mdl->loadBy('id',$form['ldgr_for_remove']);
 
 			if($removed_ledger_mdl['contact_id'])
