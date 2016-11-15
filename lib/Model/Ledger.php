@@ -10,7 +10,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		
 		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue(@$this->app->employee->id);
 		
-		$this->hasOne('xepan\base\Contact','contact_id');
+		$this->hasOne('xepan\base\Contact','contact_id')->display(['form'=>'xepan\base\Basic']);
 		$this->hasOne('xepan\accounts\Group','group_id')->mandatory(true);
 		$this->hasOne('xepan\base\Epan','epan_id');
 		
@@ -74,7 +74,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		});
 
 		$this->addExpression('balance_signed')->set(function($m,$q){
-			// return '"123"';
 			return $q->expr("((IFNULL([0],0) + IFNULL([1],0))- (IFNULL([2],0)+IFNULL([3],0)))",[$m->getField('OpeningBalanceDr'),$m->getField('CurrentBalanceDr'),$m->getField('OpeningBalanceCr'),$m->getField('CurrentBalanceCr')]);
 		});
 		
@@ -85,9 +84,6 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->addExpression('balance')->set(function($m,$q){
 			return $q->expr("Concat(ABS([0]),' ',[1])",[$m->getElement('balance_signed'),$m->getElement('balance_sign')]);
 		});
-
-
-
 
 		$this->addHook('beforeDelete',$this);
 		
@@ -112,7 +108,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 		
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for['name']." : [".$employee_for['type']."] - [".$employee_for['code']."]",$creditor->id,['ledger_type'=>'Employee','LedgerDisplayName'=>$employee_for['name'],'contact_id'=>$employee_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for['unique_name'],$creditor->id,['ledger_type'=>'Employee','LedgerDisplayName'=>$employee_for['name'],'contact_id'=>$employee_for->id]);
 	}
 
 	//creating customer ledger
@@ -126,7 +122,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$debtor = $app->add('xepan\accounts\Model_Group')->load("Sundry Debtor");
 		
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($customer_for['name']." : [".$customer_for['type']."] - [".$customer_for['code']."]",$debtor->id,['ledger_type'=>'Customer','LedgerDisplayName'=>$customer_for['name'],'contact_id'=>$customer_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($customer_for['unique_name'],$debtor->id,['ledger_type'=>'Customer','LedgerDisplayName'=>$customer_for['name'],'contact_id'=>$customer_for->id]);
 	}
 
 	//creating supplier ledger
@@ -140,7 +136,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($supplier_for['name']." : [".$supplier_for['type']."] - [".$supplier_for['code']."]",$creditor->id,['ledger_type'=>'Supplier','LedgerDisplayName'=>$supplier_for['name'],'contact_id'=>$supplier_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($supplier_for['unique_name'],$creditor->id,['ledger_type'=>'Supplier','LedgerDisplayName'=>$supplier_for['name'],'contact_id'=>$supplier_for->id]);
 
 	}
 
@@ -154,7 +150,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$outsource = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['name']." : [".$outsource_party_for['type']."] - [".$outsource_party_for['code']."]",$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_party_for['name'],'contact_id'=>$outsource_party_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['unique_name'],$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_party_for['name'],'contact_id'=>$outsource_party_for->id]);
 	}
 
 	function createTaxLedger($tax_obj){
