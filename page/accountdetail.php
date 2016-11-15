@@ -21,12 +21,25 @@ class page_accountdetail extends \xepan\base\Page{
 
 		$ledger_type = $this->app->stickyGET('ledger_type');
 		$action = $this->api->stickyGET('action')?:'view';
-		$account = $this->add('xepan\accounts\Model_Ledger')->tryLoadBy('id',$this->api->stickyGET('ledger_id'));
+		$account = $this->add('xepan\accounts\Model_Ledger');
+		$m = $account->getElement('contact_id')->getModel();
+		$m->title_field = "unique_name";
+		$account->tryLoadBy('id',$this->api->stickyGET('ledger_id'));
 
-		$account_detail = $this->add('xepan\base\View_Document',['action'=> $action],'account_info',['view/accountdetail','account_info']);
+		$account_detail = $this->add('xepan\hr\View_Document',['action'=> $action],'account_info',['view/accountdetail','account_info']);
 		$account_detail->setIdField('ledger_id');
-		$account_detail->setModel($account,['name','LedgerDisplayName','group_id','OpeningBalanceDr','OpeningBalanceCr','ledger_type'],
-											['name','LedgerDisplayName','group_id','OpeningBalanceDr','OpeningBalanceCr','ledger_type']);
+		$account_detail->setModel($account,
+					[
+					'name','LedgerDisplayName',
+					'group_id','OpeningBalanceDr',
+					'OpeningBalanceCr','ledger_type','contact'		
+					],
+					[
+					'name','LedgerDisplayName',
+					'group_id','OpeningBalanceDr','OpeningBalanceCr',
+					'ledger_type','contact_id'
+					]
+					);
 		
 		if($action=='add'){
 			$account_detail->form->getElement('group_id')->set($acctypegroup[$ledger_type]['group_id']);
