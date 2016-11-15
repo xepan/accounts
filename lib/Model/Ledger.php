@@ -108,7 +108,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 		
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for['name']." : [".$employee_for['type']."] - [".$employee_for['code']."]",$creditor->id,['ledger_type'=>'Employee','LedgerDisplayName'=>$employee_for['name'],'contact_id'=>$employee_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for['unique_name'],$creditor->id,['ledger_type'=>'Employee','LedgerDisplayName'=>$employee_for['name'],'contact_id'=>$employee_for->id]);
 	}
 
 	//creating customer ledger
@@ -122,7 +122,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$debtor = $app->add('xepan\accounts\Model_Group')->load("Sundry Debtor");
 		
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($customer_for['name']." : [".$customer_for['type']."] - [".$customer_for['code']."]",$debtor->id,['ledger_type'=>'Customer','LedgerDisplayName'=>$customer_for['name'],'contact_id'=>$customer_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($customer_for['unique_name'],$debtor->id,['ledger_type'=>'Customer','LedgerDisplayName'=>$customer_for['name'],'contact_id'=>$customer_for->id]);
 	}
 
 	//creating supplier ledger
@@ -136,7 +136,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($supplier_for['name']." : [".$supplier_for['type']."] - [".$supplier_for['code']."]",$creditor->id,['ledger_type'=>'Supplier','LedgerDisplayName'=>$supplier_for['name'],'contact_id'=>$supplier_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($supplier_for['unique_name'],$creditor->id,['ledger_type'=>'Supplier','LedgerDisplayName'=>$supplier_for['name'],'contact_id'=>$supplier_for->id]);
 
 	}
 
@@ -150,7 +150,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$outsource = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['name']." : [".$outsource_party_for['type']."] - [".$outsource_party_for['code']."]",$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_party_for['name'],'contact_id'=>$outsource_party_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['unique_name'],$outsource->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_party_for['name'],'contact_id'=>$outsource_party_for->id]);
 	}
 
 	function createTaxLedger($tax_obj){
