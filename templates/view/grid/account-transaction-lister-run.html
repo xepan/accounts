@@ -8,23 +8,40 @@
   </header>{/Pannel}
   <div class="main-box-body clearfix table-responsive">
     <table style="width:100%" class="table user-list table-hover footable toggle-circle-filled">{header}
-      <thead class="xepan-hover-hand">
-        <tr>{cols}
-          <th>Name</th>
-          <th>Detail</th>
-          <th class="text-center">Favourite Menu Lister</th>
-          <th class="text-center">Merge Transaction</th>
-          <th>Execute</th>{/}    
-        </tr>
+      <thead class="xepan-hover-hand">{cols}{col}
+        <th class="text-center">Transaction List </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td>{name}{/}</td>
-          <td>{detail}{/}</td>
-          <td>{$is_favourite_menu_lister}</td>
-          <td>{$is_merge_transaction}</td>
-          <td>{$Run}</td>{/}
+          <td>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="main-box">
+                  <header class="main-box-header clearfix"></header>
+                  <div class="main-box-body clearfix">
+                    <div class="row">
+                      <div class="col-lg-1 text-muted"><strong>Title : </strong></div>
+                      <div class="col-lg-11"><strong>{$name}</strong></div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-1 text-muted"><strong>Code : </strong></div>
+                      <div class="col-lg-5 small">
+                        <cite>{$unique_trnasaction_template_code}</cite>
+                      </div>
+                      <div class="col-lg-3"></div>
+                      <div class="col-lg-3"></div>
+                    </div>
+                    <div class="row">
+                      <div class="col-lg-1 text-muted"><strong>Detail :</strong></div>
+                      <div class="col-lg-9">{$detail}</div>
+                      <div class="col-lg-2 text-right"><a href="#" class="story-likes-link"><i class="fa fa-1x">{$Run}</i></a></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">
