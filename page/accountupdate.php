@@ -23,10 +23,10 @@ class page_accountupdate extends \xepan\base\Page {
 				else
 					$contact_mdl->tryLoadAny();
 
-				$ledger['name'] = $contact_mdl['name']." : [".$contact_mdl['type']."] - [".$contact_mdl['code']."]";
+				$ledger['name'] = $contact_mdl['unique_name'];
 				$ledger->save();
 			}
-			$f->js()->univ()->successMessage('Ledger Updaed Successfully');
+			$f->js()->univ()->successMessage('Ledger Updaed Successfully')->execute();
 		}
 	}
 }
