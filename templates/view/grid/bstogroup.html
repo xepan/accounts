@@ -16,14 +16,16 @@
       <thead>{cols}{col}
         <th><span>Group Name  </span></th>
         <th><span>Amount DR  </span></th>
-        <th><span>Amount CR</span></th>{/}{/}
+        <th><span>Amount CR</span></th>
+        <th><span>Balance</span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td><span data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="xepan-accounts-bs-subgroup">{$name}</span></td>
           <td><span>{$ClosingBalanceDr}                          </span></td>
-          <td><span>{$ClosingBalanceCr}                      	  </span></td>{/}
+          <td><span>{$ClosingBalanceCr}</span></td>
+          <td><span>{$balance}                      	  </span></td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">

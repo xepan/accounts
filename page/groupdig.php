@@ -43,6 +43,19 @@ class page_groupdig extends \xepan\base\Page{
 		$grid = $this->add('xepan\hr\Grid',null,null,['view\grid\subgroupandledger']);
 		$grid->setSource($subgroupandledger);
 
+		$grid->addColumn('balance');
+
+		$grid->addMethod('format_balance',function($g,$f){
+			$side = ($g->model['balancedr'] > $this->model['balancecr']) ? "Dr":"Cr";
+			$amount = abs($g->model['balancedr'] - $g->model['balancecr']);
+			if($amount)
+				$g->current_row_html[$f]= '<span style="float:right">'.$side . '</span> ' . $amount;
+			else
+				$g->current_row_html[$f]= '';
+		});
+
+		$grid->addFormatter('balance','balance');
+
 		$g = $this->add('xepan\accounts\Model_BSGroup')->load($group_id);
 
 		$grid->template->trySet('parent',$g['name']);

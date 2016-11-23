@@ -16,14 +16,16 @@
       <thead>{cols}{col}
         <th><span>Name  </span></th>
         <th><span>Amount DR  </span></th>
-        <th><span>Amount CR</span></th>{/}{/}
+        <th><span>Amount CR</span></th>
+        <th><span>Balance</span></th>{/}{/}
       </thead>{/}
             {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td><span data-id="{$id}" data-type="{$type}" style="cursor:pointer; cursor: hand; max-width:600px;" class="{$class} {$type}">{$name}</span></td>
           <td><span>{$balancedr}                          </span></td>
-          <td><span>{$balancecr}                         </span></td>{/}
+          <td><span>{$balancecr}  </span></td>
+          <td><span>{$balance}                        </span></td>{/}
         </tr>{/}{/}
                 {not_found}
         <div class="row">
