@@ -49,7 +49,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->addField('exchange_rate')->type('number');
 
 		$this->hasMany('xepan\accounts\TransactionRow','transaction_id',null,'TransactionRows');
-
+		$this->hasMany('xepan\accounts\Transaction_Attachment','account_transaction_id',null,'Attachments');
+		$this->addExpression('attachments_count')->set($this->refSQL('Attachments')->count());
+		
 		$this->addExpression('cr_sum')->set(function($m,$q){
 			return $m->refSQL('TransactionRows')->sum('_amountCr');
 		});

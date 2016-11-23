@@ -26,7 +26,9 @@
                     span Credit
                 th
                     span Balance
-                th                                                
+                th
+                    span Attachments   
+                th       
                 {/}{/}
             {/}
             {$subheader}
@@ -59,6 +61,8 @@
                             {$original_amount_cr}
                     td
                         {$Balance}
+                    td.text-center
+                        .do-view-attachment(style= "cursor:pointer; cursor: hand; max-width:600px;") {$attachment_icon}
                     td(style="width: 15%;")
                         {$edit}
                         {$delete}

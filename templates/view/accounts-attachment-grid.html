@@ -7,43 +7,17 @@
     </div>
   </header>{/Pannel}
   <div class="main-box-body clearfix table-responsive">
-    <table style="width:100%" class="table user-list table-hover footable toggle-circle-filled">{header}
+    <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th> <span>SNo</span></th>
-        <th data-hide="phone"><span>Created At</span></th>
-        <th><span>Voucher No</span></th>
-        <th data-hide="phone"><span>Transaction Type</span></th>
-        <th><span>Debit</span></th>
-        <th><span>Credit</span></th>
-        <th><span>Balance</span></th>
-        <th><span>Attachments   </span></th>
-        <th>      </th>{/}{/}
+        <th>Attachment</th>
+        <th> </th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td>
-             
-            {$s_no}
-          </td>
-          <td>{$created_at}</td>
-          <td>{$voucher_no}</td>
-          <td>{$transaction_type}{$sales_no}
-            <div><span class="user-subhead">{$Narration}</span></div>
-          </td>
-          <td>{$amountDr}
-            <div class="xepan-push"></div><small>
-              {$currency_dr}
-              {$original_amount_dr}</small>
-          </td>
-          <td>{$amountCr}
-            <div class="xepan-push"></div><small>
-              {$currency_cr}
-              {$original_amount_cr}</small>
-          </td>
-          <td>{$Balance}</td>
-          <td class="text-center">
-            <div style="cursor:pointer; cursor: hand; max-width:600px;" class="do-view-attachment">{$attachment_icon}</div>
+          <td class="col-md-5"><a href="{$thumb_url}" target="_blank">Download Attachment</a></td>
+          <td class="col-md-2">
+            <embed title="Click to Download {$thumb_url}" src="{thumb_url}img/samples/hdr/small/img_5.jpg{/}" style="width: 50%" class="doc-img litebox-image"/>
           </td>
           <td style="width: 15%;">
             {$edit}
