@@ -27,6 +27,8 @@
                     span Amount DR  
                 th
                     span Amount CR
+                th
+                    span Balance
                 {/}{/}
             {/}
             {$subheader}
@@ -40,7 +42,9 @@
                     td
                       span {$ClosingBalanceDr}                          
                     td
-                      span {$ClosingBalanceCr}                      	  
+                      span {$ClosingBalanceCr}
+                    td
+                      span {$balance}                      	  
                     {/}
                 {/}{/}
                 {not_found}

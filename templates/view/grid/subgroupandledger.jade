@@ -27,6 +27,8 @@
           span Amount DR  
         th
           span Amount CR
+        th
+          span Balance
         | {/}{/}
       | {/}
       |       {$subheader}
@@ -39,7 +41,9 @@
           td
             span {$balancedr}                          
           td
-            span {$balancecr}                         
+            span {$balancecr}  
+          td
+            span {$balance}                        
           | {/}
         | {/}{/}
         |         {not_found}
