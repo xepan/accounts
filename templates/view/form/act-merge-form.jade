@@ -10,13 +10,22 @@
 						label  
 						strong Account Name (For Removing) :
 						div.atk-form-row.atk-form-field {$ldgr_for_remove}
-						{$ldgr_for_remove_details}
+						.xepan-push
+						.main-box-body
+							.row
+								{$ldgr_for_remove_details}
 					.col-lg-6
 						label  
 						strong Account Name (For Merging Removed Ledger Into Existing):
 						div.atk-form-row.atk-form-field {$new_merged_ldgr}
-						{$new_merged_ldgr_details}
-
+						.xepan-push
+						.main-box-body.clearfix
+							.row
+								{$new_merged_ldgr_details}
+				.row.xepan-push
+					.col-lg-6
+						label  
+						strong Please Select Options (For Update Ledger Info In Selected Option) :
 				.row.xepan-push
 					.col-lg-4
 						div.atk-form-row.atk-form-field {$update_in_account_transaction}

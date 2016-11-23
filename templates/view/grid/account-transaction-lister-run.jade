@@ -8,49 +8,60 @@
                     i(class="fa fa-search search-icon")
     {/Pannel}
     .main-box-body.clearfix.table-responsive
-        table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
-            {header}
-            thead.xepan-hover-hand
-                tr
-                    {cols}
-                    th Name
-                    th Detail
-                    th.text-center Favourite Menu Lister
-                    th.text-center Merge Transaction
-                    th Execute
-                    {/}    
-            {/}
-            {$subheader}
-
-            tbody
-                {rows}{row}
-                tr(class="{$odd_even}" data-id="{$id}")
-                    {cols}
-                    td
-                        {name}{/}
-                    td
-                        {detail}{/}
-                    td
-                        {$is_favourite_menu_lister}
-                    td
-                        {$is_merge_transaction}
-                    td
-                        {$Run}
-                    {/}
-                {/}{/}
-                {not_found}
-                div.row
-                    .col-md-12.text-center.alert.alert-warning(role="alert")
-                        span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
-                {/}
-
-            {totals}
-            tfoot
-                tr(class="totals")
+            table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
+                {header}
+                thead.xepan-hover-hand
                     {cols}{col}
-                    <td {$tdparam}>
-                    {$content}
-                    </td>
+                    th.text-center Transaction List 
                     {/}{/}
-            {/}
-        {$Paginator}
+                {/}
+                {$subheader}
+
+                tbody
+                    {rows}{row}
+                    tr(class="{$odd_even}" data-id="{$id}")
+                        {cols}
+                        td
+                            .row
+                                .col-lg-12
+                                    .main-box
+                                        header.main-box-header.clearfix
+                                        .main-box-body.clearfix
+                                            .row
+                                                .col-lg-1.text-muted
+                                                    strong Title : 
+                                                .col-lg-11
+                                                    strong {$name}
+                                            .row
+                                                .col-lg-1.text-muted
+                                                    strong Code : 
+                                                .col-lg-5.small
+                                                    cite {$unique_trnasaction_template_code}
+                                                .col-lg-3
+                                                .col-lg-3
+                                            .row
+                                                .col-lg-1.text-muted
+                                                    strong Detail :
+                                                .col-lg-9
+                                                    | {$detail}
+                                                .col-lg-2.text-right
+                                                    a.story-likes-link(href='#')
+                                                        i.fa.fa-1x {$Run}
+                        {/}
+                    {/}{/}
+                    {not_found}
+                    div.row
+                        .col-md-12.text-center.alert.alert-warning(role="alert")
+                            span.icon-attention.fa.fa-exclamation-triangle  &nbsp;{$not_found_message}
+                    {/}
+
+                {totals}
+                tfoot
+                    tr(class="totals")
+                        {cols}{col}
+                        <td {$tdparam}>
+                        {$content}
+                        </td>
+                        {/}{/}
+                {/}
+            {$Paginator}
