@@ -186,12 +186,15 @@ class Model_Ledger extends \xepan\base\Model_Table{
 			foreach ($other_values as $field => $value) {
 				$ledger[$field] = $value;
 			}
+			$ledger->save();
 		
 		}else{
-			$ledger['name'] = $name;
+			if($ledger['name'] != $name){
+				$ledger['name'] = $name;
+				$ledger->save();
+			}
 		} 
 		
-		$ledger->save();
 		return $ledger;
 	}
 
