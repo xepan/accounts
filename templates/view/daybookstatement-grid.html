@@ -17,6 +17,7 @@
         <th data-hide="phone"><span>Affected Ledger</span></th>
         <th><span>Debit</span></th>
         <th><span>Credit</span></th>
+        <th><span>Attachments</span></th>
         <th>                                             </th>{/}{/}
       </thead>{/}
       {$subheader}
@@ -41,6 +42,9 @@
             <div class="xepan-push"></div><small>
               {$currency_cr}
               {$original_amount_cr}</small>
+          </td>
+          <td class="text-center">
+            <div style="cursor:pointer; cursor: hand; max-width:600px;" class="do-view-attachment">{$attachment_icon}</div>
           </td>
           <td>
             {$edit}

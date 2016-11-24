@@ -48,6 +48,11 @@ class page_daybook extends \xepan\base\Page{
 			$grid->addSno();
 			$grid->removeColumn('account');
 
+			$grid->js('click')->_selector('.do-view-attachment')->univ()
+					->frameURL('Attachments',[$this->api->url
+					('xepan_accounts_accounttransaction_attachment'),'account_transaction_id'=>$this->js()
+					->_selectorThis()->closest('[data-id]')->data('id')]);
+					
 			$grid->current_transaction_id=null;
 			
 			$grid->addHook('formatRow',function($g){

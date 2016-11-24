@@ -97,8 +97,8 @@ class page_statement extends \xepan\base\Page {
 					}
 				});
 
-				$crud->grid->js('click')->_selector('.do-view-attachment')->univ()
-					->frameURL('Ledgers Details',[$this->api->url
+				$grid->js('click')->_selector('.do-view-attachment')->univ()
+					->frameURL('Attachments',[$this->api->url
 					('xepan_accounts_accounttransaction_attachment'),'account_transaction_id'=>$this->js()
 					->_selectorThis()->closest('[data-id]')->data('id')]);
 				$send_email_btn = $grid->addButton('Send E-mail')->addClass('btn btn-primary');

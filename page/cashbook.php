@@ -64,7 +64,11 @@ class page_cashbook extends \xepan\base\Page{
 			$grid->addCurrentBalanceInEachRow();
 			$grid->addSno();
 			$grid->removeColumn('account');
-
+			$grid->js('click')->_selector('.do-view-attachment')->univ()
+					->frameURL('Attachments',[$this->api->url
+					('xepan_accounts_accounttransaction_attachment'),'account_transaction_id'=>$this->js()
+					->_selectorThis()->closest('[data-id]')->data('id')]);
+			
 			$grid->addHook('formatRow',function($g){
 				$g->current_row_html['created_at'] = date('F jS Y', strtotime($g->model['created_at']));
 				if($g->model->customer()){
