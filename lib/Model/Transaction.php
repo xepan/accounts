@@ -102,6 +102,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// 	]);
 
 		$this->addHook('beforeDelete',$this);
+		$this->addHook('beforeDelete',[$this,'DeleteAttachements']);
 	}
 
 	function beforeDelete(){
@@ -109,6 +110,12 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			 ->addCondition('transaction_id',$this->id)	
 			 ->deleteAll();	
 		$this->app->hook('deleteTransaction',[$this]);
+	}
+
+	function DeleteAttachements(){
+		foreach($this->ref('Attachments') as $a){
+			$a->delete();
+		}
 	}
 
 	function searchStringAfterSave(){
