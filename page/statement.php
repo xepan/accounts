@@ -110,8 +110,8 @@ class page_statement extends \xepan\base\Page {
 					$ledger_model=$p->add('xepan\accounts\Model_Ledger');
 					$ledger=$ledger_model->load($ledger_id);
 					$contact=$ledger->contact();
-					$email=$contact->ref('Emails')->get('value');
-					
+					$email=str_replace("<br/>", ",",$contact['emails_str']);
+
 					$vp_form=$p->add('Form');
 					$vp_form->addField('line','email_to')->set($email);
 					$vp_form->addField('line','subject');
