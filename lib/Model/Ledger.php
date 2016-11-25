@@ -163,11 +163,12 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 	$ledger = $this->add('xepan\accounts\Model_Ledger');
 	$ledger->addCondition('group_id',$this->add('xepan\accounts\Model_Group')->load("Tax Payable")->get('id'));
-	$ledger->addCondition('ledger_type',$tax_obj['name']);
+	$ledger->addCondition('ledger_type','SalesServiceTaxes');
 
 	$ledger->tryLoadAny();
 
 	$ledger['name'] = $tax_obj['name'];
+	$ledger['ledger_type'] = 'SalesServiceTaxes';
 	$ledger['LedgerDisplayName'] = 'SalesServiceTaxes';
 	$ledger['related_id'] = $tax_obj['id'];
 	$ledger['updated_at'] =  $this->api->now;
