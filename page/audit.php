@@ -10,9 +10,9 @@ class page_audit extends \xepan\base\Page {
 	
 		$form = $this->add('Form');
 		$form->setLayout('view/form/act-merge-form');
-		$ldgr_for_remove = $form->addField('Dropdown','ldgr_for_remove');
+		$ldgr_for_remove = $form->addField('Dropdown','ldgr_for_remove')->setEmptyText('Please Select Ledger');
 		$ldgr_for_remove->setModel('xepan\accounts\Ledger');
-		$new_merged_ldgr = $form->addField('Dropdown','new_merged_ldgr');
+		$new_merged_ldgr = $form->addField('Dropdown','new_merged_ldgr')->setEmptyText('Please Select Ledger');
 		$new_merged_ldgr->setModel('xepan\accounts\Ledger');	
 
 		$rm_model = $this->add('xepan\accounts\Model_Ledger');
