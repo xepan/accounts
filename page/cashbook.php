@@ -102,6 +102,7 @@ class page_cashbook extends \xepan\base\Page{
 		}
 		
 		$crud->setModel($transaction);
+		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
 
 		if($form->isSubmitted()){
 			$crud->js()->reload(['from_date'=>$form['from_date']?:0,'to_date'=>$form['to_date']?:0])->execute();

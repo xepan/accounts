@@ -109,6 +109,7 @@ class page_daybook extends \xepan\base\Page{
 		}	
 
 		$crud->setModel($transaction);
+		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
 
 		if($form->isSubmitted()){
 			$crud->js()->reload(['date_selected'=>$form['date']?:0])->execute();
