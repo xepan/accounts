@@ -7,26 +7,23 @@ class page_accountupdate extends \xepan\base\Page {
 	function init(){
 		parent::init();
 
-		// $ledger_id= $this->api->stickyGET('ledger_id')?:0;
-		$ledger = $this->add('xepan\accounts\Model_Ledger');
-		
 		$f = $this->add('Form');
-		$f->addField('Dropdown','Ledger')->setModel($ledger);
+		$f->add('View')->setElement('b')->set('Click On Button To Update All Contact Type Ledger');
+
 		$f->addSubmit('UpdateLedgerName')->addClass('btn btn-primary');
 		if($f->isSubmitted()){
-			if($f['Ledger']){
-				$ledger->load($f['Ledger']);
-				$contact_mdl = $this->add('xepan\base\Model_Contact');
-				$contact_mdl->addCondition('name',$ledger['name']);
-				if($ledger['contact_id'])
-					$contact_mdl->load($ledger['contact_id']);
-				else
-					$contact_mdl->tryLoadAny();
-
-				$ledger['name'] = $contact_mdl['unique_name'];
-				$ledger->save();
-			}
-			$f->js()->univ()->successMessage('Ledger Updaed Successfully')->execute();
+				$ledger = $this->add('xepan\accounts\Model_Ledger');
+				foreach ($ledger as $contact_ledger) {
+					$contact_mdl = $this->add('xepan\base\Model_Contact');
+					if($contact_ledger['contact_id']){
+						$contact_mdl->load($contact_ledger['contact_id']);
+						if($contact_ledger['name'] != $contact_mdl['unique_name']){
+							$contact_ledger['name'] = $contact_mdl['unique_name'];
+							$contact_ledger->save();
+						}
+					}
+				}
+			$f->js()->univ()->successMessage('All Ledger Updaed Successfully')->execute();
 		}
 	}
 }
