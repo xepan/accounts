@@ -26,11 +26,12 @@ class page_accounttransaction_attachment extends \xepan\base\Page
 			if($transactions['related_id'])
 				$qsp_m->load($transactions['related_id']);
 			
-			if($qsp_m->loaded())
+			if($qsp_m->loaded()){
 				$doc_attachment_m = $this->add('xepan\base\Model_Document_Attachment')
 								->addCondition('document_id',$qsp_m->id);		
-			// $qsp_m->addExpression('doc_attachments_count')->set($qsp_m->refSQL('Attachments')->count());
-			$doc_attachment_crud = $this->add('xepan\hr\Grid',null,null,['view\accounts-subdocuments-attachment-grid']);
-			$doc_attachment_crud->setModel($doc_attachment_m,['file_id','thumb_url']);
+				// $qsp_m->addExpression('doc_attachments_count')->set($qsp_m->refSQL('Attachments')->count());
+				$doc_attachment_crud = $this->add('xepan\hr\Grid',null,null,['view\accounts-subdocuments-attachment-grid']);
+				$doc_attachment_crud->setModel($doc_attachment_m,['file_id','thumb_url']);
+			}
 	}
 }
