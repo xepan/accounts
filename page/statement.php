@@ -110,24 +110,26 @@ class page_statement extends \xepan\base\Page {
 					$ledger_model=$p->add('xepan\accounts\Model_Ledger');
 					$ledger=$ledger_model->load($ledger_id);
 					$contact=$ledger->contact();
-					$email=str_replace("<br/>", ",",$contact['emails_str']);
-
-					$vp_form=$p->add('Form');
-					$vp_form->addField('line','email_to')->set($email);
-					$vp_form->addField('line','subject');
-					$ledger_lister_view=$p->add('xepan\accounts\View_Lister_LedgerStatement',['ledger_id'=>$ledger_id,'from_date'=>$_GET['from_date']]);
-					$ledger_lister_view->setModel($transactions);
-									
-					$vp_form->addSubmit('send')->addClass('btn btn-primary');
-					if($vp_form->isSubmitted()){
-						$ledger_model->sendEmail($vp_form['email_to'],$vp_form['subject'],$ledger_lister_view->getHtml(),$vp_form['message'],$ccs=[],$bccs=[]);
-						$vp_form->js(null,$vp_form->js()->univ()->closeDialog())->univ()->successMessage('Mail Send Successfully')->execute();
+					if($contact){
+						$email=str_replace("<br/>", ",",$contact['emails_str']);
+					}else{
+						$email = " ";
 					}
-				});
-
-				if($send_email_btn->isClicked()){
-					$this->js()->univ()->frameURL('Send Mail',$mail_vp->getURL(),['ledger_id'=>$_GET['ledger_id']])->execute();
-					}
+						$vp_form=$p->add('Form');
+						$vp_form->addField('line','email_to')->set($email);
+						$vp_form->addField('line','subject');
+						$ledger_lister_view=$p->add('xepan\accounts\View_Lister_LedgerStatement',['ledger_id'=>$ledger_id,'from_date'=>$_GET['from_date']]);
+						$ledger_lister_view->setModel($transactions);
+						
+						$vp_form->addSubmit('send')->addClass('btn btn-primary');
+							if($vp_form->isSubmitted()){
+								$ledger_model->sendEmail($vp_form['email_to'],$vp_form['subject'],$ledger_lister_view->getHtml(),$vp_form['message'],$ccs=[],$bccs=[]);
+								$vp_form->js(null,$vp_form->js()->univ()->closeDialog())->univ()->successMessage('Mail Send Successfully')->execute();
+							}
+					});	
+						if($send_email_btn->isClicked()){
+							$this->js()->univ()->frameURL('Send Mail',$mail_vp->getURL(),['ledger_id'=>$_GET['ledger_id']])->execute();
+						}
 			}
 
 		}else{

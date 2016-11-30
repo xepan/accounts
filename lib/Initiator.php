@@ -67,6 +67,9 @@ class Initiator extends \Controller_Addon {
 		$search_ledger = $this->add('xepan\accounts\Model_Ledger');
         $this->app->addHook('quick_searched',[$search_ledger,'quickSearch']);
 		
+		$this->app->addHook('widget_collection',[$this,'exportWidgets']);
+		$this->app->addHook('entity_collection',[$this,'exportEntities']);
+		
 		return $this;
 
 	}
@@ -95,6 +98,16 @@ class Initiator extends \Controller_Addon {
 											);
 		return $this;
 	}
+
+
+	function exportWidgets($app,&$array){
+        $array[] = ['xepan\accounts\Widget_DebtorAnlaysis','level'=>'Global','title'=>'Sundry Debtor Account Report'];
+        $array[] = ['xepan\accounts\Widget_CreditorAnlaysis','level'=>'Global','title'=>'Sundry Creditor Account Report'];
+    }
+
+    function exportEntities($app,&$array){
+        $array['ledger'] = ['caption'=>'Ledger', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_Ledger'];
+    }
 
 	function addAppdateFunctions(){
 		$this->app->addMethod('nextDate',function($app,$date=null){
