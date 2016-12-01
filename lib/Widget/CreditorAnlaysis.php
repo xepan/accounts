@@ -20,7 +20,7 @@ class Widget_CreditorAnlaysis extends \xepan\base\Widget {
 			$ledgrofcreditor_m->addCondition('id',$this->report->ledger);
 			$trans_row_m->addCondition('ledger_id',$this->report->ledger);
 		}
-
+		$ledgrofcreditor_m->getElement('created_at')->destroy();
 		$trow_j = $ledgrofcreditor_m->join('account_transaction_row.ledger_id');
 		$trow_j->addField('ledger_id');
 		$trow_j->addField('transaction_id');
@@ -30,6 +30,7 @@ class Widget_CreditorAnlaysis extends \xepan\base\Widget {
 
 		$trns = $trow_j->join('account_transaction','transaction_id');
 		$trns->addField('transaction_type_id');
+		$trns->addField('created_at');
 
 		$ledgrofcreditor_m->addExpression('type_of_trans')->set(function($m,$q){
 			$trans_type = $this->add('xepan\accounts\Model_TransactionType');
@@ -37,6 +38,8 @@ class Widget_CreditorAnlaysis extends \xepan\base\Widget {
 				;
 			return $trans_type->fieldQuery('name');
 		});
+		$ledgrofcreditor_m->_dsql()->group('type_of_trans');
+		
 		$ledgrofcreditor_m
 				->addExpression('amountDr')
 				->set($ledgrofcreditor_m->dsql()
@@ -54,7 +57,11 @@ class Widget_CreditorAnlaysis extends \xepan\base\Widget {
 			return $q->sum($m->getElement('amountDr'));
 		})->type('money');
 
-		$ledgrofcreditor_m->_dsql()->group('type_of_trans');
+
+		if(isset($this->report->start_date))
+			$ledgrofcreditor_m->addCondition('created_at','>',$this->report->start_date);
+		if(isset($this->report->end_date))
+			$ledgrofcreditor_m->addCondition('created_at','<',$this->app->nextDate($this->report->end_date));
 		$this->grid->setModel($ledgrofcreditor_m,
 					['ledger_id','transaction_id',
 					'type_of_trans','amountDr','amountCr',
