@@ -422,5 +422,59 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		return rand(999,99999);	
 	}
 
-	
+	function sendEmail($from_email=null,$to_emails=null,$cc_emails=null,$bcc_emails=null,$subject=null,$body=null,$other_attachments=[]){
+		$email_setting = $this->add('xepan\communication\Model_Communication_EmailSetting');
+		$email_setting->tryLoad($from_email?:-1);
+
+		$communication = $this->add('xepan\communication\Model_Communication_Abstract_Email');					
+		$communication->getElement('status')->defaultValue('Draft');
+		$communication['direction']='Out';
+
+
+		$communication->setfrom($email_setting['from_email'],$email_setting['from_name']);
+		$communication->addCondition('communication_type','Email');
+		
+		$to_emails=explode(',', trim($to_emails));
+		foreach ($to_emails as $to_mail) {
+			$communication->addTo($to_mail);
+		}
+		if($cc_emails){
+			$cc_emails=explode(',', trim($cc_emails));
+			foreach ($cc_emails as $cc_mail) {
+					$communication->addCc($cc_mail);
+			}
+		}
+		if($bcc_emails){
+			$bcc_emails=explode(',', trim($bcc_emails));
+			foreach ($bcc_emails as $bcc_mail) {
+					$communication->addBcc($bcc_mail);
+			}
+		}
+		$communication->setSubject($subject);
+		$communication->setBody($body);
+		$communication->save();
+
+		// Attach Invoice
+		// $file =	$this->add('xepan/filestore/Model_File',array('policy_add_new_type'=>true,'import_mode'=>'string','import_source'=>$this->generatePDF('return')));
+		// $file['filestore_volume_id'] = $file->getAvailableVolumeID();
+		// $file['original_filename'] =  strtolower($this['type']).'_'.$this['document_no_number'].'_'.$this->id.'.pdf';
+		// $file->save();
+		// $communication->addAttachment($file->id);
+		// Attach Other attachments
+		// if(count($other_attachments)){
+		// 	$attachments_m = $this->add('xepan\base\Model_Document_Attachment');
+		// 	$attachments_m->addCondition('id',$other_attachments);
+		// 	foreach ($attachments_m as $attach) {
+		// 			$file =	$this->add('xepan/filestore/Model_File',array('policy_add_new_type'=>true,'import_mode'=>'copy','import_source'=>$_SERVER["DOCUMENT_ROOT"].$attach['file']));
+		// 			$file['filestore_volume_id'] = $file->getAvailableVolumeID();
+		// 			$file['original_filename'] = $attach['original_filename'];
+		// 			$file->save();
+		// 			$communication->addAttachment($file->id);
+		// 	}
+		// }
+
+		$communication->findContact('to');
+
+		$communication->send($email_setting);
+	}
 }

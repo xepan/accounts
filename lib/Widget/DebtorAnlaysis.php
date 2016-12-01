@@ -53,12 +53,6 @@ class Widget_DebtorAnlaysis extends \xepan\base\Widget {
 		$ledgrofdebtor_m->addExpression('total_amount_dr')->set(function($m,$q){
 			return $q->sum($m->getElement('amountDr'));
 		})->type('money');
-		$ledgrofdebtor_m->addExpression('trans_type')->set(function($m,$q){
-			$trans_type = $this->add('xepan\accounts\Model_TransactionType');
-			$trans_type->addCondition('name',$m->getElement('type_of_trans'))
-				;
-			return $trans_type->fieldQuery('name');
-		});
 
 
 		if(isset($this->report->start_date))
@@ -67,7 +61,7 @@ class Widget_DebtorAnlaysis extends \xepan\base\Widget {
 			$ledgrofdebtor_m->addCondition('created_at','<',$this->app->nextDate($this->report->end_date));			
 		
 		$this->grid->setModel($ledgrofdebtor_m,['ledger_id','transaction_id','type_of_trans','amountDr','amountCr',
-			'total_amount_cr','total_amount_dr','trans_type']);
+			'total_amount_cr','total_amount_dr']);
 		
 			// $this->chart->setType('bar')
 	  //    		        ->setModel($ledgrofdebtor_m,'trans_type',['type_of_trans'])

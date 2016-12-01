@@ -116,14 +116,27 @@ class page_statement extends \xepan\base\Page {
 						$email = " ";
 					}
 						$vp_form=$p->add('Form');
+						$vp_form->setLayout('view/form/send-statment');
 						$vp_form->addField('line','email_to')->set($email);
+						$vp_form->addField('line','cc');
+						$vp_form->addField('line','bcc');
 						$vp_form->addField('line','subject');
+						// $body = $vp_form->addField('xepan\base\RichText','body');
+						// $body->set($ledger_lister_view->getHtml());
+						$from_email = $vp_form->addField('dropdown','from_email')->validate('required')->setEmptyText('Please Select from Email');
+						$from_email->setModel('xepan\hr\Post_Email_MyEmails');
+						$email_setting=$this->add('xepan\communication\Model_Communication_EmailSetting');
+						if($_GET['from_email'])
+							$email_setting->tryLoad($_GET['from_email']);
+						$view = $vp_form->layout->add('View',null,'signature')->setHTML($email_setting['signature']);
+						$from_email->js('change',$view->js()->reload(['from_email'=>$from_email->js()->val()]));
 						$ledger_lister_view=$p->add('xepan\accounts\View_Lister_LedgerStatement',['ledger_id'=>$ledger_id,'from_date'=>$_GET['from_date']]);
 						$ledger_lister_view->setModel($transactions);
-						
-						$vp_form->addSubmit('send')->addClass('btn btn-primary');
+						$vp_form->addSubmit('Send')->addClass('btn btn-primary');
 							if($vp_form->isSubmitted()){
-								$ledger_model->sendEmail($vp_form['email_to'],$vp_form['subject'],$ledger_lister_view->getHtml(),$vp_form['message'],$ccs=[],$bccs=[]);
+								$ledger_model->sendEmail($vp_form['from_email'],$vp_form['email_to'],$vp_form['cc'],$vp_form['bcc'],$vp_form['subject'],$ledger_lister_view->getHtml(),null);
+			
+								// $ledger_model->sendEmail($vp_form['email_to'],$vp_form['subject'],$ledger_lister_view->getHtml(),$vp_form['message'],$ccs=[],$bccs=[]);
 								$vp_form->js(null,$vp_form->js()->univ()->closeDialog())->univ()->successMessage('Mail Send Successfully')->execute();
 							}
 					});	
