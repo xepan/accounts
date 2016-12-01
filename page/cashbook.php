@@ -58,6 +58,23 @@ class page_cashbook extends \xepan\base\Page{
 			$opening_side = 'CR';
 		}
 
+		$transaction->addExpression('doc_attachment_count')->set(function($m,$q){
+			$doc_attachment_m = $m->add('xepan\base\Model_Document_Attachment')
+								->addCondition('document_id',$m->getElement('related_id'));		
+			return $doc_attachment_m->count();
+		});
+
+		$transaction->addExpression('trans_attachment_count')->set(function($m,$q){
+			$doc_attachment_m = $m->add('xepan\accounts\Model_Transaction_Attachment')
+								->addCondition('account_transaction_id',$m->getElement('id'));		
+			return $doc_attachment_m->count();
+		});
+
+		$transaction->getElement('attachments_count')->destroy();
+		$transaction->addExpression('attachments_count')->set(function($m,$q){
+			return $q->expr('([0]+[1])',[$m->getElement('doc_attachment_count'), $m->getElement('trans_attachment_count')]);
+		});
+
 		if(!$crud->isEditing()){
 			$grid= $crud->grid;
 			$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);

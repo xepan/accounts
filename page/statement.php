@@ -144,13 +144,13 @@ class page_statement extends \xepan\base\Page {
 			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
 		});
 
-		$transactions->addExpression('doc_attchment_count')->set(function($m,$q){
+		$transactions->addExpression('doc_attachment_count')->set(function($m,$q){
 			$doc_attachment_m = $m->add('xepan\base\Model_Document_Attachment')
 								->addCondition('document_id',$m->getElement('related_id'));		
 			return $doc_attachment_m->count();
 		});
 
-		$transactions->addExpression('trans_attchment_count')->set(function($m,$q){
+		$transactions->addExpression('trans_attachment_count')->set(function($m,$q){
 			$doc_attachment_m = $m->add('xepan\accounts\Model_Transaction_Attachment')
 								->addCondition('account_transaction_id',$m->getElement('id'));		
 			return $doc_attachment_m->count();
@@ -158,7 +158,7 @@ class page_statement extends \xepan\base\Page {
 
 		$transactions->getElement('attachments_count')->destroy();
 		$transactions->addExpression('attachments_count')->set(function($m,$q){
-			return $q->expr('([0]+[1])',[$m->getElement('doc_attchment_count'), $m->getElement('trans_attchment_count')]);
+			return $q->expr('([0]+[1])',[$m->getElement('doc_attachment_count'), $m->getElement('trans_attachment_count')]);
 		});
 
 		$crud->grid->addHook('formatRow',function($g){
