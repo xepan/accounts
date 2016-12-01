@@ -67,7 +67,7 @@ class Widget_DebtorAnlaysis extends \xepan\base\Widget {
 			$ledgrofdebtor_m->addCondition('created_at','<',$this->app->nextDate($this->report->end_date));			
 		
 		$this->grid->setModel($ledgrofdebtor_m,['ledger_id','transaction_id','type_of_trans','amountDr','amountCr',
-			'total_amount_cr','total_amount_dr','trans_type'],'created_at');
+			'total_amount_cr','total_amount_dr','trans_type']);
 		
 			// $this->chart->setType('bar')
 	  //    		        ->setModel($ledgrofdebtor_m,'trans_type',['type_of_trans'])

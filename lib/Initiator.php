@@ -103,6 +103,7 @@ class Initiator extends \Controller_Addon {
 	function exportWidgets($app,&$array){
         $array[] = ['xepan\accounts\Widget_DebtorAnlaysis','level'=>'Global','title'=>'Sundry Debtor Account Report'];
         $array[] = ['xepan\accounts\Widget_CreditorAnlaysis','level'=>'Global','title'=>'Sundry Creditor Account Report'];
+        $array[] = ['xepan\accounts\Widget_PandlAnlaysis','level'=>'Global','title'=>'Pandl Report'];
     }
 
     function exportEntities($app,&$array){
