@@ -143,7 +143,24 @@ class page_statement extends \xepan\base\Page {
 									->addCondition('id',$m->getElement('related_id'));
 			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
 		});
-		
+
+		$transactions->addExpression('doc_attchment_count')->set(function($m,$q){
+			$doc_attachment_m = $m->add('xepan\base\Model_Document_Attachment')
+								->addCondition('document_id',$m->getElement('related_id'));		
+			return $doc_attachment_m->count();
+		});
+
+		$transactions->addExpression('trans_attchment_count')->set(function($m,$q){
+			$doc_attachment_m = $m->add('xepan\accounts\Model_Transaction_Attachment')
+								->addCondition('account_transaction_id',$m->getElement('id'));		
+			return $doc_attachment_m->count();
+		});
+
+		$transactions->getElement('attachments_count')->destroy();
+		$transactions->addExpression('attachments_count')->set(function($m,$q){
+			return $q->expr('([0]+[1])',[$m->getElement('doc_attchment_count'), $m->getElement('trans_attchment_count')]);
+		});
+
 		$crud->grid->addHook('formatRow',function($g){
 			$g->current_row_html['created_at'] = date('F jS Y', strtotime($g->model['created_at']));
 			if(!$g->model['transaction_template_id'] && !$this->app->auth->model->isSuperUser()){
@@ -168,8 +185,11 @@ class page_statement extends \xepan\base\Page {
 				$g->current_row_html['original_amount_dr'] = ' ';
 				$g->current_row_html['currency_cr'] = ' ';
 				$g->current_row_html['original_amount_cr'] = ' ';
-			}								
-		});		
+			}
+		});	
+
+
+
 
 		if($crud->isEditing()){
 			$transactions->load($crud->id);
