@@ -1,38 +1,33 @@
 
-<div id="{$_name}" class="xepan-grid main-box clearfix atk-table atk-table-zebra atk-table-bordered {$class}">{Pannel}
-  <header class="main-box-header clearfix atk-actions  {$class} ">
-  </header>{/Pannel}
+<div id="{$_name}" class="xepan-grid main-box clearfix atk-table atk-table-zebra atk-table-bordered {$class}">{Pannel}{/Pannel}
   <div class="main-box-body clearfix table-responsive">
     <table style="width:100%" class="table user-list table-hover footable toggle-circle-filled">{header}
-      <thead class="xepan-hover-hand">{cols}{col}
-        <th><span>S. No </span></th>
-        <th><span>Voucher No  </span></th>
-        <th><span>Transaction Type</span></th>
-        <th><span>Transaction Date</span></th>
-        <th><span>Narration</span></th>
+      <thead>{cols}{col}
+        <th> <span>SNo</span></th>
+        <th data-hide="phone"><span>Transaction Date</span></th>
+        <th><span>Voucher No</span></th>
+        <th data-hide="phone"><span>Transaction Type</span></th>
         <th><span>Debit</span></th>
         <th><span>Credit</span></th>
-        <th><span>Balance</span></th>
-        <th></th>{/}{/}
+        <th><span>Balance</span></th>{/}{/}
       </thead>{/}
       {$subheader}
-      <tbody>{opening_balance_section}
-        <tr>
-          <td colspan="4" align="right">{$opening_balance_narration}</td>
-          <td></td>
-          <td>{$opening_balance}</td>
-          <td></td>
-        </tr>{/opening_balance_section}
-        {rows}{row}
+      <tbody>{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
-          <td>{$s_no}</td>
-          <td>{$voucher_no}</td>
-          <td>{$transaction_type}</td>
+          <td>
+             
+            {$s_no}
+          </td>
           <td>{$created_at}</td>
-          <td>{$Narration}</td>
-          <td>{$amountDr}</td>
-          <td>{$amountCr}</td>
-          <td>{$balance}</td>{/}
+          <td>{$voucher_no}</td>
+          <td>{$transaction_type}{$sales_no}
+            <div><span class="user-subhead">{$Narration}</span></div>
+          </td>
+          <td>{$amountDr}
+          </td>
+          <td>{$amountCr}
+          </td>
+          <td>{$Balance}</td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">

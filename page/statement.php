@@ -50,6 +50,13 @@ class page_statement extends \xepan\base\Page {
 		$transactions->addExpression('amountDr')->set($transactions->dsql()->expr('round(([0]*[1]),2)',[$transactions->getElement('original_amount_dr'),$transactions->getElement('exchange_rate')]));
 		$transactions->addExpression('amountCr')->set($transactions->dsql()->expr('round(([0]*[1]),2)',[$transactions->getElement('original_amount_cr'),$transactions->getElement('exchange_rate')]));
 
+		$transactions->addExpression('no')->set(function($m,$q){
+			$related_no = $m->add('xepan\commerce\Model_QSP_Master')
+									->addCondition('id',$m->getElement('related_id'));
+			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
+		});
+
+
 		if($ledger_id){
 			$ledger_id = $this->api->stickyGET('ledger_id');
 			$this->api->stickyGET('from_date');
@@ -101,9 +108,10 @@ class page_statement extends \xepan\base\Page {
 					->frameURL('Attachments',[$this->api->url
 					('xepan_accounts_accounttransaction_attachment'),'account_transaction_id'=>$this->js()
 					->_selectorThis()->closest('[data-id]')->data('id')]);
+				
+				/*Send Account Statement In mail to Customer*/
 				$send_email_btn = $grid->addButton('Send E-mail')->addClass('btn btn-primary');
 
-		/*Send Account Statement In mail to Customer*/
 				$mail_vp = $this->add('VirtualPage');
 				$mail_vp->set(function($p)use($transactions,$ledger_id){
 					
@@ -115,34 +123,75 @@ class page_statement extends \xepan\base\Page {
 					}else{
 						$email = " ";
 					}
-						$vp_form=$p->add('Form');
-						$vp_form->setLayout('view/form/send-statment');
-						$vp_form->addField('line','email_to')->set($email);
-						$vp_form->addField('line','cc');
-						$vp_form->addField('line','bcc');
-						$vp_form->addField('line','subject');
-						// $body = $vp_form->addField('xepan\base\RichText','body');
-						// $body->set($ledger_lister_view->getHtml());
-						$from_email = $vp_form->addField('dropdown','from_email')->validate('required')->setEmptyText('Please Select from Email');
-						$from_email->setModel('xepan\hr\Post_Email_MyEmails');
-						$email_setting=$this->add('xepan\communication\Model_Communication_EmailSetting');
-						if($_GET['from_email'])
-							$email_setting->tryLoad($_GET['from_email']);
-						$view = $vp_form->layout->add('View',null,'signature')->setHTML($email_setting['signature']);
-						$from_email->js('change',$view->js()->reload(['from_email'=>$from_email->js()->val()]));
-						$ledger_lister_view=$p->add('xepan\accounts\View_Lister_LedgerStatement',['ledger_id'=>$ledger_id,'from_date'=>$_GET['from_date']]);
-						$ledger_lister_view->setModel($transactions);
-						$vp_form->addSubmit('Send')->addClass('btn btn-primary');
-							if($vp_form->isSubmitted()){
-								$ledger_model->sendEmail($vp_form['from_email'],$vp_form['email_to'],$vp_form['cc'],$vp_form['bcc'],$vp_form['subject'],$ledger_lister_view->getHtml(),null);
-			
-								// $ledger_model->sendEmail($vp_form['email_to'],$vp_form['subject'],$ledger_lister_view->getHtml(),$vp_form['message'],$ccs=[],$bccs=[]);
-								$vp_form->js(null,$vp_form->js()->univ()->closeDialog())->univ()->successMessage('Mail Send Successfully')->execute();
+					$vp_form=$p->add('Form');
+					$vp_form->setLayout('view/form/send-statment');
+					$vp_form->addField('line','email_to')->set($email);
+					$vp_form->addField('line','cc');
+					$vp_form->addField('line','bcc');
+					$vp_form->addField('line','subject');
+					$vp_form->addField('line','message');
+					
+					$from_email = $vp_form->addField('dropdown','from_email')->validate('required')->setEmptyText('Please Select from Email');
+					$from_email->setModel('xepan\hr\Post_Email_MyEmails');
+					
+					$email_setting=$this->add('xepan\communication\Model_Communication_EmailSetting');
+					
+					if($_GET['from_email'])
+						$email_setting->tryLoad($_GET['from_email']);
+					$view = $vp_form->layout->add('View',null,'signature')->setHTML($email_setting['signature']);
+					$from_email->js('change',$view->js()->reload(['from_email'=>$from_email->js()->val()]));
+					
+					$statement_list =$p->add('xepan\hr\CRUD',
+											[
+												'grid_class'=>'xepan\accounts\Grid_AccountsBase',
+												'grid_options'=>['no_records_message'=>'No account statement found'],
+												'form_class' => null,
+												'allow_add'=> false
+											],null,['view/acstatement']);;
+					
+					if($_GET['ledger_id'])
+						$opening_bal = $this->add('xepan\accounts\Model_Ledger')->load($_GET['ledger_id'])->getOpeningBalance($_GET['from_date']);
+
+					if(($opening_bal['DR'] - $opening_bal['CR']) > 0){
+						$opening_column = 'amountDr';
+						$opening_amount = $opening_bal['DR'] - $opening_bal['CR'];
+						$opening_narration = "To Opening balace";
+						$opening_side = 'DR';
+					}else{
+						$opening_column = 'amountCr';
+						$opening_amount = $opening_bal['CR'] - $opening_bal['DR'];
+						$opening_narration = "By Opening balace";
+						$opening_side = 'CR';
+					}
+					if(!$statement_list->isEditing()){
+						$grid = $statement_list->grid;
+						$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
+						$grid->addCurrentBalanceInEachRow();
+						$grid->addSno();
+						$grid->addHook('formatRow',function($g){
+							if($g->model['no']){
+								$g->current_row['sales_no'] = " :: " .$g->model['no'];
 							}
-					});	
-						if($send_email_btn->isClicked()){
-							$this->js()->univ()->frameURL('Send Mail',$mail_vp->getURL(),['ledger_id'=>$_GET['ledger_id']])->execute();
-						}
+						});
+					}
+					$transactions->setOrder('created_at');
+					$statement_list->setModel($transactions);
+					
+					$vp_form->addSubmit('Send')->addClass('btn btn-primary');
+					
+
+					if($vp_form->isSubmitted()){
+						$list = $statement_list->getHtml();
+						$message = $list."  ". " <br> ". $vp_form['message'];
+						$ledger_model->sendEmail($vp_form['from_email'],$vp_form['email_to'],$vp_form['cc'],$vp_form['bcc'],$vp_form['subject'],$message);
+						$vp_form->js(null,$vp_form->js()->closest('.dialog')->dialog('close'))->univ()->successMessage('Email Send SuccessFully')->execute();
+					}
+
+				});	
+
+				if($send_email_btn->isClicked()){
+					$this->js()->univ()->frameURL('Send Mail',$mail_vp->getURL(),['ledger_id'=>$_GET['ledger_id']])->execute();
+				}
 			}
 
 		}else{
@@ -151,11 +200,7 @@ class page_statement extends \xepan\base\Page {
 
 		$transactions->setOrder('created_at');
 
-		$transactions->addExpression('no')->set(function($m,$q){
-			$related_no = $m->add('xepan\commerce\Model_QSP_Master')
-									->addCondition('id',$m->getElement('related_id'));
-			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
-		});
+		
 
 		$transactions->addExpression('doc_attachment_count')->set(function($m,$q){
 			$doc_attachment_m = $m->add('xepan\base\Model_Document_Attachment')
