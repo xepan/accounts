@@ -10,19 +10,17 @@
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
         <th><span>Month-Year</span></th>
-        <th><span>Name</span></th>
+        <th><span>Invoice Count</span></th>
         <th><span>Tax Payable</span></th>
-        <th><span>Tax Paid</span></th>
-        <th><span>Balance</span></th>{/}{/}
+        <th><span>Tax Paid</span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
         <tr data-id="{$monthyear}" style="cursor:pointer; cursor: hand; max-width:600px;" class="xepan-monthlytaxes-widget {$odd_even}">{cols}
           <td><span>{$monthyear}</span></td>
-          <td><span>{$name}</span></td>
-          <td><span>{$balancedr}</span></td>
-          <td><span>{$balancecr}</span></td>
-          <td><span>{$balance}</span></td>{/}
+          <td><a href="#" data-id="{$monthyear}" class="xepan-sales-invoice">{$count}</a></td>
+          <td><span>{$total_amount_cr}</span></td>
+          <td><span>{$total_amount_dr}</span></td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">
