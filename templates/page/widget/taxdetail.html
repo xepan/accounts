@@ -9,18 +9,14 @@
   <div class="main-box-body clearfix table">
     <table style="width:100%" class="table user-list table-hover">{header}
       <thead>{cols}{col}
-        <th><span>Month-Year</span></th>
-        <th><span>Invoice Count</span></th>
-        <th><span>Tax Payable</span></th>
-        <th><span>Tax Paid</span></th>{/}{/}
+        <th><span>Name</span></th>
+        <th><span>Amount</span></th>{/}{/}
       </thead>{/}
       {$subheader}
       <tbody>{rows}{row}
-        <tr data-id="{$id}" style="cursor:pointer; cursor: hand; max-width:600px;" class="{$odd_even}">{cols}
-          <td><a data-id="{$monthyear}" class="xepan-monthlytaxes-widget">{$monthyear}</a></td>
-          <td><a href="#" data-id="{$monthyear}" class="xepan-sales-invoice">{$count}</a></td>
-          <td><a href="#" data-id="{$monthyear}" class="monthly-widget-amount-cr-detail">{$total_amount_cr}</a></td>
-          <td><a href="#" data-id="{$monthyear}" class="monthly-widget-amount-dr-detail">{$total_amount_dr}</a></td>{/}
+        <tr data-id="{$id}" class="{$odd_even}">{cols}
+          <td><span>{$name}</span></td>
+          <td><span>{$total_amount}</span></td>{/}
         </tr>{/}{/}
         {not_found}
         <div class="row">

@@ -13,29 +13,21 @@
             thead
                 {cols}{col}
                 th
-                    span Month-Year
+                    span Name
                 th
-                    span Invoice Count
-                th
-                    span Tax Payable
-                th
-                    span Tax Paid
+                    span Amount
                 {/}{/}
             {/}
             {$subheader}
 
             tbody
                 {rows}{row}
-                tr(class="{$odd_even}" data-id="{$id}" style= "cursor:pointer; cursor: hand; max-width:600px;")
+                tr(class="{$odd_even}" data-id="{$id}")
                     {cols}
                     td
-                      a.xepan-monthlytaxes-widget(data-id="{$monthyear}") {$monthyear}
+                      span {$name}
                     td
-                      a.xepan-sales-invoice(href='#',data-id="{$monthyear}") {$count}
-                    td
-                      a.monthly-widget-amount-cr-detail(href='#',data-id="{$monthyear}") {$total_amount_cr}
-                    td
-                      a.monthly-widget-amount-dr-detail(href='#',data-id="{$monthyear}") {$total_amount_dr}
+                      span {$total_amount}
                     {/}
                 {/}{/}
                 {not_found}

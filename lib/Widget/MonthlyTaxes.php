@@ -79,7 +79,9 @@ class Widget_MonthlyTaxes extends \xepan\base\Widget{
 
 		$this->grid->setSource($merged_array);
 		$this->grid->js('click')->_selector('.xepan-sales-invoice')->univ()->frameURL('Invoice',[$this->api->url('xepan_commerce_salesinvoice'),'from_date'=>$start_date,'to_date'=>$end_date,'monthyear'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
-		$this->grid->js('click')->_selector('.xepan-monthlytaxes-widget')->univ()->frameURL('Statement',[$this->api->url('xepan_accounts_widget_taxstatement'),'from_date'=>$start_date,'to_date'=>$end_date,'monthyear'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
+		$this->grid->js('click')->_selector('.xepan-monthlytaxes-widget')->univ()->frameURL('Statement',[$this->api->url('xepan_accounts_widget_taxstatement'),'from_date'=>$start_date,'to_date'=>$end_date,'monthyear'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);	
+		$this->grid->js('click')->_selector('.monthly-widget-amount-cr-detail')->univ()->frameURL('Paid Detail',[$this->api->url('xepan_accounts_widget_taxdetail'),'entity'=>'credit_side','from_date'=>$start_date,'to_date'=>$end_date,'monthyear'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
+		$this->grid->js('click')->_selector('.monthly-widget-amount-dr-detail')->univ()->frameURL('Payable Detail',[$this->api->url('xepan_accounts_widget_taxdetail'),'entity'=>'debit_side','from_date'=>$start_date,'to_date'=>$end_date,'monthyear'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id')]);
 		
 		return Parent::recursiveRender();
 	}
