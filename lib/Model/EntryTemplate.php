@@ -29,6 +29,10 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 				$m1->delete();
 			});
 		});
+
+		$this->is([
+			'unique_trnasaction_template_code|required|unique',
+			]);
 	}
 
 	
