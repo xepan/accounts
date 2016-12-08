@@ -88,5 +88,16 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 				$ledger_m->save();
 			}
 		}
+
+		/*Check Code*/
+		$entryrow_m = $this->add('xepan\accounts\Model_EntryTemplateTransactionRow');
+        $entryrow_m->addCondition('template_transaction_id',$this['template_transaction_id']);
+        $entryrow_m->addCondition('code',$this['code']);
+        // Allow self editing
+        $entryrow_m->addCondition('id','<>',$this->id);
+        $entryrow_m->tryLoadAny();
+		$entrytrns_m = $this->add('xepan\accounts\Model_EntryTemplateTransaction')->load($this['template_transaction_id']);
+        if($entryrow_m->loaded())
+            throw $this->exception('This code is already used for transaction : '.$entrytrns_m['name'],'ValidityCheck')->setField('code');
 	}
 }

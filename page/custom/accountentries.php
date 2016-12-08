@@ -42,7 +42,7 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 					$import_m->importJson($f['json']);	
 					
-					$f->js()->reload()->univ()->successMessage('Done')->execute();
+					$f->js()->reload()->univ()->successMessage('Accounts Json Data Imported Successfully')->execute();
 				}
 			});
 			if($import_btn->isClicked()){
@@ -78,6 +78,7 @@ class page_custom_accountentries extends \xepan\base\Page {
 		$crud->setModel($temp_tansaction);
 
 		$crud->grid->addColumn('expander','rows');
+		$crud->grid->addQuickSearch(['name','type']);
 
 		if(!$crud->isEditing()){
 			$crud->grid->addHook('formatRow',function($g){
@@ -144,6 +145,9 @@ class page_custom_accountentries extends \xepan\base\Page {
 			$balancesheet_field=$form->getElement('balance_sheet');
 
 		}
+
+		$crud->grid->addQuickSearch(['title','ledger']);
+
 		if(!$crud->isEditing()){
 			$crud->grid->addHook('formatRow',function($g){
 				if($g->model['is_system_default']){
