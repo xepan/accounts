@@ -365,26 +365,12 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return false;
 	}
 
-	function createSalaryPaymentEntry($app,$salarypayment){
-		if(!($salarypayment instanceof \xepan\hr\Model_SalarySheet))
-			throw new \Exception("must pass SalarySheet model", 1);	
-		
-		if(!$salarypayment->loaded())
-			throw new \Exception("must loaded SalarySheet model", 1);	
+	function updateSalaryTransaction(){
 
-		$pre_filled =[
-			1 => [
-				'party' => ['ledger'=>$ledger,'amount'=>$this['net_amount'],'currency'=>$this->ref('currency_id')]
-			]
-		];
-
-		$tabs = $this->add('Tabs');
-		$salary_tab = $tabs->addTab('Salary Payment');
-		$view_salary = $salary_tab->add('View');
-
-		$et = $this->add('xepan\accounts\Model_EntryTemplate');
-		$et->loadBy('unique_trnasaction_template_code','SALARYDUEANDPAID');
-		
-		$et->manageForm(null,$salarypayment->id,'xepan\hr\Model_SalaryPayment',$pre_filled);
 	}
+
+	function deleteSalaryTransaction(){
+
+	}
+
 }
