@@ -13,7 +13,7 @@ class page_report_balancesheet extends page_report{
 		$this->app->stickyGET('from_date');
 		$this->app->stickyGET('to_date');
 
-		$view = $this->add('xepan\accounts\View_BalanceSheetFormatted',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
+		$view = $this->add('xepan\accounts\View_ReportRunner',['from_date'=>$_GET['from_date'],'to_date'=>$_GET['to_date']]);
 
 		if($f->isSubmitted()){
 			$view->js()->reload([
