@@ -364,4 +364,13 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		
 		return false;
 	}
+
+	function updateSalaryTransaction(){
+
+	}
+
+	function deleteSalaryTransaction(){
+
+	}
+
 }
