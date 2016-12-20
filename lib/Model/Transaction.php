@@ -370,12 +370,12 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			throw new \Exception("must pass Salary Sheet loaded model", 1);	
 
 		$sal_led_assoc = $this->add('xepan\accounts\Model_SalaryLedgerAssociation');
-		$ledger = $this->add('xepan\accounts\Model_Ledger');
-		$salary = $this->add('xepan\hr\Model_Salary');
-
-		// foreach ($sal_led_assoc as $sal) {
-		// }
-
+		
+		$sal = $this->add('xepan\hr\Model_Salary');
+		foreach ($sal->getRows() as $s) {
+			$norm_name = $this->app->normalizeName($s['name']);
+			$salarysheet_mdl[$norm_name];
+		}
 
 		$et = $this->add('xepan\accounts\Model_EntryTemplate');
 		$et->loadBy('unique_trnasaction_template_code','SALARYDUE');
