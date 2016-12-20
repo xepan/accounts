@@ -64,8 +64,8 @@ class Initiator extends \Controller_Addon {
 			$this->app->addHook('outsource_party_update',[$ledger,'createOutsourcePartyLedger']);
 			
 			$transacton = $this->add('xepan\accounts\Model_Transaction');	
-			// $this->app->addHook('create_account_entry',[$transacton,'updateSalaryTransaction']);
-			// $this->app->addHook('remove_account_entry',[$transacton,'deleteSalaryTransaction']);
+			$this->app->addHook('salary_sheet_approved',[$transacton,'updateSalaryTransaction']);
+			$this->app->addHook('salary_sheet_canceled',[$transacton,'deleteSalaryTransaction']);
 		}
 
 		$search_ledger = $this->add('xepan\accounts\Model_Ledger');
