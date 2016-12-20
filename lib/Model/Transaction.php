@@ -365,8 +365,44 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return false;
 	}
 
-	function updateSalaryTransaction(){
+	function updateSalaryTransaction($app,$salarysheet_mdl){
+		if(!$salarysheet_mdl->loaded())
+			throw new \Exception("must pass Salary Sheet loaded model", 1);	
 
+		$sal_led_assoc = $this->add('xepan\accounts\Model_SalaryLedgerAssociation');
+		$ledger = $this->add('xepan\accounts\Model_Ledger');
+		$salary = $this->add('xepan\hr\Model_Salary');
+
+		// foreach ($sal_led_assoc as $sal) {
+		// }
+
+
+		$et = $this->add('xepan\accounts\Model_EntryTemplate');
+		$et->loadBy('unique_trnasaction_template_code','SALARYDUE');
+
+		$pre_filled =[
+			1 => [
+				'salary' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+			],
+			2 => [
+				'salarytopay' => ['ledger'=>null,'amount'=>$salarysheet_mdl['net_amount'],'currency'=>null]
+			],
+			3 => [
+				'tax' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+			],
+			4 => [
+				'employeebenefitaccounts-1' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+			],
+			5 => [
+				'employeebenefitaccounts-2' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+				],
+			6 => [
+				'employeebenefitaccounts-3' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+				],
+			7 => [
+				'employeebenefitaccounts-4' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+				]
+		];
 	}
 
 	function deleteSalaryTransaction(){
