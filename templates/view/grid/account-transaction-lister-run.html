@@ -3,7 +3,9 @@
   <header class="main-box-header clearfix atk-actions  {$class} ">
     <div style="100%" class="filter-block">
       <div class="pull-right">{$grid_buttons} </div>
-      <div class="form-group pull-right xepan-filter-form"><span class="form-control pull-left">{$quick_search}<i class="fa fa-search search-icon"></i></span></div>
+      <div class="form-group pull-right xepan-filter-form"><span> <i style="position: unset;" class="fa fa-search search-icon"></i>
+          <input id="searchInput" value="Type To Filter" class=" pull-left"/></span>
+      </div>
     </div>
   </header>{/Pannel}
   <div class="main-box-body clearfix table-responsive">
@@ -12,7 +14,7 @@
         <th class="text-center">Transaction List </th>{/}{/}
       </thead>{/}
       {$subheader}
-      <tbody>{rows}{row}
+      <tbody id="fbody">{rows}{row}
         <tr data-id="{$id}" class="{$odd_even}">{cols}
           <td>
             <div class="row">

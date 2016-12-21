@@ -12,11 +12,17 @@ class page_accounttransactionlister extends \xepan\base\Page{
 		$transaction_m->add('xepan\hr\Controller_ACL');
 		
 		$crud->setModel($transaction_m);
-		$crud->grid->addQuickSearch(['name']);
+
+		$crud->grid->setFormatter('detail','text');
+		//$crud->grid->addQuickSearch(['name','unique_trnasaction_template_code']);
 		$run_executer = $crud->grid->addColumn('button','Run');
 
 		if($_GET['Run']){
 			$this->app->redirect($this->app->url('xepan_accounts_accounttransactionexecuter',['accounts_template_id'=>$_GET['Run']]));
 		}
+
+		$this->js(true)
+             ->_load('searchInput');
+
 	}
 }	

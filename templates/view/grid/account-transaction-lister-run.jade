@@ -4,8 +4,10 @@
         div.filter-block( style="100%")
             .pull-right {$grid_buttons} 
             .form-group.pull-right.xepan-filter-form
-                span(class="form-control pull-left")|{$quick_search}
-                    i(class="fa fa-search search-icon")
+                span 
+                    i(class="fa fa-search search-icon" style="position: unset;")
+                    input#searchInput(value='Type To Filter' class=" pull-left")
+                //- span(class="form-control pull-left")|{$quick_search}
     {/Pannel}
     .main-box-body.clearfix.table-responsive
             table.table.user-list.table-hover.footable.toggle-circle-filled(style="width:100%")
@@ -17,7 +19,7 @@
                 {/}
                 {$subheader}
 
-                tbody
+                tbody#fbody
                     {rows}{row}
                     tr(class="{$odd_even}" data-id="{$id}")
                         {cols}
