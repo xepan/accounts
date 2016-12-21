@@ -365,18 +365,42 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return false;
 	}
 
+	/**
+		@return ['normalize_salary_name' => [
+												'ledger_id'=> 8799
+												'salary _name' =>
+											]
+									]
+	*/
+	function getSalaryLedgerAssociation(){
+		$sal_led_assoc = $this->add('xepan\accounts\Model_SalaryLedgerAssociation');
+		$ledger_asso_array = $sal_led_assoc->getRows();
+
+		$return = [];
+		foreach ($ledger_asso_array as $key => $asso) {
+			$norm_name = $this->app->normalizeName($asso['salary']);
+			$return[$norm_name] = $asso;
+		}
+		return $return;
+	}
+
 	function updateSalaryTransaction($app,$salarysheet_mdl){
-		if(!$salarysheet_mdl->loaded())
+
+		if(!$salarysheet_mdl->loaded() AND !($salarysheet_mdl instanceof \xepan\hr\Model_SalarySheet))
 			throw new \Exception("must pass Salary Sheet loaded model", 1);	
 
-		$sal_led_assoc = $this->add('xepan\accounts\Model_SalaryLedgerAssociation');
-		
+		$ledger_sal_asso_data = $this->getSalaryLedgerAssociation();
+
 		$sal = $this->add('xepan\hr\Model_Salary');
 		foreach ($sal->getRows() as $s) {
-			$norm_name = $this->app->normalizeName($s['name']);
-			$salarysheet_mdl[$norm_name];
+			$nom_name = $this->app->normalizeName($s['name']);
+			echo $nom_name."<br/>";
+			if(isset($ledger_sal_asso_data[$nom_name])){
+				echo $ledger_sal_asso_data[$nom_name]['ledger_id']."<br/>";
+			}
 		}
 
+		die();
 		$et = $this->add('xepan\accounts\Model_EntryTemplate');
 		$et->loadBy('unique_trnasaction_template_code','SALARYDUE');
 
