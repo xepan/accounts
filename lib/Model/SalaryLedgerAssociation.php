@@ -9,6 +9,6 @@ class Model_SalaryLedgerAssociation extends \xepan\base\Model_Table{
 
 		$this->hasOne('xepan\accounts\Ledger','ledger_id')->sortable(true);
 		$this->hasOne('xepan\hr\Salary','salary_id')->sortable(true);
-		// $this->addField('json')->system(true);
+		$this->addField('code');
 	}
 }

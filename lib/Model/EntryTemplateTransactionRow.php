@@ -39,6 +39,10 @@ class Model_EntryTemplateTransactionRow extends \xepan\base\Model_Table{
 
 		$this->addExpression('is_system_default')->set($this->refSQL('template_transaction_id')->fieldQuery('is_system_default'));
 
+		$this->addExpression('entry_template_id')->set(function($m,$q){
+			return $q->expr('[0]',[$m->refSQL('template_transaction_id')->fieldQuery('template_id')]);
+		});
+
 		$this->setOrder('id');
 	}
 

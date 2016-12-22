@@ -390,19 +390,66 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			throw new \Exception("must pass Salary Sheet loaded model", 1);	
 
 		$ledger_sal_asso_data = $this->getSalaryLedgerAssociation();
-
-		$sal = $this->add('xepan\hr\Model_Salary');
-		foreach ($sal->getRows() as $s) {
-			$nom_name = $this->app->normalizeName($s['name']);
-			echo $nom_name."<br/>";
-			if(isset($ledger_sal_asso_data[$nom_name])){
-				echo $ledger_sal_asso_data[$nom_name]['ledger_id']."<br/>";
-			}
-		}
-
-		die();
+		
 		$et = $this->add('xepan\accounts\Model_EntryTemplate');
 		$et->loadBy('unique_trnasaction_template_code','SALARYDUE');
+
+		if(!$et->loaded()){
+			throw new \Exception("entry template not loaded");
+		}
+
+		// $salary_total_amount = $salarysheet_mdl['net_amount'];
+		// $salary_provision_amount = $salarysheet_mdl['net_amount'];
+
+		// $salary_ledger = $this->add('xepan\accounts\Model_Ledger')->tryLoadBy('name','Salary');
+
+		// $pre_filled = [];
+		// $pre_filled['salary'] = [
+		// 							'ledger'=>'',
+		// 							'amount'=>o,
+		// 							'currency'=>
+		// 						];
+		// $pre_filled['salarytopay'] = [
+		// 							'ledger'=>,
+		// 							'amount'=>,
+		// 							'currency'=>
+		// 						];
+
+
+		// $sal = $this->add('xepan\hr\Model_Salary');
+		// foreach ($sal->getRows() as $s) {
+		// 	$nom_name = $this->app->normalizeName($s['name']);
+		// 	if(isset($ledger_sal_asso_data[$nom_name])){
+
+		// 		$code = $ledger_sal_asso_data[$nom_name]['code'];
+
+		// 		$row_model = $this->add('xepan\account\Model_EntryTemplateTransactionRow');
+		// 		$row_model->addCondition('code',$code);
+		// 		$row_model->addCondition('entry_template_id',$et->id);
+		// 		$row_model->tryLoadAny();
+
+		// 		if(!$row_model->loaded())
+		// 			continue;
+
+		// 		$asso_array[$s['name']] = [
+		// 									'ledger_name'=>$row_model['ledger'],
+		// 									'amount'=>$salarysheet_mdl[$nom_name],
+		// 									'code'=>$code
+		// 								];
+		// 		$salary_total_amount += $salarysheet_mdl[$nom_name];
+
+
+		// 	}
+		// }
+
+		// echo "salary_total_amount = ".$salary_total_amount."<br/>";
+		// echo "salary_provision_amount = ".$salary_provision_amount."<br/>";
+		// echo "<pre>";
+		// print_r($asso_array);
+		// echo "</pre>";
+		// die();
+
+		$pre_filled = [];
 
 		$pre_filled =[
 			1 => [
