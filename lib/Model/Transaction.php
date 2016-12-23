@@ -398,49 +398,70 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			throw new \Exception("entry template not loaded");
 		}
 
-		// $salary_total_amount = $salarysheet_mdl['net_amount'];
-		// $salary_provision_amount = $salarysheet_mdl['net_amount'];
-
-		// $salary_ledger = $this->add('xepan\accounts\Model_Ledger')->tryLoadBy('name','Salary');
-
-		// $pre_filled = [];
-		// $pre_filled['salary'] = [
-		// 							'ledger'=>'',
-		// 							'amount'=>o,
-		// 							'currency'=>
-		// 						];
-		// $pre_filled['salarytopay'] = [
-		// 							'ledger'=>,
-		// 							'amount'=>,
-		// 							'currency'=>
-		// 						];
+		$salary_total_amount = $salarysheet_mdl['net_amount'];
+		$salary_provision_amount = $salarysheet_mdl['net_amount'];
 
 
-		// $sal = $this->add('xepan\hr\Model_Salary');
-		// foreach ($sal->getRows() as $s) {
-		// 	$nom_name = $this->app->normalizeName($s['name']);
-		// 	if(isset($ledger_sal_asso_data[$nom_name])){
+		$pre_filled = [];
 
-		// 		$code = $ledger_sal_asso_data[$nom_name]['code'];
+		// echo "<pre>";
+		// print_r($ledger_sal_asso_data);
+		// echo "</pre>";
 
-		// 		$row_model = $this->add('xepan\account\Model_EntryTemplateTransactionRow');
-		// 		$row_model->addCondition('code',$code);
-		// 		$row_model->addCondition('entry_template_id',$et->id);
-		// 		$row_model->tryLoadAny();
-
-		// 		if(!$row_model->loaded())
-		// 			continue;
-
-		// 		$asso_array[$s['name']] = [
-		// 									'ledger_name'=>$row_model['ledger'],
-		// 									'amount'=>$salarysheet_mdl[$nom_name],
-		// 									'code'=>$code
-		// 								];
-		// 		$salary_total_amount += $salarysheet_mdl[$nom_name];
+		$sal = $this->add('xepan\hr\Model_Salary');
+		foreach ($sal->getRows() as $s) {
+			$nom_name = $this->app->normalizeName($s['name']);
 
 
-		// 	}
-		// }
+			if(isset($ledger_sal_asso_data[$nom_name])){
+
+				$code = $ledger_sal_asso_data[$nom_name]['code'];
+
+				$row_model = $this->add('xepan\accounts\Model_EntryTemplateTransactionRow');
+				$row_model->addCondition('code',$code);
+				$row_model->addCondition('entry_template_id',$et->id);
+				$row_model->tryLoadAny();
+
+				if(!$row_model->loaded())
+					continue;
+
+				// echo " nom name =".$nom_name." code =".$code."<br/>";
+
+				$pre_filled[$code] = [
+										'ledger'=>$row_model['ledger'],
+										'amount'=>$salarysheet_mdl[$nom_name],
+										'currency'=>null
+									];
+				$salary_total_amount += $salarysheet_mdl[$nom_name];
+
+			}
+		}
+
+		$salary_ledger = $this->add('xepan\accounts\Model_Ledger')->tryLoadBy('name','Salary');
+		if($salary_ledger->loaded()){
+			$pre_filled['salary'] = [
+										'ledger'=>$salary_ledger['name'],
+										'amount'=>$salary_total_amount,
+										'currency'=>null
+									];
+		}
+
+		$salary_to_pay_ledger = $this->add('xepan\accounts\Model_Ledger')->tryLoadBy('name','SalaryProvision');
+		if($salary_to_pay_ledger->loaded()){
+			$pre_filled['salarytopay'] = [
+										'ledger'=>$salary_to_pay_ledger['name'],
+										'amount'=>$salary_provision_amount,
+										'currency'=>null
+									];
+		}
+
+		// echo "<pre>";
+		// print_r($pre_filled);
+		// echo "</pre>";
+		// die();
+		
+		$entry_form = $this->add('xepan\accounts\Form_EntryRunner');
+		$entry_form->execute($pre_filled);
 
 		// echo "salary_total_amount = ".$salary_total_amount."<br/>";
 		// echo "salary_provision_amount = ".$salary_provision_amount."<br/>";
@@ -449,31 +470,31 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		// echo "</pre>";
 		// die();
 
-		$pre_filled = [];
+		// $pre_filled = [];
 
-		$pre_filled =[
-			1 => [
-				'salary' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-			],
-			2 => [
-				'salarytopay' => ['ledger'=>null,'amount'=>$salarysheet_mdl['net_amount'],'currency'=>null]
-			],
-			3 => [
-				'tax' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-			],
-			4 => [
-				'employeebenefitaccounts-1' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-			],
-			5 => [
-				'employeebenefitaccounts-2' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-				],
-			6 => [
-				'employeebenefitaccounts-3' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-				],
-			7 => [
-				'employeebenefitaccounts-4' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-				]
-		];
+		// $pre_filled =[
+		// 	1 => [
+		// 		'salary' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+		// 	],
+		// 	2 => [
+		// 		'salarytopay' => ['ledger'=>null,'amount'=>$salarysheet_mdl['net_amount'],'currency'=>null]
+		// 	],
+		// 	3 => [
+		// 		'tax' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+		// 	],
+		// 	4 => [
+		// 		'employeebenefitaccounts-1' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+		// 	],
+		// 	5 => [
+		// 		'employeebenefitaccounts-2' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+		// 		],
+		// 	6 => [
+		// 		'employeebenefitaccounts-3' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+		// 		],
+		// 	7 => [
+		// 		'employeebenefitaccounts-4' => ['ledger'=>null,'amount'=>null,'currency'=>null]
+		// 		]
+		// ];
 	}
 
 	function deleteSalaryTransaction(){
