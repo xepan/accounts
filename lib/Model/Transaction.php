@@ -428,7 +428,8 @@ class Model_Transaction extends \xepan\base\Model_Table{
 				// echo " nom name =".$nom_name." code =".$code."<br/>";
 
 				$pre_filled[$code] = [
-										'ledger'=>$row_model['ledger'],
+										'ledger'=>$ledger_sal_asso_data[$nom_name]['ledger'],
+										// 'ledger'=>$row_model['ledger'],
 										'amount'=>$salarysheet_mdl[$nom_name],
 										'currency'=>null
 									];
