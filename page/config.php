@@ -37,6 +37,7 @@ class page_config extends \xepan\base\Page{
 		$tabs->addTabURL('xepan_accounts_custom_accountentries','Custom Accounts Entry');
 		$tabs->addTabURL('xepan_accounts_financialyear','Financial Year Start Month');
 		$tabs->addTabURL('xepan_accounts_salaryledgerassociation','Salary Ledger Association');
+		$tabs->addTabURL('xepan_accounts_autonotification','Auto Notification');
 	}
 
 	function defaultTemplate(){
