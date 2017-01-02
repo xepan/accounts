@@ -129,7 +129,7 @@ class page_statement extends \xepan\base\Page {
 					$vp_form->addField('line','cc');
 					$vp_form->addField('line','bcc');
 					$vp_form->addField('line','subject');
-					$vp_form->addField('line','message');
+					$vp_form->addField('xepan\base\RichText','message');
 					
 					$from_email = $vp_form->addField('dropdown','from_email')->validate('required')->setEmptyText('Please Select from Email');
 					$from_email->setModel('xepan\hr\Post_Email_MyEmails');
@@ -182,7 +182,7 @@ class page_statement extends \xepan\base\Page {
 
 					if($vp_form->isSubmitted()){
 						$list = $statement_list->getHtml();
-						$message = $list."  ". " <br> ". $vp_form['message'];
+						$message = $vp_form['message']."  ". " <br> ". $list;
 						$ledger_model->sendEmail($vp_form['from_email'],$vp_form['email_to'],$vp_form['cc'],$vp_form['bcc'],$vp_form['subject'],$message);
 						$vp_form->js(null,$vp_form->js()->closest('.dialog')->dialog('close'))->univ()->successMessage('Email Send SuccessFully')->execute();
 					}
