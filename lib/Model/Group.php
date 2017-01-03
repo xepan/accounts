@@ -27,6 +27,18 @@ class Model_Group extends \xepan\base\Model_Table{
 		$this->hasMany('xepan\accounts\ParentGroup','parent_group_id',null,'ParentGroup');
 		$this->hasMany('xepan\accounts\RootGroup','root_group_id',null,'RootGroup');
 
+		$this->addExpression('parent_group_name')->set(function($m,$q){
+			$parent_group_m = $m->add('xepan\accounts\Model_ParentGroup',['table_alias'=>'parent_group_name']);
+			return $parent_group_m->addCondition('id',$q->getField('parent_group_id'))
+						->fieldQuery($parent_group_m->getElement('name'));
+		});
+
+		$this->addExpression('root_group_name')->set(function($m,$q){
+			$root_group_m = $m->add('xepan\accounts\Model_RootGroup',['table_alias'=>'root_group_name']);
+			return $root_group_m->addCondition('id',$q->getField('root_group_id'))
+						->fieldQuery($root_group_m->getElement('name'));
+		});
+
 		$this->is([
 			'name!|to_trim|unique'
 			]
