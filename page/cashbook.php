@@ -41,7 +41,7 @@ class page_cashbook extends \xepan\base\Page{
 		$to_date = $this->app->stickyGET('to_date')?:$this->app->nextDate($this->app->today);
 
 		$transaction->addCondition('created_at','>=',$from_date);
-		$transaction->addCondition('created_at','<',$to_date);
+		$transaction->addCondition('created_at','<=',$to_date);
 
 		$cash_account = $this->add('xepan\accounts\Model_Ledger')->load("Cash Account");
 		$opening_balance = $cash_account->getOpeningBalance($this->api->today);
