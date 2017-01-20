@@ -7,7 +7,9 @@ class View_EasySetupWizard extends \View{
 	function init(){
 		parent::init();
 
-		/*............. Currency Configuration ...............*/
+		/**
+		............. Currency Configuration ...............
+		*/
 		if($_GET[$this->name.'_account_config']){
 			$this->js(true)->univ()->frameURL("Currency Configuration",$this->app->url('xepan_accounts_config'));
 		}
@@ -39,7 +41,9 @@ class View_EasySetupWizard extends \View{
 			->setHelpURL('#')
 			->setAction('Click Here',$action,$isDone);
 
-		/*............. Accounts Financial Year ...............*/
+		/**
+		............. Accounts Financial Year ...............
+		*/
 		if($_GET[$this->name.'_financial_year']){
 			$this->js(true)->univ()->frameURL("Financial Year Setting",$this->app->url('xepan_accounts_financialyear'));
 		}
@@ -68,6 +72,30 @@ class View_EasySetupWizard extends \View{
 			->setAddOn('Application - Accounts')
 			->setTitle('Set Financial Year')
 			->setMessage('Please configure financial year for your accounts reports.')
+			->setHelpMessage('Need help ! click on the help icon')
+			->setHelpURL('#')
+			->setAction('Click Here',$action,$isDone);
+
+		/**
+		............. Salary Ledger Associaton Configuration ...............
+		*/
+		if($_GET[$this->name.'_sal_ledger_association']){
+			$this->js(true)->univ()->frameURL("Salary Ledger Associaton",$this->app->url('xepan_accounts_salaryledgerassociation'));
+		}
+
+		$isDone = false;
+
+		$action = $this->js()->reload([$this->name.'_sal_ledger_association'=>1]);
+
+			if($this->add('xepan\accounts\Model_SalaryLedgerAssociation')->count()->getOne() > 0){
+				$isDone = true;
+				$action = $this->js()->univ()->dialogOK("Already have Data",' You have already assoicate salary with ledgers, visit page ? <a href="'. $this->app->url('xepan_accounts_salaryledgerassociation')->getURL().'"> click here to go </a>');
+			}
+
+		$sal_assoc_view = $this->add('xepan\base\View_Wizard_Step')
+			->setAddOn('Application - Accounts')
+			->setTitle('Assoicate Ledgers With Salaries')
+			->setMessage('Assoicate ledgers to keep accounting entries')
 			->setHelpMessage('Need help ! click on the help icon')
 			->setHelpURL('#')
 			->setAction('Click Here',$action,$isDone);
