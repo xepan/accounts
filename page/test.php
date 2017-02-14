@@ -10,8 +10,6 @@ class page_test extends \xepan\base\Page
 	{
 		parent::init();
 
-		$tra =$this->add('xepan\accounts\Model_Transaction')->load(17);
-		$this->form  = $form = $this->add('xepan\accounts\Form_EntryRunner');
-		$form->setModel($tra);
+		$this->add('xepan\accounts\View_ReportRunner');
 	}
 }
