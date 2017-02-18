@@ -12,8 +12,7 @@ class page_reportfunction extends \xepan\base\Page
 
 		$group_model = $this->add('xepan\accounts\Model_Group');
 		$ledger_model = $this->add('xepan\accounts\Model_Ledger');
-		$head_model = $this->add('xepan\accounts\Model_Group');
-		$head_model->addCondition('parent_group_id',null);
+		$head_model = $this->add('xepan\accounts\Model_BalanceSheet');
 
 		$form = $this->add('Form');
 
@@ -35,23 +34,27 @@ class page_reportfunction extends \xepan\base\Page
 								'GroupTransactionSUMCR'=>'GroupTransactionSUMCR',
 								'GroupOnlyTransactionSUMDR'=>'GroupOnlyTransactionSUMDR',
 								'GroupOnlyTransactionSUMCR'=>'GroupOnlyTransactionSUMCR',
-								'PANDL'=>'PANDL'
+								'PANDL'=>'PANDL',
+								'Trading'=>'Trading'
 							]);
 		
-		$group_value_field = $form->addField('dropdown','group_value')
-						->addClass('multiselect-full-width')
-						->setAttr(['multiple'=>'multiple'])
-						->setModel($group_model);
+		$group_value_field = $form->addField('dropdown','group_value');
+						// ->addClass('multiselect-full-width')
+						// ->setAttr(['multiple'=>'multiple'])
+		$group_value_field->setModel($group_model);
+		$group_value_field->setEmptyText("Please Select Group");
 		
-		$head_value_field = $form->addField('dropdown','head_value')
-						->addClass('multiselect-full-width')
-						->setAttr(['multiple'=>'multiple'])
-						->setModel($head_model);
+		$head_value_field = $form->addField('dropdown','head_value');
+						// ->addClass('multiselect-full-width')
+						// ->setAttr(['multiple'=>'multiple'])
+		$head_value_field->setModel($head_model);
+		$head_value_field->setEmptyText("Please Select Head");
 
-		$ledger_value_field = $form->addField('dropdown','ledger_value')
-						->addClass('multiselect-full-width')
-						->setAttr(['multiple'=>'multiple'])
-						->setModel($ledger_model);
+		$ledger_value_field = $form->addField('dropdown','ledger_value');
+						// ->addClass('multiselect-full-width')
+						// ->setAttr(['multiple'=>'multiple'])
+		$ledger_value_field->setModel($ledger_model);
+		$ledger_value_field->setEmptyText("Please Select Ledger");
 
 		$form->addField('DatePicker','start_date');
 		$form->addField('DatePicker','end_date');
@@ -101,9 +104,9 @@ class page_reportfunction extends \xepan\base\Page
 			$rf_model = $this->add('xepan\accounts\Model_ReportFunction');
 			$rf_model['name'] = $form['name'];
 			$rf_model['type'] = $form['type'];
-			$rf_model['group_value'] = $form['group_value'];
-			$rf_model['head_value'] = $form['head_value'];
-			$rf_model['ledger_value'] = $form['ledger_value'];
+			$rf_model['group_id'] = $form['group_value'];
+			$rf_model['head_id'] = $form['head_value'];
+			$rf_model['ledger_id'] = $form['ledger_value'];
 			$rf_model['start_date'] = $form['start_date'];
 			$rf_model['end_date'] = $form['end_date'];
 			$rf_model->save();
