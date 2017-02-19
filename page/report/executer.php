@@ -1,5 +1,7 @@
 <?php
+
 namespace xepan\accounts;
+
 class page_report_executer extends page_report{
 	public $title="Report Viewer";
 	public $reportfunctionValue = [];
@@ -18,15 +20,16 @@ class page_report_executer extends page_report{
 			return;
 		}
 
-		$layout = $rl_model['layout']; 
+		$layout = $rl_model['layout'];
 
 		// ask variable from customer
 		$ask_variables=[];
 		preg_match_all('^\?\((.*?)\)^', $layout, $ask_variables);
 
+		// final report layout view
 		$report_layout = $this->add('View');
 
-		if($_GET['show_report']){
+		if($_GET['show_report'] OR !count($ask_variables[1])){
 
 			$this->reportfunctionValue = $this->app->recall('reportfunctionValue');
 			$this->app->forget('reportfunctionValue');
@@ -44,10 +47,21 @@ class page_report_executer extends page_report{
 			preg_match_all('^\[\[(.*?)\]\]^', $layout, $matches);
 			//replacing all values with function result values like Function1 replace by 100 getting it's value from getResult Function
 			foreach ($matches[1] as $key => $sub_expression) {
+
+				// checking assignment operator
+				$assignment = explode("=", $sub_expression);
+				
+				if(count($assignment) >= 2 ){
+					$assignment_variable = $assignment[0];
+					$sub_expression = $assignment[1];
+				}
+
 				$function_objects = explode(" ", $sub_expression);
 				foreach ($function_objects as $key => $function) {
 
-						if(!isset($this->reportfunctionValue[$function])){
+						$fun_normlize_name = $this->app->normalizeName($function);
+
+						if(!isset($this->reportfunctionValue[$fun_normlize_name])){
 							// check for if function exist or not
 							$function_model = $this->add('xepan\accounts\Model_ReportFunction');
 							$function_model->addCondition('name',$function);
@@ -55,9 +69,9 @@ class page_report_executer extends page_report{
 
 							if(!$function_model->loaded()) continue;
 							
-							$this->reportfunctionValue[$function] = $function_model->getResult();
+							$this->reportfunctionValue[$fun_normlize_name] = $function_model->getResult();
 						}
-					$layout  = str_replace($function,$this->reportfunctionValue[$function], $layout);
+					$layout  = str_replace($function,$this->reportfunctionValue[$fun_normlize_name], $layout);
 				}
 			}
 
@@ -65,10 +79,32 @@ class page_report_executer extends page_report{
 			preg_match_all('^\[\[(.*?)\]\]^', $layout, $matches);
 			$eval_math = new \Webit\Util\EvalMath\EvalMath;
 			foreach ($matches[1] as $key => $eval_str) {
-				$result = $eval_math->evaluate($eval_str);
+				// // checking assignment operator
+				$assignment = explode("=", $eval_str);
+				$assignment_variable = 0;
+				if(count($assignment) >= 2 ){
+					$assignment_variable = $this->app->normalizeName($assignment[0]);
+					// $eval_str = $assignment[1];
+				}
+
+				if(isset($assignment_variable) AND isset($this->reportfunctionValue[$assignment_variable]) ){
+					$result = $this->reportfunctionValue[$assignment_variable];
+				}else{
+					$result = $eval_math->evaluate($eval_str);
+				}
+
 				$layout = str_replace("[[".$eval_str."]]",$result, $layout);
+
+				// save assignment variable into array
+				if($assignment_variable AND !isset($this->reportfunctionValue[$assignment_variable])){
+					$this->reportfunctionValue[$assignment_variable] = $result;
+				}
 			}
 			$report_layout->setHtml($layout);
+
+			// echo "<pre>";
+			// print_r($this->reportfunctionValue);
+			// echo "</pre>";
 
 		}elseif(count($ask_variables[1])){
 
@@ -76,7 +112,7 @@ class page_report_executer extends page_report{
 			foreach ($ask_variables[1] as $key => $name) {
 				$nor_name = $this->app->normalizeName($name);
 				$field = $form->addField('line',$nor_name)->validate('required');
-				if( isset($this->reportfunctionValue[$nor_name]))
+				if(isset($this->reportfunctionValue[$nor_name]))
 					$field->set($this->reportfunctionValue[$nor_name]);
 			}
 
@@ -89,13 +125,10 @@ class page_report_executer extends page_report{
 				$this->app->memorize('reportfunctionValue',$this->reportfunctionValue);
 				$js = [
 						$report_layout->js()->reload(['show_report'=>1]),
-						$form->js()->hide()						
+						$form->js()->hide()
 					];
 				$form->js(null,$js)->execute();
 			}
 		}
-
-		
-
 	}
 }
