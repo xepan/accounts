@@ -10,12 +10,15 @@ class page_reportfunction extends \xepan\base\Page
 
 		parent::init();
 
-		$group_model = $this->add('xepan\accounts\Model_Group');
-		$ledger_model = $this->add('xepan\accounts\Model_Ledger');
-		$head_model = $this->add('xepan\accounts\Model_BalanceSheet');
+		$tab = $this->add('Tabs');
+		$fun_tab = $tab->addTab('Report Function');
+		$loop_tab = $tab->addTab('Report Loop');
 
-		$form = $this->add('Form');
+		$group_model = $fun_tab->add('xepan\accounts\Model_Group');
+		$ledger_model = $fun_tab->add('xepan\accounts\Model_Ledger');
+		$head_model = $fun_tab->add('xepan\accounts\Model_BalanceSheet');
 
+		$form = $fun_tab->add('Form');
 		$name_field = $form->addField('line','name')->validate('required');
 		$type_field = $form->addField('dropdown','type')->setValueList([
 								'HeadBalance'=>'HeadBalance',
@@ -106,9 +109,9 @@ class page_reportfunction extends \xepan\base\Page
 				'CustomDate'=>['custom_end_date']
 			],'div.atk-form-row');
 
-		$rf_model = $this->add('xepan\accounts\Model_ReportFunction');
+		$rf_model = $fun_tab->add('xepan\accounts\Model_ReportFunction');
 		$rf_model->setOrder('name','asc');
-		$crud = $this->add('CRUD',['allow_add'=>false,'allow_edit'=>false]);
+		$crud = $fun_tab->add('CRUD',['allow_add'=>false,'allow_edit'=>false]);
 		$crud->setModel($rf_model);
 
 		if($form->isSubmitted()){
@@ -150,5 +153,28 @@ class page_reportfunction extends \xepan\base\Page
 			$form->js(null,$js)->univ()->successMessage('function added successfully')->execute();
 		}
 
+
+		// LOOP CRUD
+		$loop_model = $loop_tab->add('xepan\accounts\Model_ReportLoop');
+		$crud = $loop_tab->add('xepan\hr\CRUD');
+		$crud->setModel($loop_model,
+							['name','list_of','under','group_id','group','head_id','head','ledger_id','ledger'],
+							['name','list_of','under','group','head','ledger']
+						);
+
+		if($crud->isEditing()){
+			$form = $crud->form;
+			$list_of_field = $form->getElement('list_of');
+			$under_field = $form->getElement('under');
+
+			$under_field->js(true)->univ()->bindConditionalShow([
+					'Group'=>['group_id'],
+					'GroupOnly'=>['group_id'],
+					'Head'=>['head_id'],
+					'Ledger'=>['ledger_id'],
+					
+				],'div.atk-form-row');
+
+		}
 	}
 }

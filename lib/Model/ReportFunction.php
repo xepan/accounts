@@ -35,7 +35,15 @@ class Model_ReportFunction extends \xepan\base\Model_Table{
 
 		$this->addField('start_date'); //'FYStart',"PreviousFYStart","CurrentMonthStart","PreviousMonthStart",'CustomDate'
 		$this->addField('end_date'); //'FYEnd','PreviousFYEnd','CurrentMonthEnd','PreviousMonthEnd','CustomDate'
-				
+		
+		// only used for report_loop
+		$this->addField('list_of')->enum(['Ledger','Group','Transaction']);
+		$this->addField('under')->enum([
+							'Group',
+							'GroupOnly',
+							'Head',
+							'Ledger'
+						]);
 		// $this->addHook('beforeSave',$this);
 	}
 
