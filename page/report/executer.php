@@ -91,7 +91,12 @@ class page_report_executer extends page_report{
 				if(isset($assignment_variable) AND isset($this->reportfunctionValue[$assignment_variable]) ){
 					$result = $this->reportfunctionValue[$assignment_variable];
 				}else{
-					$result = $eval_math->evaluate($eval_str);
+
+					try{
+						$result = $eval_math->evaluate($eval_str);
+					}catch(\Exception $e){
+						$result = $eval_str;
+					}
 				}
 
 				$layout = str_replace("[[".$eval_str."]]",$result, $layout);

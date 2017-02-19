@@ -68,7 +68,7 @@ class Model_ReportFunction extends \xepan\base\Model_Table{
         $current_month_start = $config_model['Current_Month_Start'];
         $current_month_end = $config_model['Current_Month_End'];
         
-		if( (date('Y-m-d H:i:s', strtotime($this['start_date'])) == $this['start_date']) )
+		if( !in_array($this['start_date'], ['FYStart',"PreviousFYStart","CurrentMonthStart","PreviousMonthStart"]))
 			$return['start_date'] = $this['start_date'];
 		else{
 			// 'FYStart',"PreviousFYStart","CurrentMonthStart","PreviousMonthStart"
@@ -88,7 +88,7 @@ class Model_ReportFunction extends \xepan\base\Model_Table{
 			}
 		}
 
-		if( (date('Y-m-d H:i:s', strtotime($this['end_date'])) == $this['end_date']) )
+		if( !in_array($this['end_date'], ['FYEnd','PreviousFYEnd','CurrentMonthEnd','PreviousMonthEnd']) )
 			$return['end_date'] = $this['end_date'];
 		else{
 			//'FYEnd','PreviousFYEnd','CurrentMonthEnd','PreviousMonthEnd'
