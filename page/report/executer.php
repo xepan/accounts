@@ -29,7 +29,8 @@ class page_report_executer extends page_report{
 		// final report layout view
 		$report_layout = $this->add('View');
 
-		if($_GET['show_report'] OR !count($ask_variables[1])){
+		// OR !count($ask_variables[1])
+		if($_GET['show_report']){
 
 			$this->reportfunctionValue = $this->app->recall('reportfunctionValue');
 			$this->app->forget('reportfunctionValue');
@@ -116,11 +117,38 @@ class page_report_executer extends page_report{
 					$field->set($this->reportfunctionValue[$nor_name]);
 			}
 
+			$config_date = ['FY_Start','FY_End','Current_Month_Start','Current_Month_End'];
+			
+			$config_model = $this->add('xepan\base\Model_ConfigJsonModel',
+				        [
+				            'fields'=>[
+				                        'FY_Start'=>'DatePicker',
+				                        'FY_End'=>'DatePicker',
+				                        'Current_Month_Start'=>'DatePicker',
+				                        'Current_Month_End'=>'DatePicker',
+				                        ],
+				                'config_key'=>'Accounts_Report_Config_Date',
+				                'application'=>'accounts'
+				        ]);
+        	$config_model->tryLoadAny();
+
+			foreach ($config_date as $field_name) {
+				$field = $form->addField('DatePicker',$field_name)->validate('required');
+				if(isset($config_model[$field_name]))
+					$field->set($config_model[$field_name]);
+			}
+
 			$form->addSubmit('Next');
 			if($form->isSubmitted()){
 				foreach ($form->getAllFields() as $key => $value) {
 					$this->reportfunctionValue[$key] = $value;
 				}
+
+				// save config dates
+				foreach ($config_date as $field_name) {
+					$config_model[$field_name] = $form[$field_name];
+				}
+				$config_model->save();
 
 				$this->app->memorize('reportfunctionValue',$this->reportfunctionValue);
 				$js = [

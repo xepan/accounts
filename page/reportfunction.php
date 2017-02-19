@@ -56,8 +56,26 @@ class page_reportfunction extends \xepan\base\Page
 		$ledger_value_field->setModel($ledger_model);
 		$ledger_value_field->setEmptyText("Please Select Ledger");
 
-		$form->addField('DatePicker','start_date');
-		$form->addField('DatePicker','end_date');
+		$start_date_field = $form->addField('DropDown','start_date');
+		$start_date_field->setValueList([
+									'FYStart'=>'FYStart',
+									'PreviousFYStart'=>"PreviousFYStart",
+									'CurrentMonthStart'=>"CurrentMonthStart",
+									'PreviousMonthStart'=>"PreviousMonthStart",
+									'CustomDate'=>'CustomDate'
+								]);
+		$custom_start_date_field = $form->addField('DatePicker','custom_start_date');
+
+		$end_date_field = $form->addField('DropDown','end_date');
+		$end_date_field->setValueList([
+									'FYEnd'=>'FYEnd',
+									'PreviousFYEnd'=>"PreviousFYEnd",
+									'CurrentMonthEnd'=>"CurrentMonthEnd",
+									'PreviousMonthEnd'=>"PreviousMonthEnd",
+									'CustomDate'=>'CustomDate'
+								]);
+		$custom_end_date_field = $form->addField('DatePicker','custom_end_date');
+
 		$form->addSubmit('Save');
 
 		$type_field->js(true)->univ()->bindConditionalShow([
@@ -80,6 +98,13 @@ class page_reportfunction extends \xepan\base\Page
 
 			],'div.atk-form-row');
 
+		$start_date_field->js(true)->univ()->bindConditionalShow([
+				'CustomDate'=>['custom_start_date']
+			],'div.atk-form-row');
+		
+		$end_date_field->js(true)->univ()->bindConditionalShow([
+				'CustomDate'=>['custom_end_date']
+			],'div.atk-form-row');
 
 		$rf_model = $this->add('xepan\accounts\Model_ReportFunction');
 		$rf_model->setOrder('name','asc');
@@ -107,8 +132,15 @@ class page_reportfunction extends \xepan\base\Page
 			$rf_model['group_id'] = $form['group_value'];
 			$rf_model['head_id'] = $form['head_value'];
 			$rf_model['ledger_id'] = $form['ledger_value'];
+
 			$rf_model['start_date'] = $form['start_date'];
+			if($form['start_date'] == "customDate")
+				$rf_model['start_date'] = $form['custom_start_date'];
+
 			$rf_model['end_date'] = $form['end_date'];
+			if($form['end_date'] == "customDate")
+				$rf_model['end_date'] = $form['custom_end_date'];
+
 			$rf_model->save();
 
 			$js=[	
