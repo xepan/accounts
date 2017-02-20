@@ -32,7 +32,7 @@ class page_report_executer extends page_report{
 
 		// OR !count($ask_variables[1])
 		if($_GET['show_report']){
-
+			
 			$this->reportfunctionValue = $this->app->recall('reportfunctionValue');
 			$this->app->forget('reportfunctionValue');
 
@@ -112,7 +112,7 @@ class page_report_executer extends page_report{
 			}
 			$report_layout->setHtml($layout);
 
-		}elseif(count($ask_variables[1])){
+		}else{
 
 			$form = $this->add('Form');
 			foreach ($ask_variables[1] as $key => $name) {
@@ -136,7 +136,7 @@ class page_report_executer extends page_report{
 				                'application'=>'accounts'
 				        ]);
         	$config_model->tryLoadAny();
-
+        	
 			foreach ($config_date as $field_name) {
 				$field = $form->addField('DatePicker',$field_name)->validate('required');
 				if(isset($config_model[$field_name]))
