@@ -167,6 +167,40 @@ class page_reportfunction extends \xepan\base\Page
 			$list_of_field = $form->getElement('list_of');
 			$under_field = $form->getElement('under');
 
+			$list_of_field->js('change',$under_field->js()->reload(null,null,[$this->app->url(null,['cut_object'=>$under_field->name]),'list_of'=>$list_of_field->js()->val()]));
+
+			if($_GET['list_of']){
+				switch ($_GET['list_of']) {
+					case 'Ledger':
+						$under_field->setValueList(
+								[
+									'Group'=>'Group',
+									'GroupOnly'=>'GroupOnly',
+									'Head'=>'Head'
+								]);
+						break;
+
+					case 'Group':
+						$under_field->setValueList(
+								[
+									'Group'=>'Group',
+									'GroupOnly'=>'GroupOnly',
+									'Head'=>'Head'
+								]);
+						break;
+
+					case 'Transaction':
+						$under_field->setValueList(
+								[
+									'Group'=>'Group',
+									'GroupOnly'=>'GroupOnly',
+									'Head'=>'Head',
+									'Ledger'=>'Ledger'
+								]);
+						break;
+				}
+			}
+
 			$under_field->js(true)->univ()->bindConditionalShow([
 					'Group'=>['group_id'],
 					'GroupOnly'=>['group_id'],

@@ -22,6 +22,7 @@ class page_report_executer extends page_report{
 
 		$layout = $rl_model['layout'];
 
+
 		// ask variable from customer
 		$ask_variables=[];
 		preg_match_all('^\?\((.*?)\)^', $layout, $ask_variables);
@@ -34,6 +35,9 @@ class page_report_executer extends page_report{
 
 			$this->reportfunctionValue = $this->app->recall('reportfunctionValue');
 			$this->app->forget('reportfunctionValue');
+
+			// solving loop values
+			$layout = $this->implementLoopFunction($layout);
 
 			// replacing ask values with input values
 			foreach($ask_variables[1] as $key => $name) {
@@ -108,10 +112,6 @@ class page_report_executer extends page_report{
 			}
 			$report_layout->setHtml($layout);
 
-			// echo "<pre>";
-			// print_r($this->reportfunctionValue);
-			// echo "</pre>";
-
 		}elseif(count($ask_variables[1])){
 
 			$form = $this->add('Form');
@@ -156,12 +156,46 @@ class page_report_executer extends page_report{
 				$config_model->save();
 
 				$this->app->memorize('reportfunctionValue',$this->reportfunctionValue);
-				$js = [
-						$report_layout->js()->reload(['show_report'=>1]),
-						$form->js()->hide()
-					];
-				$form->js(null,$js)->execute();
+				// $js = [
+				// 		$report_layout->js()->reload(['show_report'=>1]),
+				// 		$form->js()->hide()
+				// 	];
+				// $form->js(null,$js)->execute();
+				$this->app->redirect($this->app->url(null,['show_report'=>1]));
 			}
 		}
+	}
+
+	function implementLoopFunction($layout){
+
+		// preg match string
+		// [[loop:Loop1:Name = {$name} Type = {$ledger_type}]]
+		preg_match_all('^\[\[loop(.*?)\]\]^', $layout, $matches);
+		
+		foreach ($matches[1] as $key => $loop_str) {
+
+			$temp_array = explode(":", $loop_str);
+			$loop_function = $temp_array[1];
+			$loop_template = $temp_array[2];
+			
+			$loop_model = $this->add('xepan\accounts\Model_ReportLoop');
+			$loop_model->addCondition('name',$loop_function);
+			$loop_model->tryLoadany();
+			if(!$loop_model->loaded())
+				throw new \Exception("Report Funciton Loop named ".$loop_function." not defined");
+			
+			$list_model = $loop_model->getListModel();
+
+			$loop_template = '{rows}{row}'.$loop_template.'{/row}{/rows}';
+			$temp = $this->app->add('GiTemplate');
+			$temp->loadTemplateFromString($loop_template);
+
+			$lister = $this->app->add('CompleteLister',null,null,$temp);
+			$lister->setModel($list_model);
+
+			$layout = str_replace($matches[0][0], $lister->getHtml(), $layout);
+		}
+
+		return $layout;
 	}
 }
