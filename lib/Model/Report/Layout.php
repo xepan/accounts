@@ -11,6 +11,6 @@ class Model_Report_Layout extends \xepan\base\Model_Table {
 		parent::init();
 
 		$this->addField('name');
-		$this->addField('layout')->caption('Report Content')->type('text')->display(['form'=>'xepan\accounts\ReportRichText']);
+		$this->addField('layout')->caption('Report Content')->type('text')->display(['form'=>'xepan\base\RichText']);
 	}
 }

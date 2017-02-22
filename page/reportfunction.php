@@ -167,7 +167,7 @@ class page_reportfunction extends \xepan\base\Page
 			$list_of_field = $form->getElement('list_of');
 			$under_field = $form->getElement('under');
 
-			$list_of_field->js('change',$under_field->js()->reload(null,null,[$this->app->url(null,['cut_object'=>$under_field->name]),'list_of'=>$list_of_field->js()->val()]));
+			// $list_of_field->js('change',$under_field->js()->reload(null,null,[$this->app->url(null,['cut_object'=>$under_field->name]),'list_of'=>$list_of_field->js()->val()]));
 
 			if($_GET['list_of']){
 				switch ($_GET['list_of']) {
