@@ -38,7 +38,7 @@ class page_report_executer extends page_report{
 
 			// solving loop values
 			$layout = $this->implementLoopFunction($layout);
-
+			
 			// replacing ask values with input values
 			foreach($ask_variables[1] as $key => $name) {
 				$nor_name = $this->app->normalizeName($name);
@@ -172,6 +172,11 @@ class page_report_executer extends page_report{
 		// [[loop:Loop1:Name = {$name} Type = {$ledger_type}]]
 		preg_match_all('^\[\[loop(.*?)\]\]^', $layout, $matches);
 		
+		// echo "<pre>";
+		// print_r($matches);
+		// echo "</pre>";
+
+
 		foreach ($matches[1] as $key => $loop_str) {
 
 			$temp_array = explode(":", $loop_str);
@@ -186,14 +191,17 @@ class page_report_executer extends page_report{
 			
 			$list_model = $loop_model->getListModel();
 
+			$controller = $this->add('AbstractController');
+
 			$loop_template = '{rows}{row}'.$loop_template.'{/row}{/rows}';
-			$temp = $this->app->add('GiTemplate');
+			$temp = $controller->add('GiTemplate');
 			$temp->loadTemplateFromString($loop_template);
 
-			$lister = $this->app->add('CompleteLister',null,null,$temp);
+			$lister = $controller->add('CompleteLister',null,null,$temp);
 			$lister->setModel($list_model);
 
-			$layout = str_replace($matches[0][0], $lister->getHtml(), $layout);
+			$layout = str_replace($matches[0][$key], $lister->getHtml(), $layout);
+			$lister->destroy();
 		}
 
 		return $layout;

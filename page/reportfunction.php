@@ -110,6 +110,7 @@ class page_reportfunction extends \xepan\base\Page
 			],'div.atk-form-row');
 
 		$rf_model = $fun_tab->add('xepan\accounts\Model_ReportFunction');
+		$rf_model->addCondition('list_of',null);
 		$rf_model->setOrder('name','asc');
 		$crud = $fun_tab->add('CRUD',['allow_add'=>false,'allow_edit'=>false]);
 		$crud->setModel($rf_model);
