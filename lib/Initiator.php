@@ -66,6 +66,9 @@ class Initiator extends \Controller_Addon {
 			$transacton = $this->add('xepan\accounts\Model_Transaction');	
 			$this->app->addHook('salary_sheet_approved',[$transacton,'updateSalaryTransaction']);
 			$this->app->addHook('salary_sheet_canceled',[$transacton,'deleteSalaryTransaction']);
+			//Reimbursement Updation
+			$this->app->addHook('reimbursement_approved',[$transacton,'updateReimbursementTransaction']);
+			$this->app->addHook('reimbursement_canceled',[$transacton,'deleteReimbursementTransaction']);
 		}
 
 		$search_ledger = $this->add('xepan\accounts\Model_Ledger');

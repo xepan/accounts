@@ -502,4 +502,47 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 	}
 
+	function updateReimbursementTransaction($app,$rimbursement_model){		
+		if(!$rimbursement_model->loaded() AND !($rimbursement_model instanceof \xepan\hr\Model_Reimbursement))
+			throw new \Exception("must pass Rimbursement Model loaded model", 1);	
+		
+		if(!in_array($rimbursement_model['status'], ['Approved','Paid']))			
+			return;
+
+		$new_transaction = $this->add('xepan\accounts\Model_Transaction');
+		$new_transaction->createNewTransaction("Reimbursement",$rimbursement_model,$rimbursement_model['created_at'],'Reimbursement To Employees',$this->app->epan->default_currency,1.00,$rimbursement_model['id'],'xepan\hr\Model_Reimbursement');
+
+		//DR
+		//Load Party Ledger
+		$employee_ledger = $this->add('xepan\hr\Model_Employee')->load($rimbursement_model['employee_id'])->ledger();
+		$new_transaction->addCreditLedger($employee_ledger,$rimbursement_model['amount'],$this->app->epan->default_currency);
+		
+		//CR
+		//Load Reimbursement To Employees Ledger 
+		$reimbursement_ledger = $this->add('xepan\accounts\Model_Ledger')->load("Reimbursement To Employees");
+		$new_transaction->addDebitLedger($reimbursement_ledger, $rimbursement_model['amount'],$this->app->epan->default_currency);
+		$new_amount = $new_transaction->execute();
+	}
+
+	function deleteReimbursementTransaction($app,$rimbursement_model){
+		if(!$rimbursement_model->loaded() AND !($rimbursement_model instanceof \xepan\hr\Model_Reimbursement))
+			throw new \Exception("must pass Rimbursement Model loaded model", 1);	
+
+		$old_transaction = $this->add('xepan\accounts\Model_Transaction');
+		$old_transaction->addCondition('related_id',$rimbursement_model->id);
+		$old_transaction->addCondition('related_type',"xepan\hr\Model_Reimbursement");
+		
+		// For avoid the cash & bank type of transaction 
+		$old_transaction->addCondition('transaction_template_id',null);
+
+		$old_amount = 0;
+		$old_transaction->tryLoadAny();
+		if($old_transaction->loaded()){
+			$old_amount = $old_transaction['cr_sum_exchanged'];
+			$old_transaction->deleteTransactionRow();
+			$old_transaction->delete();
+		}
+		return $old_amount;
+	}
+
 }
