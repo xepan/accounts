@@ -118,7 +118,16 @@ class Initiator extends \Controller_Addon {
     }
 
     function exportEntities($app,&$array){
+        $array['Currency'] = ['caption'=>'Currency', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_Currency'];
         $array['ledger'] = ['caption'=>'Ledger', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_Ledger'];
+        $array['EntryTemplate'] = ['caption'=>'EntryTemplate', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_EntryTemplate'];
+        $array['Transaction'] = ['caption'=>'Transaction', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_Transaction'];
+        $array['FIRM_DEFAULT_CURRENCY_ID'] = ['caption'=>'FIRM_DEFAULT_CURRENCY_ID', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_FIRM_DEFAULT_CURRENCY_ID'];
+        $array['ACCOUNTS_DAILY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_DAILY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_DAILY_REPORT_AUTO_NOTIFICATION'];
+        $array['ACCOUNTS_WEEKLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_WEEKLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_WEEKLY_REPORT_AUTO_NOTIFICATION'];
+        $array['ACCOUNTS_MONTHLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_MONTHLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_MONTHLY_REPORT_AUTO_NOTIFICATION'];
+        $array['ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION'];
+        $array['ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION'];
     }
 
 	function addAppdateFunctions(){
