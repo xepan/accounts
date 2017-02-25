@@ -110,6 +110,7 @@ class page_reportfunction extends \xepan\base\Page
 			],'div.atk-form-row');
 
 		$rf_model = $fun_tab->add('xepan\accounts\Model_ReportFunction');
+		$rf_model->addCondition('list_of',null);
 		$rf_model->setOrder('name','asc');
 		$crud = $fun_tab->add('CRUD',['allow_add'=>false,'allow_edit'=>false]);
 		$crud->setModel($rf_model);
@@ -167,7 +168,7 @@ class page_reportfunction extends \xepan\base\Page
 			$list_of_field = $form->getElement('list_of');
 			$under_field = $form->getElement('under');
 
-			$list_of_field->js('change',$under_field->js()->reload(null,null,[$this->app->url(null,['cut_object'=>$under_field->name]),'list_of'=>$list_of_field->js()->val()]));
+			// $list_of_field->js('change',$under_field->js()->reload(null,null,[$this->app->url(null,['cut_object'=>$under_field->name]),'list_of'=>$list_of_field->js()->val()]));
 
 			if($_GET['list_of']){
 				switch ($_GET['list_of']) {
