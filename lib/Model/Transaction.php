@@ -512,12 +512,12 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$new_transaction = $this->add('xepan\accounts\Model_Transaction');
 		$new_transaction->createNewTransaction("Reimbursement",$rimbursement_model,$rimbursement_model['created_at'],'Reimbursement To Employees',$this->app->epan->default_currency,1.00,$rimbursement_model['id'],'xepan\hr\Model_Reimbursement');
 
-		//DR
+		//CR
 		//Load Party Ledger
 		$employee_ledger = $this->add('xepan\hr\Model_Employee')->load($rimbursement_model['employee_id'])->ledger();
 		$new_transaction->addCreditLedger($employee_ledger,$rimbursement_model['amount'],$this->app->epan->default_currency);
 		
-		//CR
+		//DR
 		//Load Reimbursement To Employees Ledger 
 		$reimbursement_ledger = $this->add('xepan\accounts\Model_Ledger')->load("Reimbursement To Employees");
 		$new_transaction->addDebitLedger($reimbursement_ledger, $rimbursement_model['amount'],$this->app->epan->default_currency);
@@ -531,18 +531,49 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$old_transaction = $this->add('xepan\accounts\Model_Transaction');
 		$old_transaction->addCondition('related_id',$rimbursement_model->id);
 		$old_transaction->addCondition('related_type',"xepan\hr\Model_Reimbursement");
-		
-		// For avoid the cash & bank type of transaction 
-		$old_transaction->addCondition('transaction_template_id',null);
 
-		$old_amount = 0;
-		$old_transaction->tryLoadAny();
-		if($old_transaction->loaded()){
-			$old_amount = $old_transaction['cr_sum_exchanged'];
+		foreach ($old_transaction as $trans) {
 			$old_transaction->deleteTransactionRow();
 			$old_transaction->delete();
 		}
-		return $old_amount;
+		return true;
+	}
+
+	function updateDeductionTransaction($app,$deduction_model){		
+		if(!$deduction_model->loaded() AND !($deduction_model instanceof \xepan\hr\Model_Deduction))
+			throw new \Exception("must pass Rimbursement Model loaded model", 1);	
+		
+		if(!in_array($deduction_model['status'], ['Approved','Recieved']))			
+			return;
+
+		$new_transaction = $this->add('xepan\accounts\Model_Transaction');
+		$new_transaction->createNewTransaction("Deduction",$deduction_model,$deduction_model['created_at'],'Deduction From Employees',$this->app->epan->default_currency,1.00,$deduction_model['id'],'xepan\hr\Model_Deduction');
+
+		//CR
+		//Load Deduction From Employees Ledger 
+		$deduction_ledger = $this->add('xepan\accounts\Model_Ledger')->load("Deduction From Employees");
+		$new_transaction->addCreditLedger($deduction_ledger, $deduction_model['amount'],$this->app->epan->default_currency);
+		
+		//DR
+		//Load Party Ledger
+		$employee_ledger = $this->add('xepan\hr\Model_Employee')->load($deduction_model['employee_id'])->ledger();
+		$new_transaction->addDebitLedger($employee_ledger,$deduction_model['amount'],$this->app->epan->default_currency);
+		$new_amount = $new_transaction->execute();
+	}
+
+	function deleteDeductionTransaction($app,$deduction_model){
+		if(!$deduction_model->loaded() AND !($deduction_model instanceof \xepan\hr\Model_Deduction))
+			throw new \Exception("must pass Deduction Model loaded model", 1);	
+
+		$old_transaction = $this->add('xepan\accounts\Model_Transaction');
+		$old_transaction->addCondition('related_id',$deduction_model->id);
+		$old_transaction->addCondition('related_type',"xepan\hr\Model_Deduction");
+		
+		foreach ($old_transaction as $trans) {
+			$old_transaction->deleteTransactionRow();
+			$old_transaction->delete();
+		}
+		return true;
 	}
 
 }
