@@ -16,7 +16,11 @@ class page_accounttransactionexecuter extends \xepan\base\Page{
 		
 		$this->title = $model['name'];
 
-		$model->manageForm($this);
+		// $model->manageForm($this);
 
+
+		$model = $this->add('xepan\accounts\Model_Transaction')->load(807);
+		$widget = $this->add('xepan\accounts\View_TransactionWidget');
+		$widget->setModel($model);
 	}
 }	

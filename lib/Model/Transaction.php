@@ -576,4 +576,45 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return true;
 	}
 
+
+	// used for transaction widget
+	function populatePreFilledValues(){
+		if(!$this->loaded()) throw new \Exception(" transaction model must loaded");
+		
+        // self tranasction pre load
+        $pre_filled_values=[];
+        foreach ($this->ref('TransactionRows') as $transaction_row) {
+            $tr_no=$this['transaction_type'];
+            $pre_filled_values[$tr_no][$transaction_row->id]=[
+            							'code'=>$transaction_row['code'],
+                                        'ledger'=>$transaction_row['ledger_id'],
+                                        'amount'=>$transaction_row['_amountCr']?:$transaction_row['_amountDr'],
+                                        'currency'=>$transaction_row['currency_id'],
+                                        'exchange_rate'=>$transaction_row['exchange_rate'],
+                                        'side'=>$transaction_row['side']
+                                    ];
+        }
+
+        $related_transactions = $this->add('xepan\accounts\Model_Transaction')
+                                    ->addCondition('related_transaction_id',$this->id)
+                                    ->setOrder('id')
+                                    ;
+        foreach ($related_transactions  as $tr) {
+            $tr_no = $tr['transaction_type'];
+            foreach ($tr->ref('TransactionRows') as $transaction_row) {
+                $pre_filled_values[$tr_no][$transaction_row->id]=[    
+                                            'code'=>$transaction_row['code'],
+                                            'ledger'=>$transaction_row['ledger_id'],
+                                            'amount'=>$transaction_row['_amountCr']?:$transaction_row['_amountDr'],
+                                            'currency'=>$transaction_row['currency_id'],
+                                            'exchange_rate'=>$transaction_row['exchange_rate'],
+                                            'side'=>$transaction_row['side'],
+                                        ];
+            }
+        }
+
+        return $pre_filled_values;
+
+    }
+
 }
