@@ -64,10 +64,12 @@ class View_TransactionWidget extends \View {
 		// echo "<pre>";
 		// print_r($this->entry_tran_data);
 		// echo "</pre>";
+		$this->js(true)->_load('jquery.livequery');
+
 		$json_data = json_encode($this->entry_tran_data);
 		$this->js(true)
 					->_load('xepan_accounts_transaction_executer')
-					->transaction_executer(['entry_template'=>$json_data]);
+					->transaction_executer(['entry_template'=>$json_data,'transaction_name']);
 		parent::render();
 	}
 
