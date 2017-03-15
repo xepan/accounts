@@ -1,13 +1,17 @@
 jQuery.widget("ui.transaction_executer", {
 	selectorHeader:'.transaction-header',
+	selectorFooter:'.transaction-footer',
 	selectorLeftSide:'.transaction-left-side',
 	selectorRightSide:'.transaction-right-side',
 	selectorLedger:'.tr-row-ledger',
 	ledger_ajax_url:'index.php?page=xepan_accounts_transactionwidget_ledger',
+	save_ajax_url:'index.php?page=xepan_accounts_transactionwidget_save',
 	selectorAmount:'.tr-row-amount',
 	selectorLeftSideRow:'.tr-row.DR',
 	selectorRightSideRow:'.tr-row.CR',
 	selectorExchangeRate:'.tr-row-exchange-rate',
+	left_sum:0,
+	right_sum:0,
 
 	options:{
 		entry_template:{
@@ -23,7 +27,7 @@ jQuery.widget("ui.transaction_executer", {
 		self.loadData();
 		self.headerBalance();
 		self.addLiveEvents();
-
+		self.doCalc();
 	},
 
 	loadData: function(){
@@ -31,6 +35,7 @@ jQuery.widget("ui.transaction_executer", {
 
 		this.section = this.element;
 		self.header = $(this.element).find(self.selectorHeader);
+		self.footer = $(this.element).find(self.selectorFooter);
 		self.left_side = $(this.element).find(self.selectorLeftSide);
 		self.right_side = $(this.element).find(self.selectorRightSide);
 
@@ -39,10 +44,37 @@ jQuery.widget("ui.transaction_executer", {
 		$.each(entry_data,function(tr_id,transaction_data){
 			// set header values
 			self.header.find('.transaction-name').html(transaction_data.name);
+			
+			// date picker
+			
+				// <div>
+				// <div class="input-group">
+				// 	<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+				// 	<input class="form-control" id="datepickerDate" type="text">
+				// </div>
+				// </div>
+			var date_picker_wrapper = $('<div class="form-group main-box">').appendTo(self.header);
+			$('<label for="datepickerDate">Date</label>').appendTo(date_picker_wrapper);
+			var date_picker_group = $('<div class="input-group">').appendTo(date_picker_wrapper);
+			$('<span class="input-group-addon"><i class="fa fa-calendar"></i></span>').appendTo(date_picker_group)
+
+			self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date" />').appendTo(date_picker_group);
+			
+			$(self.transaction_date).datepicker({});
+			//narration
+			var narration_field = [
+								'<div class="form-group">',
+									'<label for="'+tr_id+'">Narration</label>',
+									'<textarea class="form-control" id="'+tr_id+'" rows="3">'+transaction_data.narration+'</textarea>',
+								'</div>',
+								].join("");
+			$(narration_field).appendTo(self.footer);
 
 			$.each(transaction_data.rows,function(tr_row_id,row_data){
 				self.addRow(row_data);
 			});
+			
+			self.saveButton = $('<div class="btn btn-primary btn-block transaction-save">Save</div>').appendTo(self.footer);
 		});
 	},
 
@@ -88,6 +120,8 @@ jQuery.widget("ui.transaction_executer", {
 
 		var row_html = [
 						'<div class="well tr-row '+row_data.side+'" data-ledger_name="'+row_data.ledger_name+'" data-title="'+row_data.title+'" data-code="'+row_data.code+'" data-side="'+row_data.side+'" data-group="'+row_data.group+'" data-balance_sheet="'+row_data.balance_sheet+'" data-parent_group="'+row_data.parent_group+'" data-ledger="'+row_data.ledger+'" data-ledger_type="'+row_data.ledger_type+'" data-is_ledger_changable="'+row_data.is_ledger_changable+'" data-is_allow_add_ledger="'+row_data.is_allow_add_ledger+'" data-is_include_currency="'+row_data.is_include_currency+'" data-entry_template_id="'+row_data.entry_template_id+'" data-amount="'+row_data.amount+'" data-currency="'+row_data.currency+'" data-exchange_rate="'+row_data.exchange_rate+'" >',
+						'<div class="tr-row-duplicate btn btn-primary"><i class="fa fa-copy"></i></div>',						
+						'<div class="tr-row-remove btn btn-danger"><i class="fa fa-trash"></i></div>',						
 						'<div class="row">',
 							'<div class="col-md-8 col-sm-8 col-lg-8 col-xs-8">',
 								'<div class="form-group">',
@@ -192,10 +226,98 @@ jQuery.widget("ui.transaction_executer", {
 		$(self.selectorAmount).livequery(function(){
 			
 			$(this).keyup(function(e){
-				self.left_sum=0;
-				self.right_sum=0;
 				self.doCalc();
-				self.showOutput();
+			});
+
+		});
+
+		// duplicate options
+		$('.tr-row-duplicate').livequery(function(){
+			$(this).click(function(e){
+				var current_row = $(this).closest('.tr-row');
+				var new_row = $(current_row).clone();
+				$(new_row).insertAfter(current_row);
+				$(new_row).attr('data-ledger_name',"");
+				
+				$(new_row).find(self.selectorAmount).val(0);
+				$(new_row).find(self.selectorLedger).val("");
+				$(new_row).find('.tr-row-currency').val(0);
+				$(new_row).find('.tr-row-exchange-rate').val(1);
+
+				self.doCalc();
+			});
+			
+		});
+
+		$('.tr-row-remove').livequery(function(){
+			$(this).click(function(e){
+				$(this).closest('.tr-row').remove();
+				self.doCalc();
+			});
+			
+		});
+
+		// save button
+		$('.transaction-save').livequery(function(){
+			$(this).click(function(e){
+				var data_object = {};
+				var entry_temp_data = JSON.parse(self.options.entry_template);
+				$.each(entry_temp_data,function(entry_tr_id,entry_data){
+					var temp = {};
+					temp.entry_template_transaction_id = entry_data.entry_template_transaction_id;
+					temp.name = entry_data.name;
+					temp.type = entry_data.type;
+					temp.is_system_default = entry_data.is_system_default;
+					temp.editing_transaction_id = entry_data.editing_transaction_id;
+					
+					data_object[entry_tr_id] = temp;
+					
+					var all_row_data = {};
+					var count = 0
+					$(self.element).find('.tr-row').each(function(index,obj){
+						var one_row_data = {};
+						$($(obj)[0].attributes).each(function() {
+							attr_name = this.nodeName;
+							attr_value = this.nodeValue;
+							one_row_data[attr_name] = attr_value;
+						});
+						
+					
+						//replace selected values
+						// amount
+						one_row_data['data-amount'] = ($(this).find(self.selectorAmount).val())?($(this).find(self.selectorAmount).val()):0;
+						
+						// ledger
+						if($(this).find('.tr-row-ledger').val())
+							one_row_data['data-ledger'] = $(this).find('.tr-row-ledger').val();
+						
+						//currency
+						if($(this).find('.tr-row-currency').val())
+							one_row_data['data-currency'] = $(this).find('.tr-row-ledger').val();
+
+						//exchange rate
+						if($(this).find('.tr-row-exchange-rate').val())
+							one_row_data['data-exchange_rate'] = $(this).find('.tr-row-exchange-rate').val();
+
+						all_row_data[count] = one_row_data;
+						count++;
+					});
+
+					data_object[entry_tr_id].rows = all_row_data;
+				});
+				
+				// calling save page
+				$.ajax({
+					url: self.save_ajax_url,					
+					type: 'POST',
+					datatype:'json',
+					data: {
+						transaction_data: JSON.stringify(data_object)
+					}
+				}).done(function(ret){
+					// console.log(ret);
+				});
+				
 			});
 
 		});
@@ -203,6 +325,8 @@ jQuery.widget("ui.transaction_executer", {
 
 	doCalc: function(){
 		var self = this;
+		self.left_sum = 0;
+		self.right_sum = 0;
 		// IF any row has exchange_rate take amount* exchange_rate as final amount for that row
 		$(self.element).find(self.selectorLeftSideRow).each(function(index,obj){
 
@@ -218,6 +342,7 @@ jQuery.widget("ui.transaction_executer", {
 			}
 		});
 
+
 		// left side
 		$(self.element).find(self.selectorRightSideRow).each(function(index,obj){
 			if(isNumber($(obj).find(self.selectorAmount).val())){
@@ -231,6 +356,10 @@ jQuery.widget("ui.transaction_executer", {
 				self.right_sum += amount;
 			}
 		});
+
+		// console.log("left sum"+self.left_sum);
+		// console.log("left sum"+self.right_sum);
+		self.showOutput();
 	},
 
 	showOutput: function(){

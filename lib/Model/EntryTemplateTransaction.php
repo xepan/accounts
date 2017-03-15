@@ -48,6 +48,7 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 		$entry_tran_data['name'] = $this['name'];
 		$entry_tran_data['type'] = $this['type'];
 		$entry_tran_data['is_system_default'] = $this['is_system_default'];
+		$entry_tran_data['editing_transaction_id'] = 0;
 		
 
 		$entry_tran_data['rows'] = [];
