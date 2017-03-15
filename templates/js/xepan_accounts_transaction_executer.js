@@ -102,7 +102,7 @@ jQuery.widget("ui.transaction_executer", {
 							'<div class="col-md-8 col-sm-8 col-lg-8 col-xs-8">',
 								'<div class="input-group">',
 									'<label>Currency Name</label>',
-	          						'<select data-field="tr-row-currency" class="tr-row-currency">',
+	          						'<select data-field="tr-row-currency" class="tr-row-currency tra-form-field">',
 	          						' '+currency_options,
 	          						'</select>',
 								'</div>',
@@ -110,7 +110,7 @@ jQuery.widget("ui.transaction_executer", {
 							'<div class="col-md-4 col-sm-4 col-lg-4 col-xs-4">',
 								'<div class="form-group">',
 									'<label>Currency Rate</label>',
-									'<input data-field="tr-row-exch-currency-rate" class="tr-row-exchange-rate" placeholder="currency rate" value="'+row_data.exchange_rate+'" />',
+									'<input data-field="tr-row-exch-currency-rate" class="tr-row-exchange-rate tra-form-field" placeholder="currency rate" value="'+row_data.exchange_rate+'" />',
 								'</div>',
 							'</div>',
 						'</div>',
@@ -127,7 +127,7 @@ jQuery.widget("ui.transaction_executer", {
 								'<div class="form-group">',
 									'<label>'+row_data.title+'</label>',
 									'<div class="input-group" style="width:100%;">',
-		          						'<input type="text" data-field="tr-row-ledger" placeholder="select ledger" class="tr-row-ledger ui-autocomplete-input form-control"/>',
+		          						'<input type="text" data-field="tr-row-ledger" placeholder="select ledger" class="tr-row-ledger ui-autocomplete-input form-control tra-form-field"/>',
 										' '+str_plus,
 									'</div>',
 								'</div>',
@@ -135,7 +135,7 @@ jQuery.widget("ui.transaction_executer", {
 							'<div class="col-md-4 col-sm-4 col-lg-4 col-xs-4">',
 								'<div class="form-group">',
 									'<label>Amount</label>',
-									'<input class="tr-row-amount" data-field="tr-row-amount" placeholder="amount" value="'+((row_data.amount)?(row_data.amount):0)+'" />',
+									'<input class="tr-row-amount tra-form-field" data-field="tr-row-amount" placeholder="amount" value="'+((row_data.amount)?(row_data.amount):0)+'" />',
 								'</div>',
 							'</div>',
 						'</div>',
@@ -249,6 +249,7 @@ jQuery.widget("ui.transaction_executer", {
 			
 		});
 
+		// tr-row-remove
 		$('.tr-row-remove').livequery(function(){
 			$(this).click(function(e){
 				$(this).closest('.tr-row').remove();
@@ -257,11 +258,26 @@ jQuery.widget("ui.transaction_executer", {
 			
 		});
 
+		// tr-error-box remove
+		// Remove Error Box after change
+		$('.tra-form-field').livequery(function(){
+			$(this).change(function(){
+				$(this).closest('.form-group')
+					.find('.error-message')
+					.remove()
+					;
+				$(this).removeClass('tra-field-error');
+			});
+		});
+
 		// save button
 		$('.transaction-save').livequery(function(){
+
 			$(this).click(function(e){
 				var data_object = {};
 				var entry_temp_data = JSON.parse(self.options.entry_template);
+					
+				var all_clear = true;
 				$.each(entry_temp_data,function(entry_tr_id,entry_data){
 					var temp = {};
 					temp.entry_template_transaction_id = entry_data.entry_template_transaction_id;
@@ -276,6 +292,32 @@ jQuery.widget("ui.transaction_executer", {
 					var count = 0
 					$(self.element).find('.tr-row').each(function(index,obj){
 						var one_row_data = {};
+
+						$ledger = $(this).find('.tr-row-ledger');
+						$amount = $(this).find('.tr-row-amount');
+						
+						var ledger_value = $ledger.val();
+						var amount_value = $amount.val();
+
+						// alert(ledger_value+" = "+amount_value);
+						if( (ledger_value == "" || ledger_value == null || ledger_value == undefined) && amount_value > 0){
+							
+							$ledger.addClass('tra-field-error');
+							$ledger.closest('.form-group').find('.error-message').remove();
+							$('<div class="error-message">please select ledger </div>').appendTo($ledger.closest('.form-group'));
+							
+							if(all_clear) all_clear = false;
+							return false;
+						}
+
+						if(
+							(ledger_value == "" || ledger_value == null || ledger_value == undefined)
+							&&
+							(amount_value == "" || amount_value == null || amount_value == undefined)
+						){
+							return true;
+						}
+
 						$($(obj)[0].attributes).each(function() {
 							attr_name = this.nodeName;
 							attr_value = this.nodeValue;
@@ -304,8 +346,11 @@ jQuery.widget("ui.transaction_executer", {
 					});
 
 					data_object[entry_tr_id].rows = all_row_data;
-				});
+				});			
 				
+				if(!all_clear){
+					return;
+				} 
 				// calling save page
 				$.ajax({
 					url: self.save_ajax_url,					
