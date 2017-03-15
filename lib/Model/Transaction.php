@@ -588,6 +588,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
             $pre_filled_values[$tr_no][$transaction_row->id]=[
             							'code'=>$transaction_row['code'],
                                         'ledger'=>$transaction_row['ledger_id'],
+                                        'ledger_name'=>$transaction_row['ledger'],
                                         'amount'=>$transaction_row['_amountCr']?:$transaction_row['_amountDr'],
                                         'currency'=>$transaction_row['currency_id'],
                                         'exchange_rate'=>$transaction_row['exchange_rate'],
@@ -605,6 +606,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
                 $pre_filled_values[$tr_no][$transaction_row->id]=[    
                                             'code'=>$transaction_row['code'],
                                             'ledger'=>$transaction_row['ledger_id'],
+                                            'ledger_name'=>$transaction_row['ledger'],
                                             'amount'=>$transaction_row['_amountCr']?:$transaction_row['_amountDr'],
                                             'currency'=>$transaction_row['currency_id'],
                                             'exchange_rate'=>$transaction_row['exchange_rate'],

@@ -5,10 +5,15 @@ namespace xepan\accounts;
 class View_TransactionWidget extends \View {
 
 	public $entry_tran_data = [];
-
+	public $currency_list = [];
 	function init(){
 		parent::init();
 		
+		$currency_list = $this->add('xepan\accounts\Model_Currency')->addCondition('status','Active')->getRows();
+		
+		foreach ($currency_list as $key => $value) {
+			$this->currency_list[$value['id']] = $value;	
+		}
 	}
 
 	function setModel($model){
@@ -22,10 +27,6 @@ class View_TransactionWidget extends \View {
             // get prefilled data
 			if($transaction_to_edit->loaded()){
 				$prefilled_data = $transaction_to_edit->populatePreFilledValues();
-				
-				// echo "<pre>";
-				// print_r($prefilled_data);
-				// echo "</pre>";
 			}
 
             if(!$model['transaction_template_id']){
@@ -67,9 +68,18 @@ class View_TransactionWidget extends \View {
 		$this->js(true)->_load('jquery.livequery');
 
 		$json_data = json_encode($this->entry_tran_data);
+		$currency_list = json_encode($this->currency_list);
+
+		// echo "<pre>";
+		// print_r($this->currency_list);
+		// echo "</pre>";
+		// exit;
 		$this->js(true)
 					->_load('xepan_accounts_transaction_executer')
-					->transaction_executer(['entry_template'=>$json_data,'transaction_name']);
+					->transaction_executer([
+										'entry_template'=>$json_data,'transaction_name',
+										'currency_list'=>$currency_list
+										]);
 		parent::render();
 	}
 

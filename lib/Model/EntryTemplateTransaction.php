@@ -48,9 +48,15 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 		$entry_tran_data['name'] = $this['name'];
 		$entry_tran_data['type'] = $this['type'];
 		$entry_tran_data['is_system_default'] = $this['is_system_default'];
-			
+		
+
 		$entry_tran_data['rows'] = [];
 		foreach ($this->ref('xepan\accounts\EntryTemplateTransactionRow') as $row) {
+			$ledger_name = "";
+			if($row['ledger']){
+				$ledger_name = $this->add('xepan\accounts\Model_Ledger')->addCondition('id',$row['ledger'])->tryLoadAny()->get('name');
+			}
+
 			$entry_tran_data['rows'][$row->id] = [];
 			$entry_tran_data['rows'][$row->id]['title'] = $row['title'];
 			$entry_tran_data['rows'][$row->id]['side'] = $row['side'];
@@ -58,6 +64,7 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 			$entry_tran_data['rows'][$row->id]['balance_sheet'] = $row['balance_sheet'];
 			$entry_tran_data['rows'][$row->id]['parent_group'] = $row['parent_group'];
 			$entry_tran_data['rows'][$row->id]['ledger'] = $row['ledger'];
+			$entry_tran_data['rows'][$row->id]['ledger_name'] = $ledger_name;
 			$entry_tran_data['rows'][$row->id]['ledger_type'] = $row['ledger_type'];
 			$entry_tran_data['rows'][$row->id]['is_ledger_changable'] = $row['is_ledger_changable'];
 			$entry_tran_data['rows'][$row->id]['is_allow_add_ledger'] = $row['is_allow_add_ledger'];
