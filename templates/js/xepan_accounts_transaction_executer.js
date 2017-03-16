@@ -58,9 +58,14 @@ jQuery.widget("ui.transaction_executer", {
 			var date_picker_group = $('<div class="input-group">').appendTo(date_picker_wrapper);
 			$('<span class="input-group-addon"><i class="fa fa-calendar"></i></span>').appendTo(date_picker_group)
 
-			self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date" />').appendTo(date_picker_group);
+			self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
 			
-			$(self.transaction_date).datepicker({});
+			$(self.transaction_date).datepicker({dateFormat:'yy-mm-dd'});
+
+			default_date = new Date();
+			if(transaction_data.transaction_date)
+				default_date = transaction_data.transaction_date;
+			$(self.transaction_date).datepicker('setDate',default_date);
 			//narration
 			var narration_field = [
 								'<div class="form-group">',
@@ -142,6 +147,7 @@ jQuery.widget("ui.transaction_executer", {
 									'<input class="tr-row-amount tra-form-field" data-field="tr-row-amount" placeholder="amount" value="'+((row_data.amount)?(row_data.amount):0)+'" />',
 								'</div>',
 							'</div>',
+						'<input class="tr-row-ledger-id" type="hidden" value="'+row_data.ledger+'"/>',
 						'</div>',
 						' '+currency_html,
 						'</div>',
@@ -198,22 +204,8 @@ jQuery.widget("ui.transaction_executer", {
 				    },
 				minLength:1,
 				select: function( event, ui ) {
-				// 	// after select auto fill qty and price
-				console.log(ui.item);
-				// 	// on selct get custom field of item
-				// 	$.ajax({
-				// 		url:self.item_detail_ajax_url,
-				// 		data:{
-				// 			item_id:ui.item.id
-				// 		},
-				// 		success: function( data ) {
-				// 			$tr.find('.item-read-only-custom-field').val(data);
-				// 			self.showCustomFieldForm($tr);
-			 //          	},
-			 //          	error: function(XMLHttpRequest, textStatus, errorThrown) {
-			 //              alert("Error getting prospect list: " + textStatus);
-			 //            }
-					// });
+					$tr = $(this).closest('.tr-row');
+					$tr.find('.tr-row-ledger-id').val(ui.item.id);
 			   },
 			}).val(ledger_name);
 		    // ,funciton(){
@@ -284,6 +276,7 @@ jQuery.widget("ui.transaction_executer", {
 				$.each(entry_temp_data,function(entry_tr_id,entry_data){
 					var temp = {};
 					temp.entry_template_transaction_id = entry_data.entry_template_transaction_id;
+					temp.entry_template_id = entry_data.entry_template_id;
 					temp.name = entry_data.name;
 					temp.type = entry_data.type;
 					temp.is_system_default = entry_data.is_system_default;
@@ -297,6 +290,15 @@ jQuery.widget("ui.transaction_executer", {
 					var count = 0
 					$(self.element).find('.tr-row').each(function(index,obj){
 						var one_row_data = {};
+
+						// transaction date
+						$tran_date = $(self.element).find('#transaction-date');
+						if(!$tran_date.datepicker().val()){
+							// alert($tran_date.datepicker().val());
+							self.showFieldError($tran_date,"please select transaction date");
+							if(all_clear) all_clear = false;
+							return false;
+						}
 
 						$ledger = $(this).find('.tr-row-ledger');
 						$amount = $(this).find('.tr-row-amount');
@@ -353,6 +355,8 @@ jQuery.widget("ui.transaction_executer", {
 							return false;
 						}
 
+	//============== end validation =================================
+
 						// implementing array
 						$($(obj)[0].attributes).each(function() {
 							attr_name = this.nodeName;
@@ -366,8 +370,10 @@ jQuery.widget("ui.transaction_executer", {
 						one_row_data['data-amount'] = ($(this).find(self.selectorAmount).val())?($(this).find(self.selectorAmount).val()):0;
 						
 						// ledger
-						if($(this).find('.tr-row-ledger').val())
-							one_row_data['data-ledger'] = $(this).find('.tr-row-ledger').val();
+						if($(this).find('.tr-row-ledger').val()){
+							one_row_data['data-ledger'] = $(this).find('.tr-row-ledger-id').val();
+							one_row_data['data-ledger_name'] = $(this).find('.tr-row-ledger').val();
+						}
 						
 						//currency
 						if($(this).find('.tr-row-currency').val())
@@ -397,7 +403,12 @@ jQuery.widget("ui.transaction_executer", {
 						transaction_data: JSON.stringify(data_object)
 					}
 				}).done(function(ret){
-					// console.log(ret);
+					if(ret == "success"){
+						$.univ().successMessage('saved successfully');
+					}else{
+						$.univ().errorMessage('something wrong');
+					}
+
 				});
 				
 				// console.log(data_object);
@@ -488,3 +499,13 @@ jQuery.widget("ui.transaction_executer", {
 function isNumber(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
+
+$.ui.autocomplete.prototype._renderItem = function(ul, item){
+
+	return $("<li></li>")
+		.data("item.autocomplete", item)
+		// this is autocomplete list that is generated
+		.append("<a class='item-autocomplete-list'> " + item.name +"</a>")
+		.appendTo(ul)
+		;
+};

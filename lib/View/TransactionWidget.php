@@ -24,6 +24,7 @@ class View_TransactionWidget extends \View {
                 $model  = $model->newInstance()->load($model['related_transaction_id']);
             }
             $transaction_to_edit = $model;
+
             // get prefilled data
 			if($transaction_to_edit->loaded()){
 				$prefilled_data = $transaction_to_edit->populatePreFilledValues();
@@ -47,12 +48,18 @@ class View_TransactionWidget extends \View {
             $transaction_to_edit=null;
         }else{
             throw $this->exception('Only Loaded, Transaction and Entry Template Models permitted')
-                        ->addMOreInfo('transaction_provided',get_class($transaction_m));
+                        ->addMoreInfo('transaction_provided',get_class($transaction_m));
         }
 
 		$entry_tran_data = [];
 		foreach ($transactions as $trans) {
-			$entry_tran_data[$trans->id] = $trans->getTransactionAndRowData($prefilled_data);
+			$t_and_r_data = $trans->getTransactionAndRowData($prefilled_data);
+			if($transaction_to_edit instanceof \xepan\accounts\Model_Transaction && $transaction_to_edit->loaded()){
+				$t_and_r_data['editing_transaction_id'] = $transaction_to_edit->id;
+				$t_and_r_data['narration'] = $transaction_to_edit['Narration'];
+				$t_and_r_data['transaction_date'] = $transaction_to_edit['created_at'];
+			}
+			$entry_tran_data[$trans->id] = $t_and_r_data;
 		}
 
 		$this->entry_tran_data = $entry_tran_data;
@@ -65,6 +72,7 @@ class View_TransactionWidget extends \View {
 		// echo "<pre>";
 		// print_r($this->entry_tran_data);
 		// echo "</pre>";
+		// exit;
 		$this->js(true)->_load('jquery.livequery');
 
 		$json_data = json_encode($this->entry_tran_data);
