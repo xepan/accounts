@@ -100,7 +100,7 @@ jQuery.widget("ui.transaction_executer", {
 		  	currency_html	= [
 		  				'<div class="row">',
 							'<div class="col-md-8 col-sm-8 col-lg-8 col-xs-8">',
-								'<div class="input-group">',
+								'<div class="form-group">',
 									'<label>Currency Name</label>',
 	          						'<select data-field="tr-row-currency" class="tr-row-currency tra-form-field">',
 	          						' '+currency_options,
@@ -274,6 +274,10 @@ jQuery.widget("ui.transaction_executer", {
 		$('.transaction-save').livequery(function(){
 
 			$(this).click(function(e){
+				if(self.left_sum != self.right_sum){
+					alert('credit and debit amount must be same');
+					return;
+				}
 				var data_object = {};
 				var entry_temp_data = JSON.parse(self.options.entry_template);
 					
@@ -296,28 +300,59 @@ jQuery.widget("ui.transaction_executer", {
 						$ledger = $(this).find('.tr-row-ledger');
 						$amount = $(this).find('.tr-row-amount');
 						
-						var ledger_value = $ledger.val();
-						var amount_value = $amount.val();
+						var ledger_value = $.trim($ledger.val());
+						var amount_value = $.trim($amount.val());
 
-						// alert(ledger_value+" = "+amount_value);
+						// validation
+						// amount cannot be null
+						if(amount_value && !isNumber(amount_value)){
+							self.showFieldError($amount,"amount must be number");
+							all_clear = false;
+							return false;
+						}
+
+						// if ledger not selected and amount selected
 						if( (ledger_value == "" || ledger_value == null || ledger_value == undefined) && amount_value > 0){
-							
-							$ledger.addClass('tra-field-error');
-							$ledger.closest('.form-group').find('.error-message').remove();
-							$('<div class="error-message">please select ledger </div>').appendTo($ledger.closest('.form-group'));
-							
+							self.showFieldError($ledger,"please select ledger");
 							if(all_clear) all_clear = false;
 							return false;
 						}
 
+						// if ledger selected but amount is not selected
+						if( ledger_value.length > 0 && ( amount_value =="" || amount_value == null || amount_value == undefined || !isNumber(amount_value) )){
+							self.showFieldError($amount,"amount must not be empty");
+							if(all_clear) all_clear = false;
+							return false;
+						}
+
+						// if both values are empty then bypass this row
 						if(
 							(ledger_value == "" || ledger_value == null || ledger_value == undefined)
 							&&
-							(amount_value == "" || amount_value == null || amount_value == undefined)
+							(amount_value == "" || amount_value == null || amount_value == undefined || amount_value == 0)
 						){
 							return true;
 						}
 
+						//currency and exchange rate validation
+						$currency = $(this).find('.tr-row-currency');
+						$exchange_rate = $(this).find('.tr-row-exchange-rate');
+						var currency_value = $currency.val();
+						var exchange_rate_value = $exchange_rate.val();
+
+						if($currency.length && (currency_value == 0 || currency_value == undefined || currency_value == "" || currency_value == null)){
+							self.showFieldError($currency,"please select currency");
+							if(all_clear) all_clear = false;
+							return false;
+						}
+
+						if($exchange_rate.length && (exchange_rate_value == null || exchange_rate_value == "" || exchange_rate_value == undefined || exchange_rate_value == 0)){
+							self.showFieldError($exchange_rate,"currency/exchange rate must not be empty or zero");
+							if(all_clear) all_clear = false;
+							return false;
+						}
+
+						// implementing array
 						$($(obj)[0].attributes).each(function() {
 							attr_name = this.nodeName;
 							attr_value = this.nodeValue;
@@ -352,20 +387,27 @@ jQuery.widget("ui.transaction_executer", {
 					return;
 				} 
 				// calling save page
-				$.ajax({
-					url: self.save_ajax_url,					
-					type: 'POST',
-					datatype:'json',
-					data: {
-						transaction_data: JSON.stringify(data_object)
-					}
-				}).done(function(ret){
-					// console.log(ret);
-				});
+				// $.ajax({
+				// 	url: self.save_ajax_url,					
+				// 	type: 'POST',
+				// 	datatype:'json',
+				// 	data: {
+				// 		transaction_data: JSON.stringify(data_object)
+				// 	}
+				// }).done(function(ret){
+				// 	// console.log(ret);
+				// });
 				
+				console.log(data_object);
 			});
 
 		});
+	},
+
+	showFieldError:function($field_obj,msg="please select"){
+		$field_obj.addClass('tra-field-error');
+		$field_obj.closest('.form-group').find('.error-message').remove();
+		$('<div class="error-message">'+msg+'</div>').appendTo($field_obj.closest('.form-group'));
 	},
 
 	doCalc: function(){
@@ -405,6 +447,13 @@ jQuery.widget("ui.transaction_executer", {
 		// console.log("left sum"+self.left_sum);
 		// console.log("left sum"+self.right_sum);
 		self.showOutput();
+
+		if(self.left_sum != self.right_sum){
+			$(self.element).find('.transaction-save').html('debit and credit amount must be same').addClass('disabled btn-warning');
+		}else{
+			$(self.element).find('.transaction-save').html('Save').removeClass('disabled btn-warning');
+		}
+
 	},
 
 	showOutput: function(){
