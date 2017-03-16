@@ -60,12 +60,12 @@ jQuery.widget("ui.transaction_executer", {
 
 			self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
 			
-			$(self.transaction_date).datepicker({dateFormat:'yy-mm-dd'});
+			// $(self.transaction_date).datepicker({dateFormat:'yy-mm-dd'});
 
-			default_date = new Date();
-			if(transaction_data.transaction_date)
-				default_date = transaction_data.transaction_date;
-			$(self.transaction_date).datepicker('setDate',default_date);
+			// default_date = new Date();
+			// if(transaction_data.transaction_date)
+			// 	default_date = transaction_data.transaction_date;
+			// $(self.transaction_date).datepicker('setDate',default_date);
 			//narration
 			var narration_field = [
 								'<div class="form-group">',
