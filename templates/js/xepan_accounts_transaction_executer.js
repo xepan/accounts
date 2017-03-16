@@ -386,17 +386,18 @@ jQuery.widget("ui.transaction_executer", {
 				if(!all_clear){
 					return;
 				} 
-				// calling save page
-				// $.ajax({
-				// 	url: self.save_ajax_url,					
-				// 	type: 'POST',
-				// 	datatype:'json',
-				// 	data: {
-				// 		transaction_data: JSON.stringify(data_object)
-				// 	}
-				// }).done(function(ret){
-				// 	// console.log(ret);
-				// });
+				
+				//calling save page
+				$.ajax({
+					url: self.save_ajax_url,					
+					type: 'POST',
+					datatype:'json',
+					data: {
+						transaction_data: JSON.stringify(data_object)
+					}
+				}).done(function(ret){
+					// console.log(ret);
+				});
 				
 				console.log(data_object);
 			});
