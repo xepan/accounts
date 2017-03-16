@@ -186,7 +186,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		}
 
 		$amount = $this->round($amount);						
-		$this->dr_accounts += array($account->id => array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate,'remark'=>$remark, 'code'=>$code));
+		$this->dr_accounts[] = array('account_number'=>$account->id ,'amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate,'remark'=>$remark, 'code'=>$code);
 		
 	}
 
@@ -201,7 +201,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		$amount = $this->round($amount);
 		
-		$this->cr_accounts += array($account->id=>array('amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate,'remark'=>$remark, 'code'=>$code));
+		$this->cr_accounts[] = array('account_number'=>$account->id,'amount'=>$amount,'account'=>$account, 'currency_id'=>$Currency?$Currency->id:$this->app->epan->default_currency->id, 'exchange_rate'=>$exchange_rate,'remark'=>$remark, 'code'=>$code);
 	}
 
 	function execute(){
@@ -237,7 +237,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		$total_debit_amount = 0;
 		// Foreach Dr add new TransactionRow (Dr wali)
-		foreach ($this->dr_accounts as $accountNumber => $dtl) {
+		foreach ($this->dr_accounts as $index => $dtl) {
 			if($dtl['amount'] ==0) continue;
 			$dtl['account']->debitWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate'], $dtl['remark'], $dtl['code']);
 			$total_debit_amount += ($dtl['amount']*$dtl['exchange_rate']);
@@ -248,7 +248,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		$total_credit_amount = 0;
 		// Foreach Cr add new Transactionrow (Cr Wala)
-		foreach ($this->cr_accounts as $accountNumber => $dtl) {
+		foreach ($this->cr_accounts as $index => $dtl) {
 			if($dtl['amount'] ==0) continue;
 			$dtl['account']->creditWithTransaction($dtl['amount'],$this->id, $dtl['currency_id'], $dtl['exchange_rate'], $dtl['remark'], $dtl['code']);
 			$total_credit_amount += ($dtl['amount']*$dtl['exchange_rate']);
@@ -262,14 +262,14 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 			$e = $this->exception('Debit and Credit Must be Same');
 
-			foreach ($this->dr_accounts as $accountNumber => $dtl) {
-				$e->addMoreInfo('Debit: '.$accountNumber,$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].'] ' . $dtl['account']['name']);
+			foreach ($this->dr_accounts as $index => $dtl) {
+				$e->addMoreInfo('Debit: '.$dtl['account_number'],$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].'] ' . $dtl['account']['name']);
 			}
 
 			$e->addMoreInfo('DebitSum',$total_debit_amount);
 
-			foreach ($this->cr_accounts as $accountNumber => $dtl) {
-				$e->addMoreInfo('Credit: '.$accountNumber,$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].'] ' . $dtl['account']['name']);
+			foreach ($this->cr_accounts as $index => $dtl) {
+				$e->addMoreInfo('Credit: '.$dtl['account_number'],$dtl['amount'].' ['.$dtl['amount']*$dtl['exchange_rate'].'] ' . $dtl['account']['name']);
 			}
 			$e->addMoreInfo('CreditSum',$total_credit_amount);
 
