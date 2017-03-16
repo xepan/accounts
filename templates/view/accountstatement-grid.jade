@@ -28,6 +28,7 @@
                     span Balance
                 th
                     span Attachments   
+                th
                 th       
                 {/}{/}
             {/}
@@ -63,8 +64,9 @@
                         {$Balance}
                     td.text-center
                         .do-view-attachment(style= "cursor:pointer; cursor: hand; max-width:600px;") {$attachment_icon}
+                    td
+                        {$edit_transaction}
                     td(style="width: 15%;")
-                        {$edit}
                         {$delete}
                     {/}
                 {/}{/}

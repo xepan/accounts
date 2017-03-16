@@ -17,6 +17,7 @@
         <th><span>Credit</span></th>
         <th><span>Balance </span></th>
         <th><span>Attachments </span></th>
+        <th></th>
         <th>                                                  </th>{/}{/}
       </thead>{/}
       {$subheader}
@@ -45,8 +46,9 @@
           <td class="text-center">
             <div style="cursor:pointer; cursor: hand; max-width:600px;" class="do-view-attachment">{$attachment_icon}</div>
           </td>
+          <td>{$edit_transaction} </td>
           <td>
-            {$edit}
+             
             {$delete}    
           </td>{/}
         </tr>{/}{/}

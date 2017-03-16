@@ -30,6 +30,7 @@
                 th
                     span Attachments
                 th                                              
+                th                                              
                 {/}{/}
             {/}
             {$subheader}
@@ -64,7 +65,8 @@
                     td.text-center
                         .do-view-attachment(style= "cursor:pointer; cursor: hand; max-width:600px;") {$attachment_icon}
                     td
-                        {$edit}
+                        {$edit_transaction}
+                    td
                         {$delete}
                     {/}
                 {/}{/}

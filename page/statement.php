@@ -39,6 +39,16 @@ class page_statement extends \xepan\base\Page {
 					'allow_add'=> false
 				],null,['view/accountstatement-grid']);
 
+
+		 $crud->grid->add('VirtualPage')
+	 		->addColumn('edit_transaction')
+			->set(function($page){
+				$id = $_GET[$page->short_name.'_id'];
+				$model = $page->add('xepan\accounts\Model_Transaction')->load($id);
+				$widget = $page->add('xepan\accounts\View_TransactionWidget');
+				$widget->setModel($model);
+			});
+
 		$transactions = $this->add('xepan\accounts\Model_Transaction');
 		$transactions->getElement('exchange_rate')->destroy();
 		$trow_j = $transactions->join('account_transaction_row.transaction_id');
@@ -93,6 +103,7 @@ class page_statement extends \xepan\base\Page {
 				$opening_narration = "By Opening balace";
 				$opening_side = 'CR';
 			}
+			
 			if(!$crud->isEditing()){
 				$grid = $crud->grid;
 				$grid->addOpeningBalance($opening_amount,$opening_column,['Narration'=>$opening_narration],$opening_side);
