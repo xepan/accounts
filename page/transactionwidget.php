@@ -16,7 +16,7 @@ class page_transactionwidget extends \Page{
 	    
 	    if($_GET['group']){
 	    	$group_m = $this->add('xepan\accounts\Model_Group');
-	    	$group_m->addCondition('name',$_GET['group']);
+	    	$group_m->tryLoadBy('name',$_GET['group']);
     		
     		if($group_m->loaded())	
     			$ledger_m->addCondition('group_id',$group_m['id']);
@@ -35,10 +35,10 @@ class page_transactionwidget extends \Page{
 		$transaction_data = $_POST['transaction_data'];
 		$transaction_data = json_decode($transaction_data,true);
 		
-		// echo"<pre>";
-		// print_r($transaction_data);
-		// echo "</pre>";
-		// exit;
+		echo"<pre>";
+		print_r($transaction_data);
+		echo "</pre>";
+		exit;
 
         $transactions=[];
         $total_amount=[];

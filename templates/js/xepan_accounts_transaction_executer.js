@@ -65,7 +65,7 @@ jQuery.widget("ui.transaction_executer", {
 			var narration_field = [
 								'<div class="form-group">',
 									'<label for="'+tr_id+'">Narration</label>',
-									'<textarea class="form-control" id="'+tr_id+'" rows="3">'+transaction_data.narration+'</textarea>',
+									'<textarea class="form-control tra-narration" id="'+tr_id+'" rows="3">'+((transaction_data.narration)?(transaction_data.narration):"")+'</textarea>',
 								'</div>',
 								].join("");
 			$(narration_field).appendTo(self.footer);
@@ -96,6 +96,10 @@ jQuery.widget("ui.transaction_executer", {
 				else
 					currency_options += '<option value="'+key+'"> '+currency_data.name+'</option>';
 			});
+
+
+			if(row_data.exchange_rate == "undefined" || row_data.exchange_rate == undefined)
+				row_data.exchange_rate = 1;
 
 		  	currency_html	= [
 		  				'<div class="row">',
@@ -193,14 +197,9 @@ jQuery.widget("ui.transaction_executer", {
 				        });
 				    },
 				minLength:1,
-				// select: function( event, ui ) {
+				select: function( event, ui ) {
 				// 	// after select auto fill qty and price
-				// 	$tr = $(this).closest('.col-data');
-				// 	$tr.find('.price-field').val(ui.item.price);
-				// 	$tr.find('.item-id-field').val(ui.item.id);
-				// 	$tr.find('.item-custom-field').val(ui.item.custom_field);
-				// 	$tr.find('.item-read-only-custom-field').val(ui.item.read_only_custom_field);
-
+				console.log(ui.item);
 				// 	// on selct get custom field of item
 				// 	$.ajax({
 				// 		url:self.item_detail_ajax_url,
@@ -214,8 +213,8 @@ jQuery.widget("ui.transaction_executer", {
 			 //          	error: function(XMLHttpRequest, textStatus, errorThrown) {
 			 //              alert("Error getting prospect list: " + textStatus);
 			 //            }
-				// 	});
-			 //    }
+					// });
+			   },
 			}).val(ledger_name);
 		    // ,funciton(){
 		    	// if field not found then
@@ -289,7 +288,9 @@ jQuery.widget("ui.transaction_executer", {
 					temp.type = entry_data.type;
 					temp.is_system_default = entry_data.is_system_default;
 					temp.editing_transaction_id = entry_data.editing_transaction_id;
-					
+					temp.narration = $(self.element).find('.tra-narration').val();
+					temp.transaction_date = $(self.element).find('#transaction-date').datepicker().val();
+
 					data_object[entry_tr_id] = temp;
 					
 					var all_row_data = {};
@@ -346,7 +347,7 @@ jQuery.widget("ui.transaction_executer", {
 							return false;
 						}
 
-						if($exchange_rate.length && (exchange_rate_value == null || exchange_rate_value == "" || exchange_rate_value == undefined || exchange_rate_value == 0)){
+						if($exchange_rate.length && (exchange_rate_value == null || exchange_rate_value == "" || exchange_rate_value == undefined || exchange_rate_value == 0 || exchange_rate_value == "undefined")){
 							self.showFieldError($exchange_rate,"currency/exchange rate must not be empty or zero");
 							if(all_clear) all_clear = false;
 							return false;
@@ -370,7 +371,7 @@ jQuery.widget("ui.transaction_executer", {
 						
 						//currency
 						if($(this).find('.tr-row-currency').val())
-							one_row_data['data-currency'] = $(this).find('.tr-row-ledger').val();
+							one_row_data['data-currency'] = $(this).find('.tr-row-currency').val();
 
 						//exchange rate
 						if($(this).find('.tr-row-exchange-rate').val())
@@ -399,7 +400,7 @@ jQuery.widget("ui.transaction_executer", {
 					// console.log(ret);
 				});
 				
-				console.log(data_object);
+				// console.log(data_object);
 			});
 
 		});
