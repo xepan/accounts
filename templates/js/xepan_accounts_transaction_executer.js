@@ -418,9 +418,14 @@ jQuery.widget("ui.transaction_executer", {
 	},
 
 	showFieldError:function($field_obj,msg="please select"){
+		$('html,body').animate({
+        	scrollTop: $field_obj.offset().top
+        	},'slow');
+
 		$field_obj.addClass('tra-field-error');
 		$field_obj.closest('.form-group').find('.error-message').remove();
 		$('<div class="error-message">'+msg+'</div>').appendTo($field_obj.closest('.form-group'));
+		
 	},
 
 	doCalc: function(){

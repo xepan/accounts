@@ -205,8 +205,8 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	}
 
 	function execute(){
-		if($this->loaded())
-			throw $this->exception('New Transaction can only be added on unLoaded Transaction Model ');
+		// if($this->loaded())
+		// 	throw $this->exception('New Transaction can only be added on unLoaded Transaction Model ');
 
 		if(!$this->create_called) throw $this->exception('Create Account Function Must Be Called First');
 				
