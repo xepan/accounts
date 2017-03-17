@@ -583,8 +583,16 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		
         // self tranasction pre load
         $pre_filled_values=[];
+
+        // transaction prefilled values narration
+        $tr_no=$this['transaction_type'];
+        
+        // transaction specific values
+        $pre_filled_values[$tr_no]['narration'] = $this['Narration'];
+        $pre_filled_values[$tr_no]['transaction_date'] = $this['created_at'];
+        $pre_filled_values[$tr_no]['editing_transaction_id'] = $this['id'];
+
         foreach ($this->ref('TransactionRows') as $transaction_row) {
-            $tr_no=$this['transaction_type'];
             $pre_filled_values[$tr_no][$transaction_row->id]=[
             							'code'=>$transaction_row['code'],
                                         'ledger'=>$transaction_row['ledger_id'],
@@ -602,6 +610,12 @@ class Model_Transaction extends \xepan\base\Model_Table{
                                     ;
         foreach ($related_transactions  as $tr) {
             $tr_no = $tr['transaction_type'];
+
+            // transaction specific values
+            $pre_filled_values[$tr_no]['narration'] = $tr['Narration'];
+	        $pre_filled_values[$tr_no]['transaction_date'] = $tr['created_at'];
+	        $pre_filled_values[$tr_no]['editing_transaction_id'] = $this['id'];
+
             foreach ($tr->ref('TransactionRows') as $transaction_row) {
                 $pre_filled_values[$tr_no][$transaction_row->id]=[    
                                             'code'=>$transaction_row['code'],

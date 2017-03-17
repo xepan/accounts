@@ -78,9 +78,9 @@ class page_transactionwidget extends \Page{
 
             if($total_amount[$transaction['type']] > 0)
                 $new_transaction->execute();
+        }
 
-            echo "success";
-            exit;
-        }               
+        echo "success";
+        exit;
 	}
 }

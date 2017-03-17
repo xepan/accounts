@@ -12,6 +12,8 @@ jQuery.widget("ui.transaction_executer", {
 	selectorExchangeRate:'.tr-row-exchange-rate',
 	left_sum:0,
 	right_sum:0,
+	total_left_sum:0,
+	total_right_sum:0,
 	left_side:{},
 	right_side:{},
 
@@ -19,17 +21,15 @@ jQuery.widget("ui.transaction_executer", {
 		entry_template:{
 			
 		},
-		currency_list:[]
-
+		currency_list:[],
 	},
 
 	_create: function(){
 		var self = this;
 
 		self.loadData();
-		// self.headerBalance();
-		// self.addLiveEvents();
-		// self.doCalc();
+		self.addLiveEvents();
+		self.doCalc();
 	},
 
 	loadData: function(){
@@ -37,38 +37,38 @@ jQuery.widget("ui.transaction_executer", {
 
 		self.section = this.element;
 
+		var date_picker_wrapper = $('<div class="form-group main-box">').appendTo(self.element);
+		$('<label for="datepickerDate">Date</label>').appendTo(date_picker_wrapper);
+		var date_picker_group = $('<div class="input-group">').appendTo(date_picker_wrapper);
+		$('<span class="input-group-addon"><i class="fa fa-calendar"></i></span>').appendTo(date_picker_group)
+
+		self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
+		$(self.transaction_date).datepicker();
+		
+		// // default_date = new Date();
+		// // if(transaction_data.transaction_date)
+		// // 	default_date = transaction_data.transaction_date;
+		// // $(self.transaction_date).datepicker('setDate',default_date);
+
 		entry_data = JSON.parse(self.options.entry_template);
 		$.each(entry_data,function(tr_id,transaction_data){
 			
-			self.lister = $('<div class="well"></div>').appendTo(self.element);
+			self.lister = $('<div class="well transaction-row"></div>').appendTo(self.element);
 			self.lister.attr('id','tra_'+tr_id);
 
 			self.header = $('<div>').appendTo(self.lister);
+			// set header values
+			$('<h2 class="transaction-name text-center">'+transaction_data.name+'</h2>').appendTo(self.header);
+
+			this.balance_output = $('<div class="balance_output text-center xepan-push-small " style="border:3px solid green;width:20%;margin:auto;padding:5px">').appendTo(self.header);
+			this.balance_output.html('====').attr('id','tra_balance_'+tr_id);
 
 			self.row_section = $('<div class="row"></div>').appendTo(self.lister);
 			self.left_side = $('<div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">').appendTo(self.row_section);
 			self.right_side = $('<div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">').appendTo(self.row_section);
 				
 			self.footer = $('<div class="transaction-footer"></div>').appendTo(self.lister);
-
-
-			// set header values
-			$('<h2 class="transaction-name text-center">'+transaction_data.name+'</h2>').appendTo(self.header);
 						
-			// // date picker
-			// var date_picker_wrapper = $('<div class="form-group main-box">').appendTo(self.header);
-			// $('<label for="datepickerDate">Date</label>').appendTo(date_picker_wrapper);
-			// var date_picker_group = $('<div class="input-group">').appendTo(date_picker_wrapper);
-			// $('<span class="input-group-addon"><i class="fa fa-calendar"></i></span>').appendTo(date_picker_group)
-
-			// self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
-			
-			// // $(self.transaction_date).datepicker({dateFormat:'yy-mm-dd'});
-
-			// // default_date = new Date();
-			// // if(transaction_data.transaction_date)
-			// // 	default_date = transaction_data.transaction_date;
-			// // $(self.transaction_date).datepicker('setDate',default_date);
 			//narration
 			var narration_field = [
 								'<div class="form-group">',
@@ -78,6 +78,8 @@ jQuery.widget("ui.transaction_executer", {
 								].join("");
 			$(narration_field).appendTo(self.footer);
 
+
+			// console.log(transaction_data.rows);
 			$.each(transaction_data.rows,function(tr_row_id,row_data){
 				self.addRow(row_data);
 			});
@@ -161,12 +163,12 @@ jQuery.widget("ui.transaction_executer", {
 
 	},
 
-	headerBalance: function(){
-		var self = this;
+	// headerBalance: function(){
+	// 	var self = this;
 		
-		this.balance_output = $('<div class="balance_output text-center xepan-push-small " style="border:3px solid green;width:20%;margin:auto;padding:5px">').appendTo(self.selectorHeader);
-		this.balance_output.html('====');
-	},
+	// 	this.balance_output = $('<div class="balance_output text-center xepan-push-small " style="border:3px solid green;width:20%;margin:auto;padding:5px">').appendTo(self.header);
+	// 	this.balance_output.html('====');
+	// },
 
 	addLiveEvents: function(){
 		var self = this;
@@ -267,8 +269,8 @@ jQuery.widget("ui.transaction_executer", {
 		$('.transaction-save').livequery(function(){
 
 			$(this).click(function(e){
-				if(self.left_sum != self.right_sum){
-					alert('credit and debit amount must be same');
+				if(self.total_left_sum != self.total_right_sum){
+					alert('credit and debit amount must be same '+self.total_left_sum+" = "+self.total_right_sum);
 					return;
 				}
 				var data_object = {};
@@ -290,7 +292,7 @@ jQuery.widget("ui.transaction_executer", {
 					
 					var all_row_data = {};
 					var count = 0
-					$(self.element).find('.tr-row').each(function(index,obj){
+					$(self.element).find('#tra_'+entry_tr_id+' .tr-row').each(function(index,obj){
 						var one_row_data = {};
 
 						// transaction date
@@ -432,48 +434,63 @@ jQuery.widget("ui.transaction_executer", {
 
 	doCalc: function(){
 		var self = this;
-		self.left_sum = 0;
-		self.right_sum = 0;
+		self.total_right_sum = 0;
+		self.total_left_sum = 0;
 		// IF any row has exchange_rate take amount* exchange_rate as final amount for that row
-		$(self.element).find(self.selectorLeftSideRow).each(function(index,obj){
+		var is_cr_dr_equal = 1;		
+		$(self.element).find('.transaction-row ').each(function(index,transaction_row){
 
-			if(isNumber($(obj).find(self.selectorAmount).val())){
-				var amount = parseFloat($(obj).find(self.selectorAmount).val());
-				var exchange_rate = 1;
-				if($(obj).find(self.selectorExchangeRate).length > 0){
-					if(isNumber($(obj).find(self.selectorExchangeRate).first().val()))
-						exchange_rate = $(obj).find(self.selectorExchangeRate).first().val();
-					amount = amount * exchange_rate;
+			self.left_sum = 0;
+			self.right_sum = 0;
+			$(transaction_row).find(self.selectorLeftSideRow).each(function(index,obj){
+				if(isNumber($(obj).find(self.selectorAmount).val())){
+					// $(obj).find(self.selectorAmount).css('border','2px solid green');
+					var amount = parseFloat($(obj).find(self.selectorAmount).val());
+					var exchange_rate = 1;
+					if($(obj).find(self.selectorExchangeRate).length > 0){
+						if(isNumber($(obj).find(self.selectorExchangeRate).first().val()))
+							exchange_rate = $(obj).find(self.selectorExchangeRate).first().val();
+						amount = amount * exchange_rate;
+					}
+					self.left_sum += amount;
+					self.total_left_sum += amount;
 				}
-				self.left_sum += amount;
+			});
+
+			// left side
+			$(transaction_row).find(self.selectorRightSideRow).each(function(index,obj){
+				if(isNumber($(obj).find(self.selectorAmount).val())){
+					
+					// $(obj).find(self.selectorAmount).css('border','2px solid red');
+
+					var amount = parseFloat($(obj).find(self.selectorAmount).val());
+					var exchange_rate = 1;
+					if($(obj).find(self.selectorExchangeRate).length > 0){
+						if(isNumber($(obj).find(self.selectorExchangeRate).first().val()))
+							exchange_rate = $(obj).find(self.selectorExchangeRate).first().val();
+						amount = amount * exchange_rate;
+					}
+					self.right_sum += amount;
+					self.total_right_sum += amount;
+				}
+			});
+			
+			// console.log("left sum"+self.left_sum);
+			// console.log("left sum"+self.right_sum);
+			self.balance_output = $(transaction_row).find('.balance_output');
+			self.showOutput();
+
+			if( is_cr_dr_equal && (self.left_sum != self.right_sum)){
+				is_cr_dr_equal = 0;
 			}
 		});
 
 
-		// left side
-		$(self.element).find(self.selectorRightSideRow).each(function(index,obj){
-			if(isNumber($(obj).find(self.selectorAmount).val())){
-				var amount = parseFloat($(obj).find(self.selectorAmount).val());
-				var exchange_rate = 1;
-				if($(obj).find(self.selectorExchangeRate).length > 0){
-					if(isNumber($(obj).find(self.selectorExchangeRate).first().val()))
-						exchange_rate = $(obj).find(self.selectorExchangeRate).first().val();
-					amount = amount * exchange_rate;
-				}
-				self.right_sum += amount;
-			}
-		});
-
-		// console.log("left sum"+self.left_sum);
-		// console.log("left sum"+self.right_sum);
-		self.showOutput();
-
-		if(self.left_sum != self.right_sum){
-			$(self.element).find('.transaction-save').html('debit and credit amount must be same').addClass('disabled btn-warning');
-		}else{
+		if(is_cr_dr_equal == 1){
 			$(self.element).find('.transaction-save').html('Save').removeClass('disabled btn-warning');
+		}else{
+			$(self.element).find('.transaction-save').html('debit and credit amount must be same').addClass('disabled btn-warning');
 		}
-
 	},
 
 	showOutput: function(){
@@ -482,23 +499,23 @@ jQuery.widget("ui.transaction_executer", {
 		// console.log(self.right_sum);
 
 		if(self.left_sum > self.right_sum){
-			this.balance_output.html('+ Left ' + (self.left_sum - self.right_sum));
-			this.balance_output.css('border','3px solid red');
-			this.balance_output.css('margin-left','0');
-			this.balance_output.css('margin-right','auto');
+			self.balance_output.html('+ Left ' + (self.left_sum - self.right_sum));
+			self.balance_output.css('border','3px solid red');
+			self.balance_output.css('margin-left','0');
+			self.balance_output.css('margin-right','auto');
 		} 
 			
 		if(self.left_sum < self.right_sum){
-			this.balance_output.html('+ Right ' + (self.right_sum - self.left_sum));
-			this.balance_output.css('border','3px solid red');
-			this.balance_output.css('margin-left','auto');
-			this.balance_output.css('margin-right','0');
+			self.balance_output.html('+ Right ' + (self.right_sum - self.left_sum));
+			self.balance_output.css('border','3px solid red');
+			self.balance_output.css('margin-left','auto');
+			self.balance_output.css('margin-right','0');
 			
 		} 
 		if(self.left_sum === self.right_sum){
-			this.balance_output.html('====');
-			this.balance_output.css('border','3px solid green');
-			this.balance_output.css('margin','auto');
+			self.balance_output.html('====');
+			self.balance_output.css('border','3px solid green');
+			self.balance_output.css('margin','auto');
 		} 
 	}
 });

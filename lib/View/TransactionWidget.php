@@ -28,6 +28,11 @@ class View_TransactionWidget extends \View {
             // get prefilled data
 			if($transaction_to_edit->loaded()){
 				$prefilled_data = $transaction_to_edit->populatePreFilledValues();
+				
+				// echo "<pre>";
+				// print_r($prefilled_data);
+				// echo "</pre>";
+				// exit;
 			}
 
             if(!$model['transaction_template_id']){
@@ -54,11 +59,12 @@ class View_TransactionWidget extends \View {
 		$entry_tran_data = [];
 		foreach ($transactions as $trans) {
 			$t_and_r_data = $trans->getTransactionAndRowData($prefilled_data);
-			if($transaction_to_edit instanceof \xepan\accounts\Model_Transaction && $transaction_to_edit->loaded()){
-				$t_and_r_data['editing_transaction_id'] = $transaction_to_edit->id;
-				$t_and_r_data['narration'] = $transaction_to_edit['Narration'];
-				$t_and_r_data['transaction_date'] = $transaction_to_edit['created_at'];
-			}
+			// if($transaction_to_edit instanceof \xepan\accounts\Model_Transaction && $transaction_to_edit->loaded()){
+				
+				// $t_and_r_data['editing_transaction_id'] = $transaction_to_edit->id;
+				// $t_and_r_data['narration'] = $transaction_to_edit['Narration'];
+				// $t_and_r_data['transaction_date'] = $transaction_to_edit['created_at'];
+			// }
 			$entry_tran_data[$trans->id] = $t_and_r_data;
 		}
 
@@ -91,9 +97,9 @@ class View_TransactionWidget extends \View {
 		parent::render();
 	}
 
-	// function defaultTemplate(){
-	// 	return ['view/transactionwidget'];
-	// }
+	function defaultTemplate(){
+		return ['view/transactionwidget'];
+	}
 
 
 }

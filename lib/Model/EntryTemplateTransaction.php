@@ -50,8 +50,15 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 		$entry_tran_data['type'] = $this['type'];
 		$entry_tran_data['is_system_default'] = $this['is_system_default'];
 		$entry_tran_data['editing_transaction_id'] = 0;
-		$entry_tran_data['narration'] = 0;
+		$entry_tran_data['narration'] = "";
 		$entry_tran_data['transaction_date'] = 0;
+
+		if(isset($prefilled_data[$this['type']])){
+			$entry_tran_data['narration'] = $prefilled_data[$this['type']]['narration'];
+			$entry_tran_data['transaction_date'] = $prefilled_data[$this['type']]['transaction_date'];
+			$entry_tran_data['editing_transaction_id'] = $prefilled_data[$this['type']]['editing_transaction_id'];
+		}
+
 		
 
 		$entry_tran_data['rows'] = [];
@@ -75,11 +82,14 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 			$entry_tran_data['rows'][$row->id]['is_include_currency'] = $row['is_include_currency'];
 			$entry_tran_data['rows'][$row->id]['code'] = $row['code'];
 			$entry_tran_data['rows'][$row->id]['entry_template_id'] = $row['entry_template_id'];
+			$entry_tran_data['rows'][$row->id]['amount'] = 0;
 			
 			// check for pre filled values
 			if(count($prefilled_data) AND isset($prefilled_data[$this['type']]) ){
 				// $trans_type_array = $prefilled_data[$this['type']];
 				foreach ($prefilled_data[$this['type']] as $tr_row_id => $row_data) {
+					if(!is_numeric($tr_row_id)) continue;
+
 					if($row_data['code'] != $row['code']) continue;
 
 					foreach ($row_data as $key => $value) {
@@ -94,6 +104,8 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 
 		if(count($prefilled_data[$this['type']])){
 			foreach ($prefilled_data[$this['type']] as $tran_row_id => $data_array) {
+				if(!is_numeric($tran_row_id)) continue;
+
 				$key = "extra_".$tran_row_id;
 
 				foreach ($data_array as $field_name => $value) {
