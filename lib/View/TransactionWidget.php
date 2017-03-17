@@ -91,9 +91,9 @@ class View_TransactionWidget extends \View {
 		parent::render();
 	}
 
-	function defaultTemplate(){
-		return ['view/transactionwidget'];
-	}
+	// function defaultTemplate(){
+	// 	return ['view/transactionwidget'];
+	// }
 
 
 }

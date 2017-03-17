@@ -1,8 +1,8 @@
 jQuery.widget("ui.transaction_executer", {
-	selectorHeader:'.transaction-header',
-	selectorFooter:'.transaction-footer',
-	selectorLeftSide:'.transaction-left-side',
-	selectorRightSide:'.transaction-right-side',
+	// selectorHeader:'.transaction-header',
+	// selectorFooter:'.transaction-footer',
+	// selectorLeftSide:'.transaction-left-side',
+	// selectorRightSide:'.transaction-right-side',
 	selectorLedger:'.tr-row-ledger',
 	ledger_ajax_url:'index.php?page=xepan_accounts_transactionwidget_ledger',
 	save_ajax_url:'index.php?page=xepan_accounts_transactionwidget_save',
@@ -12,6 +12,8 @@ jQuery.widget("ui.transaction_executer", {
 	selectorExchangeRate:'.tr-row-exchange-rate',
 	left_sum:0,
 	right_sum:0,
+	left_side:{},
+	right_side:{},
 
 	options:{
 		entry_template:{
@@ -25,47 +27,48 @@ jQuery.widget("ui.transaction_executer", {
 		var self = this;
 
 		self.loadData();
-		self.headerBalance();
-		self.addLiveEvents();
-		self.doCalc();
+		// self.headerBalance();
+		// self.addLiveEvents();
+		// self.doCalc();
 	},
 
 	loadData: function(){
 		var self = this;
 
-		this.section = this.element;
-		self.header = $(this.element).find(self.selectorHeader);
-		self.footer = $(this.element).find(self.selectorFooter);
-		self.left_side = $(this.element).find(self.selectorLeftSide);
-		self.right_side = $(this.element).find(self.selectorRightSide);
+		self.section = this.element;
 
 		entry_data = JSON.parse(self.options.entry_template);
-
 		$.each(entry_data,function(tr_id,transaction_data){
+			
+			self.lister = $('<div class="well"></div>').appendTo(self.element);
+			self.lister.attr('id','tra_'+tr_id);
+
+			self.header = $('<div>').appendTo(self.lister);
+
+			self.row_section = $('<div class="row"></div>').appendTo(self.lister);
+			self.left_side = $('<div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">').appendTo(self.row_section);
+			self.right_side = $('<div class="col-md-6 col-sm-6 col-xs-6 col-lg-6">').appendTo(self.row_section);
+				
+			self.footer = $('<div class="transaction-footer"></div>').appendTo(self.lister);
+
+
 			// set header values
-			self.header.find('.transaction-name').html(transaction_data.name);
-			
-			// date picker
-			
-				// <div>
-				// <div class="input-group">
-				// 	<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-				// 	<input class="form-control" id="datepickerDate" type="text">
-				// </div>
-				// </div>
-			var date_picker_wrapper = $('<div class="form-group main-box">').appendTo(self.header);
-			$('<label for="datepickerDate">Date</label>').appendTo(date_picker_wrapper);
-			var date_picker_group = $('<div class="input-group">').appendTo(date_picker_wrapper);
-			$('<span class="input-group-addon"><i class="fa fa-calendar"></i></span>').appendTo(date_picker_group)
+			$('<h2 class="transaction-name text-center">'+transaction_data.name+'</h2>').appendTo(self.header);
+						
+			// // date picker
+			// var date_picker_wrapper = $('<div class="form-group main-box">').appendTo(self.header);
+			// $('<label for="datepickerDate">Date</label>').appendTo(date_picker_wrapper);
+			// var date_picker_group = $('<div class="input-group">').appendTo(date_picker_wrapper);
+			// $('<span class="input-group-addon"><i class="fa fa-calendar"></i></span>').appendTo(date_picker_group)
 
-			self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
+			// self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
 			
-			// $(self.transaction_date).datepicker({dateFormat:'yy-mm-dd'});
+			// // $(self.transaction_date).datepicker({dateFormat:'yy-mm-dd'});
 
-			// default_date = new Date();
-			// if(transaction_data.transaction_date)
-			// 	default_date = transaction_data.transaction_date;
-			// $(self.transaction_date).datepicker('setDate',default_date);
+			// // default_date = new Date();
+			// // if(transaction_data.transaction_date)
+			// // 	default_date = transaction_data.transaction_date;
+			// // $(self.transaction_date).datepicker('setDate',default_date);
 			//narration
 			var narration_field = [
 								'<div class="form-group">',
@@ -79,13 +82,13 @@ jQuery.widget("ui.transaction_executer", {
 				self.addRow(row_data);
 			});
 			
-			self.saveButton = $('<div class="btn btn-primary btn-block transaction-save">Save</div>').appendTo(self.footer);
 		});
+
+		self.saveButton = $('<div class="btn btn-primary btn-block transaction-save">Save</div>').appendTo(self.element);
 	},
 
 	addRow:function(row_data){
 		var self = this;
-
 		var str_plus = '<span class="input-group-addon tr-row-add-ledger">+</span>';
 		if(parseInt(row_data.is_allow_add_ledger) != 1)
 			str_plus = "";
@@ -125,7 +128,6 @@ jQuery.widget("ui.transaction_executer", {
 						'</div>',
 						].join("");
 		}
-
 
 		var row_html = [
 						'<div class="well tr-row '+row_data.side+'" data-ledger_name="'+row_data.ledger_name+'" data-title="'+row_data.title+'" data-code="'+row_data.code+'" data-side="'+row_data.side+'" data-group="'+row_data.group+'" data-balance_sheet="'+row_data.balance_sheet+'" data-parent_group="'+row_data.parent_group+'" data-ledger="'+row_data.ledger+'" data-ledger_type="'+row_data.ledger_type+'" data-is_ledger_changable="'+row_data.is_ledger_changable+'" data-is_allow_add_ledger="'+row_data.is_allow_add_ledger+'" data-is_include_currency="'+row_data.is_include_currency+'" data-entry_template_id="'+row_data.entry_template_id+'" data-amount="'+row_data.amount+'" data-currency="'+row_data.currency+'" data-exchange_rate="'+row_data.exchange_rate+'" >',

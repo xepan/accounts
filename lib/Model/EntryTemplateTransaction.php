@@ -41,7 +41,7 @@ class Model_EntryTemplateTransaction extends \xepan\base\Model_Table{
 		if(!$this->loaded()) throw new \Exception("model entry templte transaction must loaded");
 		
 		if(!is_array($prefilled_data)) throw new \Exception("must pass emtry array or array of prefilled data");
-
+		
 		$trans_id = $this->id;
 		$entry_tran_data = [];
 		$entry_tran_data['entry_template_transaction_id'] = $this['id'];
