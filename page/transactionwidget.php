@@ -36,6 +36,11 @@ class page_transactionwidget extends \Page{
 	}
 
 	function page_save(){
+        // $tra_date = new \DateTime('20-March-2017');
+        // echo "Rakesh = ".$tra_date->format('Y-m-d')."<br/>";
+        // echo "Rakesh ".strtotime('20-March-2017');
+        // exit;
+
 		$transaction_data = $_POST['transaction_data'];
 		$transaction_data = json_decode($transaction_data,true);
 
@@ -55,8 +60,8 @@ class page_transactionwidget extends \Page{
         	}else{	
 	            $transactions[] = $new_transaction = $this->add('xepan\accounts\Model_Transaction');
         	}
-        	
-            $new_transaction->createNewTransaction($transaction['type'],null,$transaction['date'],$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],null,null,null,$transaction['entry_template_id']);
+
+            $new_transaction->createNewTransaction($transaction['type'],null,date('Y-m-d',strtotime($transaction['transaction_date'])),$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],null,null,null,$transaction['entry_template_id']);
             $total_amount[$transaction['type']] = 0;          
         	
             foreach ($transaction['rows'] as $index => $row) {

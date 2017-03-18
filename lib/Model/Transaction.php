@@ -613,7 +613,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
             // transaction specific values
             $pre_filled_values[$tr_no]['narration'] = $tr['Narration'];
-	        $pre_filled_values[$tr_no]['transaction_date'] = $tr['created_at'];
+	        $pre_filled_values[$tr_no]['transaction_date'] = date("Y-m-d",strtotime($tr['created_at']));
 	        $pre_filled_values[$tr_no]['editing_transaction_id'] = $tr->id;
 
             foreach ($tr->ref('TransactionRows') as $transaction_row) {

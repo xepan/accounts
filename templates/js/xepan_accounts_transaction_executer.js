@@ -43,16 +43,23 @@ jQuery.widget("ui.transaction_executer", {
 		$('<span class="input-group-addon"><i class="fa fa-calendar"></i></span>').appendTo(date_picker_group)
 
 		self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
-		$(self.transaction_date).datepicker();
+		$(self.transaction_date).datepicker({dateFormat: 'dd-MM-yy'});
 		
-		// // default_date = new Date();
-		// // if(transaction_data.transaction_date)
-		// // 	default_date = transaction_data.transaction_date;
-		// // $(self.transaction_date).datepicker('setDate',default_date);
+		var default_date = new Date();
 
 		entry_data = JSON.parse(self.options.entry_template);
 		$.each(entry_data,function(tr_id,transaction_data){
 			
+			// setting up date picker
+			if(transaction_data.transaction_date){
+				var date = new Date(transaction_data.transaction_date);
+				// alert(transaction_data.transaction_date);
+				$(self.transaction_date).datepicker('setDate',date);
+				// console.log(self.default_date);
+			}
+			
+			// alert(default_date+" = "+transaction_data.transaction_date);
+
 			self.lister = $('<div class="well transaction-row"></div>').appendTo(self.element);
 			self.lister.attr('id','tra_'+tr_id);
 
