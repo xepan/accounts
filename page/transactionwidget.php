@@ -76,8 +76,17 @@ class page_transactionwidget extends \Page{
                 }
             }
 
-            if($total_amount[$transaction['type']] > 0)
+            if($total_amount[$transaction['type']] > 0){
                 $new_transaction->execute();
+
+                if(!$related_transaction_id){
+                    $related_transaction_id = $new_transaction->id;
+                }
+
+                $new_transaction['updated_at'] = $this->app->now;
+                $new_transaction['related_transaction_id'] = $related_transaction_id;
+                $new_transaction->save();                
+            }
         }
 
         echo "success";
