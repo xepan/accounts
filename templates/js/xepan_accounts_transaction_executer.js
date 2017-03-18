@@ -285,7 +285,7 @@ jQuery.widget("ui.transaction_executer", {
 					temp.type = entry_data.type;
 					temp.is_system_default = entry_data.is_system_default;
 					temp.editing_transaction_id = entry_data.editing_transaction_id;
-					temp.narration = $(self.element).find('.tra-narration').val();
+					temp.narration = $(self.element).find('#tra_'+entry_tr_id+' .tra-narration').val();
 					temp.transaction_date = $(self.element).find('#transaction-date').datepicker().val();
 
 					data_object[entry_tr_id] = temp;
