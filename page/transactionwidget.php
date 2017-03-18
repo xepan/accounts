@@ -97,4 +97,31 @@ class page_transactionwidget extends \Page{
         echo "success";
         exit;
 	}
+
+    function page_addledger(){
+        $ledger_name = $_POST['ledger_name']; 
+        $group_name = $_POST['group']; 
+
+        $group_model = $this->add('xepan\accounts\Model_Group')->addCondition('name',$group_name);
+        $group_model->tryLoadAny();
+        if(!$group_model->loaded()){
+            echo json_encode(['status'=>'failed','message'=>'group model not found']);
+            exit;
+        }
+
+        $ledger_model = $this->add('xepan\accounts\Model_Ledger');
+        $ledger_model->addCondition('group_id',$group_model->id);
+        $ledger_model->addCondition('name',$ledger_name);
+        $ledger_model->tryLoadAny();
+        if($ledger_model->loaded()){
+            echo json_encode(['status'=>'failed','message'=>'ledger with this name is already exist']);
+            exit;
+        }
+            
+        $ledger_model->save();
+
+        echo json_encode(['status'=>'success','message'=>"ledger created successfully",'id'=>$ledger_model->id,'name'=>$ledger_model['name']]);
+        exit;
+    }
+
 }

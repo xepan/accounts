@@ -6,6 +6,7 @@ jQuery.widget("ui.transaction_executer", {
 	selectorLedger:'.tr-row-ledger',
 	ledger_ajax_url:'index.php?page=xepan_accounts_transactionwidget_ledger',
 	save_ajax_url:'index.php?page=xepan_accounts_transactionwidget_save',
+	add_ledger_ajax_url:'index.php?page=xepan_accounts_transactionwidget_addledger',
 	selectorAmount:'.tr-row-amount',
 	selectorLeftSideRow:'.tr-row.DR',
 	selectorRightSideRow:'.tr-row.CR',
@@ -431,17 +432,81 @@ jQuery.widget("ui.transaction_executer", {
 		$('.tr-row-add-ledger').livequery(function(){
 			$(this).click(function(e){
 
+				var groups = $(this).closest('.tr-row').attr('data-group');
+				var groups = groups.split(',');
+				var $new_ledger_field = $(this).siblings('.tr-row-ledger').css('border','5px solid yellow');
+
+				var options = '<option value="0">Please Select Group</option>';
+
+				$.each(groups,function(key,name){
+					options += '<option value="'+name+'">'+name+'</option>';
+				});
+
 				$row = $(this).closest('.tr-row');
 
-				form = "<div id='posform'>";
-				form += "</div>";
-				new_ledger_dialog = $(form).dialog({
+				form = '<div id="add-new-ledger">'+
+							'<div class="form-group"'+
+								'<label>New Ledger Name</label>'+
+								'<input type="text" class="tra-form-field tra-form-field-new-ledger"/>'+
+							'</div>'+
+							'<div class="form-group"'+
+								'<label>Group</label>'+
+								'<select class="tra-form-field-group tra-form-field">'+
+								options+
+								'</select>'+
+							'</div>'+
+						'</div>';
+				var new_ledger_dialog = $(form).dialog({
 					autoOpen: true,
 			      	height: 300,
 			      	width:300,
 					modal: true,
 					buttons: {
 						'Save and Select': function(){
+							$new_ledger = $(this).find('.tra-form-field-new-ledger');
+							$group = $(this).find('.tra-form-field-group');
+
+							var ledger_value = $.trim($new_ledger.val());
+							var group_value = $.trim($group.val());
+
+							var all_validate = 1;
+							if(!ledger_value.length){
+								self.showFieldError($new_ledger,"must select ledger",false);
+								all_validate = 0;
+								return false;
+							}
+
+							if(group_value == 0){
+								self.showFieldError($group,"please select group",false);
+								all_validate = 0;
+								return false;
+							}
+
+							if(!all_validate) return false;
+
+							$.ajax({
+								url: self.add_ledger_ajax_url,
+								type: 'POST',
+								datatype:'json',
+								data: {
+									ledger_name: ledger_value,
+									group: group_value
+								}
+							}).done(function(ret){
+								ret_data = JSON.parse(ret);
+
+								if(ret_data.status == "success"){
+									$new_ledger_field.val(ret_data.name);
+									$new_ledger_field.attr('data-ledger',ret_data.id);
+
+									$.univ().successMessage('ledger created ');
+									new_ledger_dialog.dialog( "close" );
+
+								}else{
+									$.univ().errorMessage('something wrong');
+									return true;
+								}
+							});
 
 						},
 						Cancel: function() {
@@ -456,10 +521,12 @@ jQuery.widget("ui.transaction_executer", {
 		});
 	},
 
-	showFieldError:function($field_obj,msg="please select"){
-		$('html,body').animate({
-        	scrollTop: $field_obj.offset().top
-        	},'slow');
+	showFieldError:function($field_obj,msg="please select",scroll_up = true){
+		if(scroll_up){
+			$('html,body').animate({
+	        	scrollTop: $field_obj.offset().top
+	        	},'slow');
+		}
 
 		$field_obj.addClass('tra-field-error');
 		$field_obj.closest('.form-group').find('.error-message').remove();
