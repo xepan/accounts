@@ -426,6 +426,34 @@ jQuery.widget("ui.transaction_executer", {
 			});
 
 		});
+
+		// add new ledger dialog button
+		$('.tr-row-add-ledger').livequery(function(){
+			$(this).click(function(e){
+
+				$row = $(this).closest('.tr-row');
+
+				form = "<div id='posform'>";
+				form += "</div>";
+				new_ledger_dialog = $(form).dialog({
+					autoOpen: true,
+			      	height: 300,
+			      	width:300,
+					modal: true,
+					buttons: {
+						'Save and Select': function(){
+
+						},
+						Cancel: function() {
+							new_ledger_dialog.dialog( "close" );
+						}
+					},
+					close: function() {
+						$(this).remove();
+					}
+				});
+			});
+		});
 	},
 
 	showFieldError:function($field_obj,msg="please select"){
