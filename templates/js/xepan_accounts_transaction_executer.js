@@ -432,10 +432,11 @@ jQuery.widget("ui.transaction_executer", {
 		$('.tr-row-add-ledger').livequery(function(){
 			$(this).click(function(e){
 
-				var groups = $(this).closest('.tr-row').attr('data-group');
+				var $tr_row = $(this).closest('.tr-row');
+				var groups = $tr_row.attr('data-group');
 				var groups = groups.split(',');
-				var $new_ledger_field = $(this).siblings('.tr-row-ledger').css('border','5px solid yellow');
-
+				var $new_ledger_field = $(this).siblings('.tr-row-ledger');
+				var $ledger_id_field = $tr_row.find('.tr-row-ledger-id');
 				var options = '<option value="0">Please Select Group</option>';
 
 				$.each(groups,function(key,name){
@@ -498,12 +499,12 @@ jQuery.widget("ui.transaction_executer", {
 								if(ret_data.status == "success"){
 									$new_ledger_field.val(ret_data.name);
 									$new_ledger_field.attr('data-ledger',ret_data.id);
-
-									$.univ().successMessage('ledger created ');
+									$ledger_id_field.val(ret_data.id);
+									// $.univ().successMessage('ledger created ');
 									new_ledger_dialog.dialog( "close" );
 
 								}else{
-									$.univ().errorMessage('something wrong');
+									$.univ().errorMessage(ret_data.message);
 									return true;
 								}
 							});

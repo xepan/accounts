@@ -14,6 +14,10 @@ class page_transactionwidget extends \Page{
 	    		$ledger_m->loadBy('name',$_GET['ledger']);
 	    }
 	    
+        if($_GET['term']){
+            $ledger_m->addCondition('name','like','%'.$_GET['term'].'%');
+        }
+
 	    if($_GET['group']){
 	    	$group_m = $this->add('xepan\accounts\Model_Group');
 	    	$group_m->tryLoadBy('name',$_GET['group']);
