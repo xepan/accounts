@@ -456,46 +456,42 @@ class Model_Transaction extends \xepan\base\Model_Table{
 									];
 		}
 
+		// echo "salary_total_amount = ".$salary_total_amount."<br/>";
+		// echo "salary_provision_amount = ".$salary_provision_amount."<br/>";
+		
 		// echo "<pre>";
 		// print_r($pre_filled);
 		// echo "</pre>";
 		// die();
 		
-		$entry_form = $this->add('xepan\accounts\Form_EntryRunner');
-		$entry_form->execute($pre_filled);
+		// $entry_form = $this->add('xepan\accounts\Form_EntryRunner');
+		// $entry_form->execute($pre_filled);
 
-		// echo "salary_total_amount = ".$salary_total_amount."<br/>";
-		// echo "salary_provision_amount = ".$salary_provision_amount."<br/>";
 		// echo "<pre>";
 		// print_r($asso_array);
 		// echo "</pre>";
 		// die();
 
-		// $pre_filled = [];
+		if(!in_array($salarysheet_mdl['status'], ['Approved']))			
+			return;
 
-		// $pre_filled =[
-		// 	1 => [
-		// 		'salary' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-		// 	],
-		// 	2 => [
-		// 		'salarytopay' => ['ledger'=>null,'amount'=>$salarysheet_mdl['net_amount'],'currency'=>null]
-		// 	],
-		// 	3 => [
-		// 		'tax' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-		// 	],
-		// 	4 => [
-		// 		'employeebenefitaccounts-1' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-		// 	],
-		// 	5 => [
-		// 		'employeebenefitaccounts-2' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-		// 		],
-		// 	6 => [
-		// 		'employeebenefitaccounts-3' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-		// 		],
-		// 	7 => [
-		// 		'employeebenefitaccounts-4' => ['ledger'=>null,'amount'=>null,'currency'=>null]
-		// 		]
-		// ];
+		$transaction = $this->add('xepan\accounts\Model_Transaction');
+
+		$new_transaction = $this->add('xepan\accounts\Model_Transaction');
+		$new_transaction->createNewTransaction("SalarySheet",$salarysheet_mdl,$this['created_at'],'Salary Sheet',$this->app->epan->default_currency,1,$salarysheet_mdl->id,'xepan\hr\Model_SalarySheet');
+								
+		foreach ($pre_filled as $key => $value) {
+		 	if($value['ledger'] === 'Salary'){
+				//DR
+				$salry_ledger = $this->add('xepan\accounts\Model_Ledger')->load('Salary');
+				$new_transaction->addDebitLedger($salry_ledger,$value['amount'],$this->app->epan->default_currency,1.00,null,$key);
+		 	}else{
+				//CR
+				$other_sal_ledger = $this->add('xepan\accounts\Model_Ledger')->load($value['ledger']);
+				$new_transaction->addCreditLedger($other_sal_ledger, $value['amount'],$this->app->epan->default_currency,1.00,null,$key);
+		 	}
+		}
+		$new_amount = $new_transaction->execute();
 	}
 
 	function deleteSalaryTransaction(){
