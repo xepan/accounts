@@ -384,7 +384,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return $return;
 	}
 
-	function updateSalaryTransaction($app,$salarysheet_mdl){
+	function updateSalaryTransaction($app,$salarysheet_mdl,$delete_old=true,$create_new=true){
 
 		if(!$salarysheet_mdl->loaded() AND !($salarysheet_mdl instanceof \xepan\hr\Model_SalarySheet))
 			throw new \Exception("must pass Salary Sheet loaded model", 1);	
@@ -471,27 +471,49 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		if(!in_array($salarysheet_mdl['status'], ['Approved']))			
 			return;
 
-		$transaction = $this->add('xepan\accounts\Model_Transaction');
 
-		$new_transaction = $this->add('xepan\accounts\Model_Transaction');
-		$new_transaction->createNewTransaction("SalariesDue",$salarysheet_mdl,$this['created_at'],'Salary Due From Salary Sheet',$this->app->epan->default_currency,1,$salarysheet_mdl->id,'xepan\hr\Model_SalarySheet');
-								
-		foreach ($pre_filled as $key => $value) {
-		 	if($value['ledger'] === 'Salary'){
-				//DR
-				$salry_ledger = $this->add('xepan\accounts\Model_Ledger')->load('Salary');
-				$new_transaction->addDebitLedger($salry_ledger,$value['amount'],$this->app->epan->default_currency,1.00,null,$key);
-		 	}else{
-				//CR
-				$other_sal_ledger = $this->add('xepan\accounts\Model_Ledger')->load($value['ledger']);
-				$new_transaction->addCreditLedger($other_sal_ledger, $value['amount'],$this->app->epan->default_currency,1.00,null,$key);
-		 	}
+		if($delete_old){			
+		//salarysheet model transaction have always one entry in transaction
+			$this->deleteSalaryTransaction($app,$salarysheet_mdl);
 		}
-		$new_amount = $new_transaction->execute();
+
+		if($create_new){
+			$transaction = $this->add('xepan\accounts\Model_Transaction');
+
+			$new_transaction = $this->add('xepan\accounts\Model_Transaction');
+			$new_transaction->createNewTransaction("SalariesDue",$salarysheet_mdl,$this['created_at'],'Salary Due From Salary Sheet',$this->app->epan->default_currency,1,$salarysheet_mdl->id,'xepan\hr\Model_SalarySheet');
+									
+			foreach ($pre_filled as $key => $value) {
+			 	if($value['ledger'] === 'Salary'){
+					//DR
+					$salry_ledger = $this->add('xepan\accounts\Model_Ledger')->load('Salary');
+					$new_transaction->addDebitLedger($salry_ledger,$value['amount'],$this->app->epan->default_currency,1.00,null,$key);
+			 	}else{
+					//CR
+					$other_sal_ledger = $this->add('xepan\accounts\Model_Ledger')->load($value['ledger']);
+					$new_transaction->addCreditLedger($other_sal_ledger, $value['amount'],$this->app->epan->default_currency,1.00,null,$key);
+			 	}
+			}
+			$new_amount = $new_transaction->execute();
+		}
 	}
 
-	function deleteSalaryTransaction(){
+	function deleteSalaryTransaction($app,$salarysheet_mdl){
+		if(!$salarysheet_mdl->loaded() AND !($salarysheet_mdl instanceof \xepan\hr\Model_SalarySheet))
+			throw new \Exception("must pass Salary Sheet loaded model", 1);
 
+		$old_transaction = $this->add('xepan\accounts\Model_Transaction');
+		$old_transaction->addCondition('related_id',$salarysheet_mdl->id);
+		$old_transaction->addCondition('related_type',"xepan\hr\Model_SalarySheet");
+
+		// For avoid the cash & bank type of transaction for salary due 
+		$old_transaction->addCondition('transaction_template_id',null);
+
+		foreach ($old_transaction as $trans) {
+			$old_transaction->deleteTransactionRow();
+			$old_transaction->delete();
+		}
+		return true;
 	}
 
 	function updateReimbursementTransaction($app,$rimbursement_model){		
