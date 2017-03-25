@@ -404,10 +404,6 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 		$pre_filled = [];
 
-		// echo "<pre>";
-		// print_r($ledger_sal_asso_data);
-		// echo "</pre>";
-
 		$sal = $this->add('xepan\hr\Model_Salary');
 		foreach ($sal->getRows() as $s) {
 			$nom_name = $this->app->normalizeName($s['name']);
@@ -478,7 +474,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$transaction = $this->add('xepan\accounts\Model_Transaction');
 
 		$new_transaction = $this->add('xepan\accounts\Model_Transaction');
-		$new_transaction->createNewTransaction("SalarySheet",$salarysheet_mdl,$this['created_at'],'Salary Sheet',$this->app->epan->default_currency,1,$salarysheet_mdl->id,'xepan\hr\Model_SalarySheet');
+		$new_transaction->createNewTransaction("SalariesDue",$salarysheet_mdl,$this['created_at'],'Salary Due From Salary Sheet',$this->app->epan->default_currency,1,$salarysheet_mdl->id,'xepan\hr\Model_SalarySheet');
 								
 		foreach ($pre_filled as $key => $value) {
 		 	if($value['ledger'] === 'Salary'){
