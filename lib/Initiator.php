@@ -31,7 +31,7 @@ class Initiator extends \Controller_Addon {
 												$this->add('xepan\accounts\Model_Currency')->tryLoadBy('id',$default_currency_id['currency_id'])
 												)
 											);
-			if(!$this->app->isAjaxOutput()){
+			if(!$this->app->isAjaxOutput() && !$this->app->getConfig('hidden_xepan_accounts',false)){
 				$m = $this->app->top_menu->addMenu('Account');
 
 				$m->addItem(['Accounts Chart','icon'=>'fa fa-bar-chart-o'],'xepan_accounts_chartofaccount');
