@@ -89,6 +89,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			$party_row = $m->add('xepan\accounts\Model_TransactionRow',['table_alias'=>'abcde']);
 			$party_row->addCondition('transaction_id',$q->getField('id'));
 			$party_row->addCondition('root_group',['Trade Payables','Trade Receivables']);
+			$party_row->setLimit(1);
 			return $party_row->fieldQuery('currency_id');
 		});
 
