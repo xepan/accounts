@@ -264,7 +264,7 @@ class page_statement extends \xepan\base\Page {
 			$transactions->load($crud->id);
 		}
 
-		$crud->setModel($transactions);
+		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
 
 			// ,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
