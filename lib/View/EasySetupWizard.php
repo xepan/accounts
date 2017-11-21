@@ -82,7 +82,6 @@ class View_EasySetupWizard extends \View{
 		if($_GET[$this->name.'_sal_ledger_association']){
 			$this->js(true)->univ()->frameURL("Salary Ledger Associaton",$this->app->url('xepan_accounts_salaryledgerassociation'));
 		}
-
 		$isDone = false;
 
 		$action = $this->js()->reload([$this->name.'_sal_ledger_association'=>1]);
@@ -100,5 +99,54 @@ class View_EasySetupWizard extends \View{
 			->setHelpURL('#')
 			->setAction('Click Here',$action,$isDone);
 		
+		// currency management
+		if($_GET[$this->name.'_currency']){
+			$this->js(true)->univ()->frameURL("Currency Management",$this->app->url('xepan_accounts_currency'));
+		}
+		$isDone = false;
+		$action = $this->js()->reload([$this->name.'_currency'=>1]);
+		if($this->add('xepan\accounts\Model_Currency')->count()->getOne() > 0){
+			$isDone = true;
+			$action = $this->js()->univ()->dialogOK("Already have Data",' You have already added your organization currency, visit page ? <a href="'. $this->app->url('xepan_accounts_currency')->getURL().'"> click here to go </a>');
+		}
+		$this->add('xepan\base\View_Wizard_Step')
+			->setAddOn('Application - Accounts')
+			->setTitle('Currency Management')
+			->setMessage('add currency, your organization deals with')
+			->setHelpMessage('Need help ! click on the help icon')
+			->setHelpURL('#')
+			->setAction('Click Here',$action,$isDone);
+
+		// default currency
+		if($_GET[$this->name.'_defaultcurrency']){
+			$this->js(true)->univ()->frameURL("Default Currency",$this->app->url('xepan_accounts_config'));
+		}
+
+		$isDone = false;
+		$action = $this->js()->reload([$this->name.'_defaultcurrency'=>1]);
+		$default_currency = $this->add('xepan\base\Model_ConfigJsonModel',
+			[
+				'fields'=>[
+							'currency_id'=>'DropDown'
+							],
+					'config_key'=>'FIRM_DEFAULT_CURRENCY_ID',
+					'application'=>'accounts'
+			]);
+		$default_currency->add('xepan\hr\Controller_ACL');
+		$default_currency->tryLoadAny();	
+
+		if($default_currency['currency_id']){
+			$isDone = true;
+			$action = $this->js()->univ()->dialogOK("Already have Data",' You have already added your organization currency, visit page ? <a href="'. $this->app->url('xepan_accounts_config')->getURL().'"> click here to go </a>');
+		}
+
+		$this->add('xepan\base\View_Wizard_Step')
+			->setAddOn('Application - Accounts')
+			->setTitle('Default Currency')
+			->setMessage('add firm default currency, go to currency tab.')
+			->setHelpMessage('Need help ! click on the help icon')
+			->setHelpURL('#')
+			->setAction('Click Here',$action,$isDone);
+
 	}
 }
