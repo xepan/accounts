@@ -72,6 +72,7 @@ class Initiator extends \Controller_Addon {
 			//Deduction Updation
 			$this->app->addHook('deduction_approved',[$transacton,'updateDeductionTransaction']);
 			$this->app->addHook('deduction_canceled',[$transacton,'deleteDeductionTransaction']);
+			$this->app->addHook('collect_shortcuts',[$this,'collect_shortcuts']);
 		}
 
 		$search_ledger = $this->add('xepan\accounts\Model_Ledger');
@@ -129,6 +130,31 @@ class Initiator extends \Controller_Addon {
         $array['ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION'];
         $array['ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION'];
     }
+
+    function collect_shortcuts($app,&$shortcuts){
+		// $shortcuts[]=["title"=>"New Email","keywords"=>"new email send","description"=>"Send New Email","normal_access"=>"My Menu -> Tasks / New Task Button","url"=>$this->app->url('xepan/projects/mytasks',['admin_layout_cube_mytasks_virtualpage'=>'true']),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Chart Of Acounts","keywords"=>"all accounts trial chart of accounts","description"=>"All Accounts, or Chart Of Accounts","normal_access"=>"Account -> Accounts Chart","url"=>$this->app->url('xepan_accounts_chartofaccount'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Ledgers / Accounts","keywords"=>"ledger accounts","description"=>"Manage your Accounts or Ledgers","normal_access"=>"Account -> Accounts/Ledgers","url"=>$this->app->url('xepan_accounts_accounts'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Payment - Paid","keywords"=>"amount paid given from cash or bank","description"=>"Manage your Payment made by cash or bank","normal_access"=>"Account -> Amount Paid","url"=>$this->app->url('xepan_accounts_amtpaid'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Payment - Received","keywords"=>"amount received in cash or bank","description"=>"Manage your Payment received by cash or bank","normal_access"=>"Account -> Payment Received","url"=>$this->app->url('xepan_accounts_amtreceived'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Contra - Cash Withdraw, Cash deposit","keywords"=>"contra cash deposit withdraw bank","description"=>"Manage bank and cash entry","normal_access"=>"Account -> Cash <=> Bank","url"=>$this->app->url('xepan_accounts_contra'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Transaction Lister","keywords"=>"transaction lister all accounte entries list","description"=>"All Accounts Entries","normal_access"=>"Account -> Transaction Lister","url"=>$this->app->url('xepan_accounts_accounttransactionlister'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Account Statement","keywords"=>"ledger account statement","description"=>"Account Statement","normal_access"=>"Account -> Account Statement","url"=>$this->app->url('xepan_accounts_statement'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Merge Ledger/Account","keywords"=>"merge duplicate ledger account","description"=>"Manage or Merge Duplicate Ledger/Accounts","normal_access"=>"Account -> Account Audit","url"=>$this->app->url('xepan_accounts_audit'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Cash Book","keywords"=>"cash book","description"=>"Cash Book","normal_access"=>"Account -> Cash Book","url"=>$this->app->url('xepan_accounts_cashbook'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Day Book","keywords"=>"day book","description"=>"Day Book","normal_access"=>"Account -> Day Book","url"=>$this->app->url('xepan_accounts_daybook'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Account Groups","keywords"=>"account group","description"=>"Account Group","normal_access"=>"Account -> Group","url"=>$this->app->url('xepan_accounts_group'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Balance Sheet","keywords"=>"balance sheet","description"=>"Company balance Sheet","normal_access"=>"Account -> Balance Sheet","url"=>$this->app->url('xepan_accounts_balancesheet'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Profit And Loss Statement","keywords"=>"p&l pandl profit and loss","description"=>"Company P&L Statement","normal_access"=>"Account -> Profit & Loss","url"=>$this->app->url('xepan_accounts_pandl'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Trading Account Statement","keywords"=>"trading account trial statement","description"=>"Company trading Statement","normal_access"=>"Account -> Trading","url"=>$this->app->url('xepan_accounts_trading'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Currency Management","keywords"=>"currency inr dollar euro","description"=>"Currency Management","normal_access"=>"Account -> Currency Management","url"=>$this->app->url('xepan_accounts_currency'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Default Currency","keywords"=>"set default currency","description"=>"Set Default Currency","normal_access"=>"Account -> Configuration","url"=>$this->app->url('xepan_accounts_config',['cut_object'=>'admin_layout_cube_config_tabs_currency']),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Account Entries Management","keywords"=>"custom account entry add edit change ledger","description"=>"Customize Accounts Entries","normal_access"=>"Account -> Configuration / Custom Accounts Entry","url"=>$this->app->url('xepan_accounts_custom_accountentries'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Set Start of Financial year","keywords"=>"financial year start month set","description"=>"Set start month of financial year","normal_access"=>"Account -> Configuration / Financial Year Start Month","url"=>$this->app->url('xepan_accounts_financialyear'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Salary Ledger Association","keywords"=>"salary ledger basic association mapping port","description"=>"Set which Salary maps on which ledger","normal_access"=>"Account -> Configuration / Salary Ledger Association","url"=>$this->app->url('xepan_accounts_salaryledgerassociation'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Auto Accouning Notifications","keywords"=>"recurring email accounting information daily monthly","description"=>"Set how to get notified automatically about accounts information","normal_access"=>"Account -> Configuration / Auto Notification","url"=>$this->app->url('xepan_accounts_autonotification'),'mode'=>'frame'];
+		$shortcuts[]=["title"=>"Tax Report","keywords"=>"vat gst tax due paid monthly report","description"=>"Tax due and paid between given dates","normal_access"=>"Account -> Reports / SideBar -> Tax Report","url"=>$this->app->url('xepan_accounts_report_subtax'),'mode'=>'frame'];
+	}
 
 	function addAppdateFunctions(){
 		$this->app->addMethod('nextDate',function($app,$date=null){
