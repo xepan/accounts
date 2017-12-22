@@ -5,27 +5,36 @@ class page_contra extends \xepan\base\Page {
 	function init(){
 		parent::init();
 
+		$tabs = $this->add('Tabs');
+
 		// ============ CASH => BANK =================
-		$cash_to_bank = $this->add('xepan\accounts\Model_EntryTemplate');
+		$cash_tab = $tabs->addTab('Cash To Bank','c2b');
+		$cash_to_bank = $cash_tab->add('xepan\accounts\Model_EntryTemplate');
 		$cash_to_bank->loadBy('unique_trnasaction_template_code','CASHDEPOSITINBANK');
 		
-		$cash_to_bank->addHook('afterExecute',function($cash_to_bank,$transaction,$total_amount){
-			$cash_to_bank->form->js()->univ()->reload()->successMessage('Done')->execute();
-		});
+		// $cash_to_bank->addHook('afterExecute',function($cash_to_bank,$transaction,$total_amount){
+		// 	$cash_to_bank->form->js()->univ()->reload()->successMessage('Done')->execute();
+		// });
 
-		$view_bank = $this->add('View',null,'bank_view');
-		$cash_to_bank->manageForm($view_bank,null,null,null);
+		// $view_bank = $this->add('View',null,'bank_view');
+		// $cash_to_bank->manageForm($view_bank,null,null,null);
+
+		$widget = $cash_tab->add('xepan\accounts\View_TransactionWidget');
+		$widget->setModel($cash_to_bank);
 
 		// ============ BANK => CASH =================
+		$bank_tab = $tabs->addTab('Bank To Cash','b2c');
 		$bank_to_cash = $this->add('xepan\accounts\Model_EntryTemplate');
 		$bank_to_cash->loadBy('unique_trnasaction_template_code','CASHWITHDRAWFROMBANK');
 		
-		$bank_to_cash->addHook('afterExecute',function($bank_to_cash,$transaction,$total_amount){
-			$bank_to_cash->form->js()->univ()->reload()->successMessage('Done')->execute();
-		});
-		$view_cash = $this->add('View',null,'cash_view');
-		$bank_to_cash->manageForm($view_cash,null,null,null);
+		// $bank_to_cash->addHook('afterExecute',function($bank_to_cash,$transaction,$total_amount){
+		// 	$bank_to_cash->form->js()->univ()->reload()->successMessage('Done')->execute();
+		// });
+		// $view_cash = $this->add('View',null,'cash_view');
+		// $bank_to_cash->manageForm($view_cash,null,null,null);
 
+		$widget = $bank_tab->add('xepan\accounts\View_TransactionWidget');
+		$widget->setModel($bank_to_cash);
 
 		// ============ CASH => BANK =================
 		// $cash_to_bank_form = $this->add('Form_Stacked',null,'bank_view');
@@ -162,7 +171,7 @@ class page_contra extends \xepan\base\Page {
 		// }
 
 	}
-	function defaultTemplate(){
-		return ['page/contra'];
-	}
+	// function defaultTemplate(){
+	// 	return ['page/contra'];
+	// }
 }

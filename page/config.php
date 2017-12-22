@@ -4,13 +4,14 @@ namespace xepan\accounts;
 
 class page_config extends \xepan\base\Page{
 	public $title="Accounts Configuration";
+	
 	function init(){
 		parent::init();
 
 		$tabs = $this->add('Tabs');
-		$currency_tab = $tabs->addTab('Currency');
+		$currency_tab = $tabs->addTab('Currency','currency');
 		
-		$default_currency = $this->add('xepan\base\Model_ConfigJsonModel',
+		$default_currency = $currency_tab->add('xepan\base\Model_ConfigJsonModel',
 			[
 				'fields'=>[
 							'currency_id'=>'DropDown'
@@ -40,7 +41,7 @@ class page_config extends \xepan\base\Page{
 		$tabs->addTabURL('xepan_accounts_autonotification','Auto Notification');
 	}
 
-	function defaultTemplate(){
-		return['page/account-configuration'];
-	}
+	// function defaultTemplate(){
+	// 	return['page/account-configuration'];
+	// }
 }
