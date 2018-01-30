@@ -90,6 +90,7 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function setup_frontend(){
+		$this->routePages('xepan_accounts');
 		$default_currency_id = $this->add('xepan\base\Model_ConfigJsonModel',
 			[
 				'fields'=>[
