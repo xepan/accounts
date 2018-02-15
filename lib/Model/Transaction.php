@@ -154,15 +154,19 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		
 		if(!$transaction_type_model->loaded()) $transaction_type_model->save();
 
-		if(!$transaction_date) $transaction_date = date('Y-m-d H:i:s');
+		if(!$transaction_date) $transaction_date = $this->app->now;
 
 		if($Currency && !$exchange_rate) throw $this->exception('Exchange rate must be provided if providing currency');
 
 		if(is_numeric($Currency))
 			$Currency = $this->add('xepan\accounts\Model_Currency')->load($Currency);
 		// Transaction TYpe Save if not available
+		$voucher_no = $transaction_type_model->newVoucherNumber($transaction_date);
+		if(trim($this['name']))
+			$voucher_no = $this['name'];
+
 		$this['transaction_type_id'] = $transaction_type_model->id;
-		$this['name'] = $transaction_type_model->newVoucherNumber($transaction_date);
+		$this['name'] = $voucher_no;
 		$this['Narration'] = $Narration;
 		$this['created_at'] = $transaction_date;
 		$this['currency_id'] = $Currency ? $Currency->id : $this->app->epan->default_currency->id;
@@ -484,6 +488,17 @@ class Model_Transaction extends \xepan\base\Model_Table{
 				if($create_new){
 					$transaction = $this->add('xepan\accounts\Model_Transaction');
 					$new_transaction = $this->add('xepan\accounts\Model_Transaction');
+					
+					// if transaction is already exist then delete all transaction row
+					$new_transaction->addCondition('related_id',$emp_row_m->id);
+					$new_transaction->addCondition('related_type',"xepan\hr\Model_SalarySheet");
+					$new_transaction->addCondition('related_type',"xepan\hr\Model_SalarySheet");
+					$new_transaction->addCondition('transaction_template_id',null);
+					$new_transaction->tryLoadAny();
+					foreach ($new_transaction as $trans) {
+						$trans->deleteTransactionRow();
+					}
+
 					$new_transaction->createNewTransaction("SalaryDue",$emp_row_m,$this['created_at'],'Salary Due From Salary Sheet',$this->app->epan->default_currency,1,$emp_row_m['id'],'xepan\hr\Model_EmployeeRow');
 					foreach ($pre_filled as $key => $value) {
 					 	if($value['ledger'] === 'Salary'){
@@ -552,6 +567,16 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			if($create_new){
 				$transaction = $this->add('xepan\accounts\Model_Transaction');
 				$new_transaction = $this->add('xepan\accounts\Model_Transaction');
+
+				// if transaction is already exist then delete all transaction row
+				$new_transaction->addCondition('related_id',$salarysheet_mdl->id);
+				$new_transaction->addCondition('related_type','xepan\hr\Model_SalarySheet');
+				$new_transaction->addCondition('transaction_template_id',null);
+				$new_transaction->tryLoadAny();
+				foreach ($new_transaction as $trans) {
+					$trans->deleteTransactionRow();
+				}
+
 				$new_transaction->createNewTransaction("SalariesDue",$salarysheet_mdl,$this['created_at'],'Salary Due From Salary Sheet',$this->app->epan->default_currency,1,$salarysheet_mdl->id,'xepan\hr\Model_SalarySheet');
 				foreach ($pre_filled as $key => $value) {
 				 	if($value['ledger'] === 'Salary'){
