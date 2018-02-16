@@ -162,8 +162,10 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			$Currency = $this->add('xepan\accounts\Model_Currency')->load($Currency);
 		// Transaction TYpe Save if not available
 		$voucher_no = $transaction_type_model->newVoucherNumber($transaction_date);
-		if(trim($this['name']))
+		if(trim($this['name'])){
 			$voucher_no = $this['name'];
+			// echo "old name = ".$voucher_no."<br/>";
+		}
 
 		$this['transaction_type_id'] = $transaction_type_model->id;
 		$this['name'] = $voucher_no;
@@ -237,9 +239,8 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	}
 
 	function executeSingleBranch(){
-
 		$this->save();
-
+		
 		$total_debit_amount = 0;
 		// Foreach Dr add new TransactionRow (Dr wali)
 		foreach ($this->dr_accounts as $index => $dtl) {
@@ -389,7 +390,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		return $return;
 	}
 
-	function updateSalaryTransaction($app,$salarysheet_mdl,$delete_old=true,$create_new=true){
+	function updateSalaryTransaction($app,$salarysheet_mdl,$delete_old=false,$create_new=true){
 
 		if(!$salarysheet_mdl->loaded() AND !($salarysheet_mdl instanceof \xepan\hr\Model_SalarySheet))
 			throw new \Exception("must pass Salary Sheet loaded model", 1);	
@@ -480,24 +481,22 @@ class Model_Transaction extends \xepan\base\Model_Table{
 												'currency'=>null
 											];
 				}
-				if($delete_old){			
-				//each employee row of salary sheet transaction have always one entry in transaction
+				if($delete_old){
+					//each employee row of salary sheet transaction have always one entry in transaction
 					$this->deleteSalaryTransaction($app,$emp_row_m);
 				}
 				
 				if($create_new){
-					$transaction = $this->add('xepan\accounts\Model_Transaction');
+					// $transaction = $this->add('xepan\accounts\Model_Transaction');
 					$new_transaction = $this->add('xepan\accounts\Model_Transaction');
-					
+
 					// if transaction is already exist then delete all transaction row
 					$new_transaction->addCondition('related_id',$emp_row_m->id);
-					$new_transaction->addCondition('related_type',"xepan\hr\Model_SalarySheet");
-					$new_transaction->addCondition('related_type',"xepan\hr\Model_SalarySheet");
+					$new_transaction->addCondition('related_type',"xepan\hr\Model_EmployeeRow");
 					$new_transaction->addCondition('transaction_template_id',null);
 					$new_transaction->tryLoadAny();
-					foreach ($new_transaction as $trans) {
-						$trans->deleteTransactionRow();
-					}
+					if($new_transaction->loaded())
+						$new_transaction->deleteTransactionRow();
 
 					$new_transaction->createNewTransaction("SalaryDue",$emp_row_m,$this['created_at'],'Salary Due From Salary Sheet',$this->app->epan->default_currency,1,$emp_row_m['id'],'xepan\hr\Model_EmployeeRow');
 					foreach ($pre_filled as $key => $value) {
