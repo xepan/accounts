@@ -564,7 +564,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 			}
 
 			if($create_new){
-				$transaction = $this->add('xepan\accounts\Model_Transaction');
+				// $transaction = $this->add('xepan\accounts\Model_Transaction');
 				$new_transaction = $this->add('xepan\accounts\Model_Transaction');
 
 				// if transaction is already exist then delete all transaction row
@@ -572,9 +572,8 @@ class Model_Transaction extends \xepan\base\Model_Table{
 				$new_transaction->addCondition('related_type','xepan\hr\Model_SalarySheet');
 				$new_transaction->addCondition('transaction_template_id',null);
 				$new_transaction->tryLoadAny();
-				foreach ($new_transaction as $trans) {
-					$trans->deleteTransactionRow();
-				}
+				if($new_transaction->loaded())
+					$new_transaction->deleteTransactionRow();
 
 				$new_transaction->createNewTransaction("SalariesDue",$salarysheet_mdl,$this['created_at'],'Salary Due From Salary Sheet',$this->app->epan->default_currency,1,$salarysheet_mdl->id,'xepan\hr\Model_SalarySheet');
 				foreach ($pre_filled as $key => $value) {
