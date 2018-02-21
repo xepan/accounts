@@ -138,8 +138,23 @@ class Model_Group extends \xepan\base\Model_Table{
 
 	function getBalance($from_date=null,$to_date=null,$include_subgroups=true){
 		// if(!$this->loaded()) throw new \Exception("Group Model Must Be Loaded", 1);
-		
-		return rand(999,99999);
+		$balance = 0;
+		foreach ($this->ledgers($include_subgroups) as $l) {
+			$balance += $l['balance_signed']; // always DR - CR
+		}
+		return $balance;
+	}
+
+	function ledgers($from_all_sub_groups=false){
+		if(!$from_all_sub_groups)
+			return $this->add('xepan\accounts\Model_Ledger')
+					->addCondition('group_id',$this->id);
+
+		return $this->add('xepan\accounts\Model_Ledger')
+				->addCondition('group_path','like',$this['path'].'%')
+				// ->debug()
+				;
+
 	}
 
 	public $defaultGroups=[
