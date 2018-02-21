@@ -33,9 +33,9 @@ class Model_Transaction extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\accounts\Currency','currency_id');
 		$this->hasOne('xepan\accounts\EntryTemplate','transaction_template_id');
 
-		$this->addField('related_id'); // used for sale invoice/purchase invoice
-		$this->addField('related_type'); // Sale or Purchase
-		$this->addField('related_transaction_id'); // To manage Multiple transaction in one go
+		$this->addField('related_id'); // used for sale invoice/purchase invoice or even monthsalary sheet id
+		$this->addField('related_type'); // Sale or Purchase or Monthly SalarySheet
+		$this->addField('related_transaction_id'); // To manage Multiple transaction in one go, first transaction's id in rest of transactions
 
 		$this->addField('name')->caption('Voucher No');
 		$this->addExpression('voucher_no')->set(function ($m,$q){
