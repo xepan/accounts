@@ -59,10 +59,7 @@ class page_report_all extends page_report{
 
 		$report_function_btn = $crud->addButton('Report Function');
 		$report_function_btn->js('click')->univ()
-            ->frameURL(
-                'Adding new function',
-                'xepan\accounts\reportfunction'
-            );
+            ->frameURL('Adding new function',$this->app->url('xepan_accounts_reportfunction'));
 
 
 	}
