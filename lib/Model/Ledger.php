@@ -72,6 +72,18 @@ class Model_Ledger extends \xepan\base\Model_Table{
 						->fieldQuery('report_name');
 		});
 
+		$this->addExpression('subtract_from')->set(function($m,$q){
+			return  $m->add('xepan\accounts\Model_BalanceSheet',['pandl_check'])
+						->addCondition('id',$m->getElement('balance_sheet_id'))
+						->fieldQuery('subtract_from');
+		});
+
+		$this->addExpression('positive_side')->set(function($m,$q){
+			return  $q->expr('IF([0]="RT","Assets","Liabilities")',[$m->add('xepan\accounts\Model_BalanceSheet',['pandl_check'])
+						->addCondition('id',$m->getElement('balance_sheet_id'))
+						->fieldQuery('positive_side')]);
+		});
+
 		$this->addExpression('CurrentBalanceDr')->set(function($m,$q){
 			return $m->refSQL('TransactionRows')->sum('amountDr');
 		});

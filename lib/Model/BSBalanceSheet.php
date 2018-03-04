@@ -5,8 +5,8 @@ namespace xepan\accounts;
 
 class Model_BSBalanceSheet extends Model_BalanceSheet{
 
-	public $from_date=null;
-	public $to_date=null;
+	public $from_date='1970-01-01';
+	public $to_date='3000-12-31';
 
 	function init(){
 		parent::init();

@@ -8,18 +8,28 @@ class page_audit extends \xepan\base\Page {
 
 	function init(){
 		parent::init();
-
 		ini_set('memory_limit', '3G');
 		set_time_limit(0);
+		
+	}
 
-		$this->DrCrMisMatch();
-		$this->groupsBalance();
-		$this->openningCrDrDiff();
-		$this->allTRansactions();
+	function page_index(){
+		parent::init();
+
+		$tabs = $this->add('Tabs');
+		$tabs->addTabURL($this->app->url('./DrCrMisMatch'),'Dr<>CD');
+		$tabs->addTabURL($this->app->url('./groupsBalance'),'groupsBalance');
+		$tabs->addTabURL($this->app->url('./openningCrDrDiff'),'openningCrDrDiff');
+		$tabs->addTabURL($this->app->url('./allTRansactions'),'allTRansactions');
+		$tabs->addTabURL($this->app->url('./allTRansactionsRows'),'allTRansactionsRows');
+		$tabs->addTabURL($this->app->url('./allInvoiceData'),'allInvoiceData');
+		$tabs->addTabURL($this->app->url('./ledgers'),'ledgers');
+		$tabs->addTabURL($this->app->url('./groups'),'groups');
+		$tabs->addTabURL($this->app->url('./balancesheet'),'balancesheet');
 
 	}
 
-	function DrCrMisMatch(){
+	function page_DrCrMisMatch(){
 		
 			
 		$m = $this->add('xepan\accounts\Model_Transaction');
@@ -33,7 +43,7 @@ class page_audit extends \xepan\base\Page {
 		$grid->add('H2',null,'grid_buttons')->set('Dr/Cr Mismatch');
 	}
 
-	function groupsBalance(){
+	function page_groupsBalance(){
 		$m = $this->add('xepan\accounts\Model_Group');
 
 		$m->add('misc/Field_Callback','balance')->set(function($m){
@@ -49,7 +59,7 @@ class page_audit extends \xepan\base\Page {
 		$grid->add('H2',null,'grid_buttons')->set('Groups with Balances');
 	}
 
-	function openningCrDrDiff(){
+	function page_openningCrDrDiff(){
 		$g= $this->add('xepan\base\Grid');
 		$m = $this->add('xepan\accounts\Model_Ledger');
 		$m->addCondition([['OpeningBalanceDr','>',0],['OpeningBalanceCr','>',0]]);
@@ -58,28 +68,27 @@ class page_audit extends \xepan\base\Page {
 		$g->addTotals(['OpeningBalanceDr','OpeningBalanceCr']);
 	}
 
-	function allTRansactions(){
-		$crud = $this->add('xepan\hr\CRUD',
+	function page_allTRansactions(){
+		$crud = $this->add('xepan\base\CRUD',
 				[
 					'grid_class'=>'xepan\accounts\Grid_AccountsBase',
 					'grid_options'=>['no_records_message'=>'No account statement found'],
 					'form_class' => 'xepan\accounts\Form_EntryRunner',
 					'allow_add'=> false,
 					'allow_edit'=>false,
-					'allow_delete'=>false,
-				],null,['view/accountstatement-grid']);
-
+					'allow_del'=>false
+				]);
 
 		$transactions = $this->add('xepan\accounts\Model_Transaction');
-		$transactions->getElement('exchange_rate')->destroy();
-		$trow_j = $transactions->join('account_transaction_row.transaction_id');
-		$trow_j->addField('exchange_rate');
-		$trow_j->addField('original_amount_dr','_amountDr');
-		$trow_j->addField('original_amount_cr','_amountCr');
-		$trow_j->addField('ledger_id');
+		// $transactions->getElement('exchange_rate')->destroy();
+		// $trow_j = $transactions->join('account_transaction_row.transaction_id');
+		// $trow_j->addField('row_exchange_rate','exchange_rate');
+		// $trow_j->addField('original_amount_dr','_amountDr');
+		// $trow_j->addField('original_amount_cr','_amountCr');
+		// $trow_j->hasOne('xepan\accounts\Model_Ledger','ledger_id');
 
-		$transactions->addExpression('amountDr')->set($transactions->dsql()->expr('round(([0]*[1]),2)',[$transactions->getElement('original_amount_dr'),$transactions->getElement('exchange_rate')]));
-		$transactions->addExpression('amountCr')->set($transactions->dsql()->expr('round(([0]*[1]),2)',[$transactions->getElement('original_amount_cr'),$transactions->getElement('exchange_rate')]));
+		// $transactions->addExpression('amountDr')->set($transactions->dsql()->expr('round(([0]*[1]),2)',[$transactions->getElement('original_amount_dr'),$transactions->getElement('exchange_rate')]));
+		// $transactions->addExpression('amountCr')->set($transactions->dsql()->expr('round(([0]*[1]),2)',[$transactions->getElement('original_amount_cr'),$transactions->getElement('exchange_rate')]));
 
 		$transactions->addExpression('no')->set(function($m,$q){
 			$related_no = $m->add('xepan\commerce\Model_QSP_Master')
@@ -135,10 +144,93 @@ class page_audit extends \xepan\base\Page {
 			}
 		});	
 
-		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
+		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','cr_sum','dr_sum','cr_sum_exchanged','dr_sum_exchanged']);
 
 		$crud->grid->addPaginator(100);
+		$crud->grid->addTotals(['amountDr','amountCr']);
+
+		$crud->addRef('TransactionRows',['view_class'=>'xepan\base\Grid','fields'=>['ledger','currency','_amountDr','_amountCr','exchange_rate','amountCr','amountDr']]);
 
 		$crud->grid->add('H2',null,'grid_buttons')->set('All Transactions');
 	}
+
+	function page_allTRansactionsRows(){
+		$grid = $this->add('Grid');
+		
+		$m= $this->add('xepan\accounts\Model_TransactionRow');
+
+		$grid->setModel($m,['transaction','ledger','ledger_id','report_name','subtract_from','positive_side','_amountDr','_amountCr','amountDr','amountCr','original_amount_dr','original_amount_cr','currency']);
+		$grid->removeColumn('ledger_id');
+		$grid->addFormatter('ledger','wrap');
+		$grid->addTotals(['_amountDr','_amountCr','amountDr','amountCr']);
+	}
+
+	function page_allInvoiceData(){
+		$grid = $this->add('Grid');
+		$m = $this->add('xepan\commerce\Model_SalesInvoice');
+		$grid->setModel($m);
+		$grid->addColumn('Expander','details');
+	}
+
+	function page_allInvoiceData_details(){
+		$grid = $this->add('Grid');
+		$m1 = $this->add('xepan\commerce\Model_QSP_Detail')->addCondition('qsp_master_id',$_GET['document_id']);
+		$grid->setModel($m1);
+
+	}
+
+	function page_ledgers(){
+		$btn_ste = $this->add('ButtonSet');
+		$btn_1 = $btn_ste->addButton('Remove Zero');
+		$btn_2 = $btn_ste->addButton('Show All');
+		$grid = $this->add('xepan\base\Grid');
+		$m = $this->add('xepan\accounts\Model_Ledger');
+		
+		if($_GET['remove_zero'])
+			$m->addCondition('balance_signed','<>',0);
+		
+		$grid->setModel($m,['name','group','root_group','balance_sheet','report_name','subtract_from','positive_side','balance','balance_signed']);
+		$grid->addFormatter('name','wrap');
+		$grid->removeColumn('balance_signed');
+
+		$btn_1->js('click',$grid->js()->reload(['remove_zero'=> 1]));
+		$btn_2->js('click',$grid->js()->reload(['remove_zero'=> 0]));
+	}
+
+	function page_groups(){
+		$grid = $this->add('xepan\base\Grid');
+		$m = $this->add('xepan\accounts\Model_BSGroup');
+
+		$grid->setModel($m,['name','balance_sheet','parent_group','root_group','report_name','subtract_from','positive_side']);
+
+	}
+
+	function page_balancesheet(){
+		$grid = $this->add('xepan\base\Grid');
+		$m = $this->add('xepan\accounts\Model_BSBalanceSheet');
+		
+		$m->getElement('OpeningBalanceDr')->caption('ACC-OP-DR');
+		$m->getElement('OpeningBalanceCr')->caption('ACC-OP-CR');
+		$m->getElement('PreviousTransactionsDr')->caption('B4-Date-Dr');
+		$m->getElement('PreviousTransactionsCr')->caption('B4-Date-Cr');
+		$m->getElement('TransactionsDr')->caption('from-to-Dr');
+		$m->getElement('TransactionsCr')->caption('from-to-Cr');
+		$m->getElement('ClosingBalanceDr')->caption('Bal-DR');
+		$m->getElement('ClosingBalanceCr')->caption('Bal-CR');
+
+		$m->addExpression('side')->set(function($m,$q){
+			return $q->expr('IF([0]="LT","Liabilities","Assets")',[$m->getElement('positive_side')]);
+		});
+
+		$grid->addMethod('format_balance',function($g,$f){
+			$amt = $g->model['ClosingBalanceDr']-$g->model['ClosingBalanceCr'];
+			$g->current_row[$f] = abs($amt). ' '. ($amt>0?'Dr':'Cr');
+		});
+
+
+		$grid->setModel($m,['name','report_name','subtract_from','side','OpeningBalanceDr','OpeningBalanceCr','PreviousTransactionsDr','PreviousTransactionsCr','TransactionsDr','TransactionsCr','ClosingBalanceDr','ClosingBalanceCr','balance']);
+		$grid->addColumn('balance','balance');
+		$grid->addTotals(['ClosingBalanceDr','ClosingBalanceCr']);
+	}
+
 }

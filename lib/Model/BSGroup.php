@@ -5,8 +5,8 @@ namespace xepan\accounts;
 
 class Model_BSGroup extends Model_Group{
 
-	public $from_date=null;
-	public $to_date=null;
+	public $from_date='1970-01-01';
+	public $to_date='3000-12-31';
 	public $no_sub_groups=false;
 
 	function init(){

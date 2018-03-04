@@ -21,7 +21,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		$this->addField('code');
 		$this->addField('side');
 		$this->addField('accounts_in_side')->type('int');
-		$this->addField('exchange_rate')->type('number');
+		$this->addField('exchange_rate')->type('number')->defaultValue(1);
 		$this->addField('remark')->type('text');
 
 		$this->addExpression('amountCr')->set($this->dsql()->expr('round(([0]*[1]),2)',[$this->getElement('_amountCr'),$this->getElement('exchange_rate')]));
@@ -34,7 +34,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 							CONCAT([1]," ",[2]),
 							" "
 						)
-					)',[$m->getElement('exchange_rate'), $m->getElement('_amountDr'),$m->getElement('currency_id')]);
+					)',[$m->getElement('exchange_rate'), $m->getElement('_amountDr'),$m->getElement('currency')]);
 				
 		})->type('money');
 
@@ -46,7 +46,7 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 							CONCAT([1]," ",[2]),
 							" "
 						)
-					)',[$m->getElement('exchange_rate'), $m->getElement('_amountCr'),$m->getElement('currency_id')]);
+					)',[$m->getElement('exchange_rate'), $m->getElement('_amountCr'),$m->getElement('currency')]);
 				
 		})->type('money');
 
@@ -97,9 +97,9 @@ class Model_TransactionRow extends \xepan\base\Model_Table{
 		});
 
 		$this->addExpression('positive_side')->set(function($m,$q){
-			return  $m->add('xepan\accounts\Model_BalanceSheet',['pandl_check'])
+			return  $q->expr('IF([0]="RT","Assets","Liabilities")',[$m->add('xepan\accounts\Model_BalanceSheet',['pandl_check'])
 						->addCondition('id',$m->getElement('balance_sheet_id'))
-						->fieldQuery('positive_side');
+						->fieldQuery('positive_side')]);
 		});
 		
 		// $this->addHook('beforeDelete',[$this,'deleteTransactionAndthis']);
