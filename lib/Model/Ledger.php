@@ -66,6 +66,12 @@ class Model_Ledger extends \xepan\base\Model_Table{
 					->fieldQuery('path');
 		});
 
+		$this->addExpression('report_name')->set(function($m,$q){
+			return $m->add('xepan\accounts\Model_BalanceSheet',['table_alias'=>'for_report_name'])
+						->addCondition('id',$m->getElement('balance_sheet_id'))
+						->fieldQuery('report_name');
+		});
+
 		$this->addExpression('CurrentBalanceDr')->set(function($m,$q){
 			return $m->refSQL('TransactionRows')->sum('amountDr');
 		});

@@ -19,6 +19,7 @@ class page_groupdig extends \xepan\base\Page{
 		$cr_bal = 0;
 
 		foreach ($bs_group as $bsg) {
+			echo $bsg['report_name'];
 			$dr_bal += $bsg['ClosingBalanceDr']; 
 			$cr_bal += $bsg['ClosingBalanceCr'];
 		}

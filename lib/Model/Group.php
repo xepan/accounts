@@ -39,6 +39,10 @@ class Model_Group extends \xepan\base\Model_Table{
 						->fieldQuery($root_group_m->getElement('name'));
 		});
 
+		$this->addExpression('report_name')->set(function($m,$q){
+			return $m->refSQL('balance_sheet_id')->fieldQuery('report_name');
+		});
+
 		$this->is([
 			'name!|to_trim|unique'
 			]

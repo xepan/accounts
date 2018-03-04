@@ -216,7 +216,7 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 			$left_sum += $net_profit;
 		}else{
 			$net_loss = $left_sum - $right_sum;
-			$left[] = ['name'=>'Net Loss','amount'=>abs($net_loss),'id'=>'net_loss'];
+			$right[] = ['name'=>'Net Loss','amount'=>abs($net_loss),'id'=>'net_loss'];
 			$right_sum += $net_loss;
 		}
 

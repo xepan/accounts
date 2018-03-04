@@ -6,7 +6,7 @@ class page_pandl extends \xepan\base\Page{
 		parent::init();
 
 		$fy=$this->app->getFinancialYear();
-		
+
 		$from_date = $this->api->stickyGET('from_date')?:$fy['start_date'];
 		$to_date = $this->api->stickyGET('to_date')?:$fy['end_date'];
 
@@ -44,7 +44,7 @@ class page_pandl extends \xepan\base\Page{
 		$view->template->trySet('ltotal',$left_sum);
 		$view->template->trySet('atotal',$right_sum);
 	
-        $view->js('click')->_selector('.xepan-accounts-bs-group.pandlrow')->univ()->frameURL('BalanceSheet Head Groups',[$this->api->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
+        $view->js('click')->_selector('.xepan-accounts-bs-group.pandlrow')->univ()->frameURL('BalanceSheet Head Groups',[$this->api->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date,'is_pandl'=>true]);
         $view->js('click')->_selector('.xepan-accounts-bs-group.grossrow')->univ()->frameURL('Trading sheet',[$this->api->url('xepan_accounts_trading'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
 	}
 }

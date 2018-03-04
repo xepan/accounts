@@ -43,19 +43,42 @@ class Model_BSLedger extends Model_Ledger {
 		});
 
 		$this->addExpression('ClosingBalanceDr')->set(function($m,$q){
-			return $q->expr('IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0)',[
+			return $q->expr('
+				IF([3]="BalanceSheet",
+				IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0),
+				IFNULL([2],0))',[
 					$m->getElement('OpeningBalanceDr'),
 					$m->getElement('PreviousTransactionsDr'),
-					$m->getElement('TransactionsDr')
+					$m->getElement('TransactionsDr'),
+					$m->getElement('report_name')
 				]);
 		});
 		$this->addExpression('ClosingBalanceCr')->set(function($m,$q){
-			return $q->expr('IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0)',[
+			return $q->expr('
+				IF([3]="BalanceSheet",
+				IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0),
+				IFNULL([2],0))',[
 					$m->getElement('OpeningBalanceCr'),
 					$m->getElement('PreviousTransactionsCr'),
-					$m->getElement('TransactionsCr')
+					$m->getElement('TransactionsCr'),
+					$m->getElement('report_name')
 				]);
-		});
+		})->type('money');
+
+		// $this->addExpression('ClosingBalanceDr')->set(function($m,$q){
+		// 	return $q->expr('IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0)',[
+		// 			$m->getElement('OpeningBalanceDr'),
+		// 			$m->getElement('PreviousTransactionsDr'),
+		// 			$m->getElement('TransactionsDr')
+		// 		]);
+		// });
+		// $this->addExpression('ClosingBalanceCr')->set(function($m,$q){
+		// 	return $q->expr('IFNULL([0],0)+IFNULL([1],0)+IFNULL([2],0)',[
+		// 			$m->getElement('OpeningBalanceCr'),
+		// 			$m->getElement('PreviousTransactionsCr'),
+		// 			$m->getElement('TransactionsCr')
+		// 		]);
+		// });
 
 	}
 }
