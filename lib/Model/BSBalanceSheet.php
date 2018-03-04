@@ -224,6 +224,8 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 	}
 
 	function getBalanceSheet($from_date,$to_date){
+		$debug = false;
+
 		$bsbalancesheet = $this->add('xepan\accounts\Model_BSBalanceSheet',['from_date'=>$from_date,'to_date'=>$to_date]);
 		$bsbalancesheet->addCondition('report_name','BalanceSheet');
 
@@ -237,55 +239,77 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		$openning_balances_cr=0;
 
 		foreach ($bsbalancesheet as $bs) {
+
+			if($debug) echo $bs['name']; 
+
 			$side='CR';
-			if($bs['subtract_from']=='CR'){
+			
+			if($bs['subtract_from']==='CR'){
 				$amount  = $bs['ClosingBalanceCr'] - $bs['ClosingBalanceDr'];
-				$openning_balances_cr += $bs['OpeningBalanceCr'];
-				$openning_balances_dr += $bs['OpeningBalanceDr'];
 			}else{
 				$side = 'DR';
 				$amount  = $bs['ClosingBalanceDr'] - $bs['ClosingBalanceCr'];
-				$openning_balances_cr += $bs['OpeningBalanceCr'];
-				$openning_balances_dr += $bs['OpeningBalanceDr'];
 			}
-			if($amount >=0 && $side == $bs['subtract_from']){
-				if($bs['positive_side']=='LT'){
-					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id'],'type'=>'bsrow'];
-					$left_sum += abs($amount);
+
+			if($debug) echo " $side $amount ";
+			$openning_balances_cr += $bs['OpeningBalanceCr'];
+			$openning_balances_dr += $bs['OpeningBalanceDr'];
+
+			if($amount > 0){
+				if($bs['positive_side']==='LT'){
+					$left[] = ['name'=>$bs['name'],'amount'=>$amount,'id'=>$bs['id'],'type'=>'bsrow'];
+					$left_sum += $amount;
 				}else{
-					$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id'],'type'=>'bsrow'];
-					$right_sum += abs($amount);
+					$right[] = ['name'=>$bs['name'],'amount'=>$amount,'id'=>$bs['id'],'type'=>'bsrow'];
+					$right_sum += $amount;
 				}
-			}else{
-				if($bs['positive_side']=='RT'){
-					$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id'],'type'=>'bsrow'];
-					$left_sum += abs($amount);
+			}elseif($amount < 0){
+				if($bs['positive_side']==='LT'){
+					$right[] = ['name'=>$bs['name'],'amount'=>($amount * -1),'id'=>$bs['id'],'type'=>'bsrow'];
+					$right_sum += ($amount* -1);
 				}else{
-					$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id'],'type'=>'bsrow'];
-					$right_sum += abs($amount);
+					$left[] = ['name'=>$bs['name'],'amount'=>($amount * -1),'id'=>$bs['id'],'type'=>'bsrow'];
+					$left_sum += ($amount * -1);
 				}
 			}
+			// elseif($amount < 0 ){
+			// 	if($bs['positive_side']==='RT'){
+			// 		$left[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id'],'type'=>'bsrow'];
+			// 		$left_sum += abs($amount);
+			// 	}else{
+			// 		$right[] = ['name'=>$bs['name'],'amount'=>abs($amount),'id'=>$bs['id'],'type'=>'bsrow'];
+			// 		$right_sum += abs($amount);
+			// 	}
+			// }
 			// echo $bs['name'] . ' - ' . $amount . '<br/>';
+
+			if($debug) echo  " left_sum = $left_sum right_sum = $right_sum <br/>";
 		}
 
 		// var_dump($left,$right);
 		// exit;
 
 		$pandl = $this->getPandL($from_date,$to_date);
+		
+		if($debug) {echo "Pandl Info <pre>"; print_r($pandl); echo "</pre><br/>";}
+
 		$net_profit = $pandl['net_profit'];
 		$net_loss = $pandl['net_loss'];
+
 
 		$gross_profit = $pandl['gross_profit'];
 		$gross_loss = $pandl['gross_loss'];
 
-		if($net_profit >= 0){
+		if($net_profit > 0){
 			$left[] = ['name'=>'Profit','amount'=>abs($net_profit),'id'=>'net_profit','type'=>'pandl'];
 			$left_sum += $net_profit;
+			if($debug) {echo "net profit added in left $left_sum <br/>";}
 		}
 
 		if($net_loss > 0){
 			$right[] = ['name'=>'Loss','amount'=>abs($net_loss),'id'=>'net_loss','type'=>'pandl'];
-			$right_sum += $net_loss;
+			$right_sum += abs($net_loss);
+			if($debug) {echo "net loss added in right $right_sum <br/>";}
 		}
 
 		$opening_balance_diff=$openning_balances_dr - $openning_balances_cr;
@@ -293,13 +317,17 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		
 		if($opening_balance_diff>0){
 			$left[] = ['name'=>'Opp. Balance Diff','amount'=>abs($opening_balance_diff),'id'=>'opening_balnce_diff'];
-			$left_sum += $opening_balance_diff;
+			$left_sum += abs($opening_balance_diff);
+			if($debug) {echo "Op diff added in left $left_sum <br/>";}
 		}
 
 		if($opening_balance_diff<0){
 			$right[] = ['name'=>'Opp. Balance Diff','amount'=>abs($opening_balance_diff),'id'=>'opening_balnce_diff'];
-			$right_sum += $opening_balance_diff;
+			$right_sum += abs($opening_balance_diff);
+			if($debug) {echo "Op diff added in right $right_sum <br/>";}
 		}
+
+		// die($right_sum);
 
 		return ['left'=>$left,'right'=>$right,'left_sum'=>$left_sum,'right_sum'=>$right_sum,'net_profit'=>$net_profit,'net_loss'=>$net_loss,'gross_profit'=>$gross_profit,'gross_loss'=>$gross_loss,'openning_balances_dr'=>$openning_balances_dr,'openning_balances_cr'=>$openning_balances_cr];
 
