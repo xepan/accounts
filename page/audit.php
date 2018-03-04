@@ -60,12 +60,17 @@ class page_audit extends \xepan\base\Page {
 	}
 
 	function page_openningCrDrDiff(){
+		$this->add('h3')->set('Positive Balance signed is DR and negative is CR');
+
 		$g= $this->add('xepan\base\Grid');
 		$m = $this->add('xepan\accounts\Model_Ledger');
 		$m->addCondition([['OpeningBalanceDr','>',0],['OpeningBalanceCr','>',0]]);
-		$g->setModel($m,['group','name','ledger_type','OpeningBalanceDr','OpeningBalanceCr','balance_sheet','root_group','balance']);
+		$g->setModel($m,['name','group','report_name','OpeningBalanceDr','OpeningBalanceCr','balance_sheet','root_group','balance','balance_signed']);
 		$g->add('H2',null,'grid_buttons')->set('Openning Balances of Ledgers');
-		$g->addTotals(['OpeningBalanceDr','OpeningBalanceCr']);
+		$g->addTotals(['OpeningBalanceDr','OpeningBalanceCr','balance_signed']);
+
+		$g->addFormatter('group','wrap');
+		$g->addFormatter('name','wrap');
 	}
 
 	function page_allTRansactions(){
@@ -144,9 +149,10 @@ class page_audit extends \xepan\base\Page {
 			}
 		});	
 
-		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','cr_sum','dr_sum','cr_sum_exchanged','dr_sum_exchanged']);
+		$crud->setModel($transactions,['created_at','voucher_no','transaction_type','Narration','cr_sum','dr_sum','cr_sum_exchanged','dr_sum_exchanged']);
 
 		$crud->grid->addPaginator(100);
+		$crud->grid->addSno();
 		$crud->grid->addTotals(['amountDr','amountCr']);
 
 		$crud->addRef('TransactionRows',['view_class'=>'xepan\base\Grid','fields'=>['ledger','currency','_amountDr','_amountCr','exchange_rate','amountCr','amountDr']]);
@@ -155,7 +161,7 @@ class page_audit extends \xepan\base\Page {
 	}
 
 	function page_allTRansactionsRows(){
-		$grid = $this->add('Grid');
+		$grid = $this->add('xepan\base\Grid');
 		
 		$m= $this->add('xepan\accounts\Model_TransactionRow');
 
@@ -183,29 +189,62 @@ class page_audit extends \xepan\base\Page {
 		$btn_ste = $this->add('ButtonSet');
 		$btn_1 = $btn_ste->addButton('Remove Zero');
 		$btn_2 = $btn_ste->addButton('Show All');
+
+		$f = $this->add('Form');
+		$f->addField('DropDown','balance_sheet_type')
+			->setValueList(['BalanceSheet'=>'BalanceSheet','Profit & Loss'=>'Profit & Loss','Trading'=>'Trading'])
+			->setAttr('multiple');
+		$f->addSubmit('Filter');
+
+		$this->add('h3')->set('Positive Balance signed is DR and negative is CR');
+
 		$grid = $this->add('xepan\base\Grid');
 		$m = $this->add('xepan\accounts\Model_Ledger');
 		
 		if($_GET['remove_zero'])
 			$m->addCondition('balance_signed','<>',0);
+
+		$m->setOrder('report_name');
+
+		if($_GET['balance_sheet_type'])
+			$m->addCondition('report_name',explode(",", $_GET['balance_sheet_type']));
 		
 		$grid->setModel($m,['name','group','root_group','balance_sheet','report_name','subtract_from','positive_side','balance','balance_signed']);
 		$grid->addFormatter('name','wrap');
-		$grid->removeColumn('balance_signed');
+		$grid->addFormatter('group','wrap');
+		// $grid->removeColumn('balance_signed');
+
+		$grid->addTotals(['balance_signed']);
 
 		$btn_1->js('click',$grid->js()->reload(['remove_zero'=> 1]));
 		$btn_2->js('click',$grid->js()->reload(['remove_zero'=> 0]));
+
+		if($f->isSubmitted()){			
+			$grid->js()->reload(['balance_sheet_type'=>$f['balance_sheet_type']])->execute();
+		}
+
 	}
 
 	function page_groups(){
 		$grid = $this->add('xepan\base\Grid');
 		$m = $this->add('xepan\accounts\Model_BSGroup');
 
-		$grid->setModel($m,['name','balance_sheet','parent_group','root_group','report_name','subtract_from','positive_side']);
+		$grid->setModel($m,['name','balance_sheet','parent_group','root_group_name','report_name','subtract_from','positive_side','ClosingBalanceDr','ClosingBalanceCr']);
 
+		$grid->addFormatter('name','wrap');
+		$grid->addFormatter('parent_group','wrap');
+		$grid->addFormatter('root_group_name','wrap');
+
+		$grid->addTotals(['ClosingBalanceDr','ClosingBalanceCr']);
 	}
 
 	function page_balancesheet(){
+		$f = $this->add('Form');
+		$f->addField('DropDown','balance_sheet_type')
+			->setValueList(['BalanceSheet'=>'BalanceSheet','Profit & Loss'=>'Profit & Loss','Trading'=>'Trading'])
+			->setAttr('multiple');
+		$f->addSubmit('Filter');
+
 		$grid = $this->add('xepan\base\Grid');
 		$m = $this->add('xepan\accounts\Model_BSBalanceSheet');
 		
@@ -227,10 +266,19 @@ class page_audit extends \xepan\base\Page {
 			$g->current_row[$f] = abs($amt). ' '. ($amt>0?'Dr':'Cr');
 		});
 
+		if($_GET['balance_sheet_type'])
+			$m->addCondition('report_name',explode(",", $_GET['balance_sheet_type']));
+
 
 		$grid->setModel($m,['name','report_name','subtract_from','side','OpeningBalanceDr','OpeningBalanceCr','PreviousTransactionsDr','PreviousTransactionsCr','TransactionsDr','TransactionsCr','ClosingBalanceDr','ClosingBalanceCr','balance']);
 		$grid->addColumn('balance','balance');
 		$grid->addTotals(['ClosingBalanceDr','ClosingBalanceCr']);
+		$grid->addFormatter('name','wrap');
+
+
+		if($f->isSubmitted()){			
+			$grid->js()->reload(['balance_sheet_type'=>$f['balance_sheet_type']])->execute();
+		}
 	}
 
 }
