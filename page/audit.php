@@ -14,6 +14,7 @@ class page_audit extends \xepan\base\Page {
 
 		$this->DrCrMisMatch();
 		$this->groupsBalance();
+		$this->openningCrDrDiff();
 		$this->allTRansactions();
 
 	}
@@ -46,6 +47,15 @@ class page_audit extends \xepan\base\Page {
 		$grid->setModel($m);
 		$grid->addPaginator(50);
 		$grid->add('H2',null,'grid_buttons')->set('Groups with Balances');
+	}
+
+	function openningCrDrDiff(){
+		$g= $this->add('xepan\base\Grid');
+		$m = $this->add('xepan\accounts\Model_Ledger');
+		$m->addCondition([['OpeningBalanceDr','>',0],['OpeningBalanceCr','>',0]]);
+		$g->setModel($m,['group','name','ledger_type','OpeningBalanceDr','OpeningBalanceCr','balance_sheet','root_group','balance']);
+		$g->add('H2',null,'grid_buttons')->set('Openning Balances of Ledgers');
+		$g->addTotals(['OpeningBalanceDr','OpeningBalanceCr']);
 	}
 
 	function allTRansactions(){

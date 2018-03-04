@@ -30,7 +30,7 @@ class page_chartofaccount extends \xepan\base\Page{
 			}
 
 			$head_sum = ABS($head_sum) . ($head_sum>0 ? ' Dr':' Cr');
-			$data['name']='<span class="label label-primary">'.$bm['name'].' => '. $head_sum .'</span> <small class="label label-primary">'.$bm['report_name'].'</small>';
+			$data['name']='<span class="label label-primary">'.$bm['name'].' => '. $head_sum .'</span> <small class="label label-primary">'.$bm['report_name'].'</small> <small class="label label-primary">'.$bm['subtract_from'].'</small> : <small class="label label-primary">'.$bm['positive_side'].'</small>';
 			$obj[] = $data;
 		}
 
