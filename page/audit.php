@@ -162,10 +162,17 @@ class page_audit extends \xepan\base\Page {
 
 	function page_allTRansactionsRows(){
 		$grid = $this->add('xepan\base\Grid');
+
+		$grid->addHook('formatRow',function($g){
+			$g->current_row_html['created_at'] = date('F jS Y', strtotime($g->model['created_at']));
+		});
 		
 		$m= $this->add('xepan\accounts\Model_TransactionRow');
+		$m->setOrder('created_at');
 
-		$grid->setModel($m,['transaction','ledger','ledger_id','report_name','subtract_from','positive_side','_amountDr','_amountCr','amountDr','amountCr','original_amount_dr','original_amount_cr','currency']);
+		$m->addCondition('ledger',null);
+
+		$grid->setModel($m,['created_at','transaction','ledger','ledger_id','report_name','subtract_from','positive_side','_amountDr','_amountCr','amountDr','amountCr','original_amount_dr','original_amount_cr','currency']);
 		$grid->removeColumn('ledger_id');
 		$grid->addFormatter('ledger','wrap');
 		$grid->addTotals(['_amountDr','_amountCr','amountDr','amountCr']);
