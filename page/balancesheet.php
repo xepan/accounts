@@ -41,6 +41,16 @@ class page_balancesheet extends \xepan\base\Page{
 		$left_sum = $report['left_sum'];
 		$right_sum = $report['right_sum'];
 
+		if($left_sum < $right_sum){
+			$left[] = ['name'=>'<b>ERROR</b>','amount'=>($right_sum-$left_sum),'id'=>'','type'=>'-'];
+			$left_sum += ($right_sum-$left_sum);
+		}
+
+		if($left_sum > $right_sum){
+			$right[] = ['name'=>'ERROR','amount'=>($left_sum-$right_sum),'id'=>'','type'=>'-'];
+			$right_sum += ($left_sum-$right_sum);
+		}
+
 
 		$grid_l = $view->add('xepan\hr\Grid',null,'balancesheet_liablity',['view\grid\balancesheet']);
 		$grid_l->setSource($left);
@@ -55,5 +65,6 @@ class page_balancesheet extends \xepan\base\Page{
 
         $view->js('click')->_selector('.xepan-accounts-bs-group.bsrow')->univ()->frameURL('BalanceSheet Head Groups',[$this->api->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
         $view->js('click')->_selector('.xepan-accounts-bs-group.pandl')->univ()->frameURL('PANDL',[$this->api->url('xepan_accounts_pandl'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
+        $view->js(true)->_selector('td:contains(ERROR), tr:contains(ERROR)')->css(['color'=>'red','font-weight'=>'bold']);
 	}
 }
