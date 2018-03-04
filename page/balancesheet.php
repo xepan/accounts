@@ -42,13 +42,17 @@ class page_balancesheet extends \xepan\base\Page{
 		$right_sum = $report['right_sum'];
 
 		if($left_sum < $right_sum){
-			$left[] = ['name'=>'<b>ERROR</b>','amount'=>($right_sum-$left_sum),'id'=>'','type'=>'-'];
-			$left_sum += ($right_sum-$left_sum);
+			if(($right_sum-$left_sum)>0.01){
+				$left[] = ['name'=>'ERROR','amount'=>($right_sum-$left_sum),'id'=>'','type'=>'-'];
+				$left_sum += ($right_sum-$left_sum);
+			}
 		}
 
 		if($left_sum > $right_sum){
-			$right[] = ['name'=>'ERROR','amount'=>($left_sum-$right_sum),'id'=>'','type'=>'-'];
-			$right_sum += ($left_sum-$right_sum);
+			if(($left_sum-$right_sum)>0.01){
+				$right[] = ['name'=>'ERROR','amount'=>($left_sum-$right_sum),'id'=>'','type'=>'-'];
+				$right_sum += ($left_sum-$right_sum);
+			}
 		}
 
 
