@@ -24,6 +24,7 @@ class page_report_executer extends page_report{
 
 
 		// ask variable from customer
+		// ?(ABC)  OR ?(ABC:Date)
 		$ask_variables=[];
 		preg_match_all('^\?\((.*?)\)^', $layout, $ask_variables);
 
@@ -116,8 +117,13 @@ class page_report_executer extends page_report{
 
 			$form = $this->add('Form');
 			foreach ($ask_variables[1] as $key => $name) {
-				$nor_name = $this->app->normalizeName($name);
-				$field = $form->addField('line',$nor_name)->validate('required');
+				$name_with_type = explode(":", $name);
+				$nor_name = $this->app->normalizeName($name_with_type[0]);
+				if(count($name_with_type) ==2 && strtolower($name_with_type[1]) == 'date')
+					$field = $form->addField('DatePicker',$nor_name)->validate('required');
+				else
+					$field = $form->addField('line',$nor_name)->validate('required');
+
 				if(isset($this->reportfunctionValue[$nor_name]))
 					$field->set($this->reportfunctionValue[$nor_name]);
 			}
@@ -170,18 +176,23 @@ class page_report_executer extends page_report{
 
 		// preg match string
 		// [[loop:Loop1:Name = {$name} Type = {$ledger_type}]]
-		preg_match_all('^\[\[loop(.*?)\]\]^', $layout, $matches);
+		preg_match_all('^\[\[loop:(.*?)\]\]^', $layout, $matches);
 		
 		// echo "<pre>";
 		// print_r($matches);
 		// echo "</pre>";
+		// die();
 
 
 		foreach ($matches[1] as $key => $loop_str) {
 
 			$temp_array = explode(":", $loop_str);
-			$loop_function = $temp_array[1];
-			$loop_template = $temp_array[2];
+			// echo "<pre>";
+			// print_r($temp_array);
+			// echo "</pre>";
+			// // die();			
+			$loop_function = $temp_array[0];
+			$loop_template = $temp_array[1];
 			
 			$loop_model = $this->add('xepan\accounts\Model_ReportLoop');
 			$loop_model->addCondition('name',$loop_function);

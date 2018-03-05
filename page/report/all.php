@@ -7,6 +7,15 @@ class page_report_all extends page_report{
 	function init(){
 		parent::init();
 
+		$tag_helper = $this->add('VirtualPage')
+				->set(function($page){
+					if($_GET['delimiter']=='!')
+						echo json_encode([['name'=>'{$a !}'],['name'=>'{$b !}'],['name'=>'{$c !}']]);
+					if($_GET['delimiter']=='$')
+						echo json_encode([['name'=>'{$a $}'],['name'=>'{$b $}'],['name'=>'{$c $}']]);
+					exit;
+				});
+
 		$crud = $this->add('xepan\hr\CRUD',
 						null,
 						null,
@@ -16,6 +25,26 @@ class page_report_all extends page_report{
 		$model = $this->add('xepan\accounts\Model_Report_Layout');
 		$crud->setModel($model);
 		$run_executer = $crud->grid->addColumn('button','Run');
+
+		if($crud->isEditing()){
+			$groups = $this->add('xepan\accounts\Model_Group')->getRows(['name']);
+			$ledgers = $this->add('xepan\accounts\Model_Ledger')->getRows(['name']);
+			$bshead = $this->add('xepan\accounts\Model_BalanceSheet')->getRows(['name']);
+
+			$f = $crud->form->getElement('layout');
+			$f->addStaticHelperList($groups,'G',false);
+			$f->addStaticHelperList($ledgers,'L',false);
+			$f->addStaticHelperList($bshead,'H',false);
+
+			$f->mention_options=[
+					'insert'=>$this->js(null,'function(item){return "<span>" + item.id +":(" + item.name + ")</span>";}'),
+					'render'=>$this->js(null,"function(item) { return '<li>' +'<a href=\"javascript:;\"><span>' + item.id+ ' : ' + item.name + '</span></a>' +'</li>';}")
+				];
+			$f->mention_options['items']=10000;
+			$f->mention_options['delay']=100;
+
+			$f->setFieldHint('Selection Helpers G: Groups, L: Ledgers, H: BalanceSheet Heads ');
+		}
 
 		if($_GET['Run']){
 
