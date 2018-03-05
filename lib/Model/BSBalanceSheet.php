@@ -293,24 +293,48 @@ class Model_BSBalanceSheet extends Model_BalanceSheet{
 		
 		if($debug) {echo "Pandl Info <pre>"; print_r($pandl); echo "</pre><br/>";}
 
+		// work on current profit and loss
 		$net_profit = $pandl['net_profit'];
 		$net_loss = $pandl['net_loss'];
-
 
 		$gross_profit = $pandl['gross_profit'];
 		$gross_loss = $pandl['gross_loss'];
 
 		if($net_profit > 0){
-			$left[] = ['name'=>'Profit','amount'=>abs($net_profit),'id'=>'net_profit','type'=>'pandl'];
+			$left[] = ['name'=>'Current Profit','amount'=>abs($net_profit),'id'=>'net_profit','type'=>'pandl'];
 			$left_sum += $net_profit;
 			if($debug) {echo "net profit added in left $left_sum <br/>";}
 		}
 
 		if($net_loss > 0){
-			$right[] = ['name'=>'Loss','amount'=>abs($net_loss),'id'=>'net_loss','type'=>'pandl'];
+			$right[] = ['name'=>'Current Loss','amount'=>abs($net_loss),'id'=>'net_loss','type'=>'pandl'];
 			$right_sum += abs($net_loss);
 			if($debug) {echo "net loss added in right $right_sum <br/>";}
 		}
+
+		// work on pandl opennign 
+		$prev_pandl = $this->getPandL('1970-01-01',$this->app->previousDate($from_date));
+
+		// work on current profit and loss
+		$net_profit = $prev_pandl['net_profit'];
+		$net_loss = $prev_pandl['net_loss'];
+
+		$gross_profit = $prev_pandl['gross_profit'];
+		$gross_loss = $prev_pandl['gross_loss'];
+
+		if($net_profit > 0){
+			$left[] = ['name'=>'Profit Openning','amount'=>abs($net_profit),'id'=>'op_profit','type'=>'op_pandl'];
+			$left_sum += $net_profit;
+			if($debug) {echo "net profit added in left $left_sum <br/>";}
+		}
+
+		if($net_loss > 0){
+			$right[] = ['name'=>'Loss Openning','amount'=>abs($net_loss),'id'=>'op_loss','type'=>'op_pandl'];
+			$right_sum += abs($net_loss);
+			if($debug) {echo "net loss added in right $right_sum <br/>";}
+		}
+
+
 
 		$opening_balance_diff=$openning_balances_dr - $openning_balances_cr;
 		

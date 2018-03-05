@@ -69,6 +69,7 @@ class page_balancesheet extends \xepan\base\Page{
 
         $view->js('click')->_selector('.xepan-accounts-bs-group.bsrow')->univ()->frameURL('BalanceSheet Head Groups',[$this->api->url('xepan_accounts_bstogroup'),'bs_id'=>$this->js()->_selectorThis()->closest('[data-id]')->data('id'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
         $view->js('click')->_selector('.xepan-accounts-bs-group.pandl')->univ()->frameURL('PANDL',[$this->api->url('xepan_accounts_pandl'), 'from_date'=>$from_date, 'to_date'=>$to_date]);
+        $view->js('click')->_selector('.xepan-accounts-bs-group.op_pandl')->univ()->frameURL('Openning PANDL',[$this->api->url('xepan_accounts_pandl'), 'from_date'=>'1970-01-01', 'to_date'=>$this->app->previousDate($from_date)]);
         $view->js(true)->_selector('td:contains(ERROR), tr:contains(ERROR)')->css(['color'=>'red','font-weight'=>'bold']);
 	}
 }
