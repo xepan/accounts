@@ -35,7 +35,7 @@ class page_cashbook extends \xepan\base\Page{
 		$transaction_r_j->addField('exchange_rate');
 		$transaction_r_j->addField('original_amount_dr','_amountDr');
 		$transaction_r_j->addField('original_amount_cr','_amountCr');
-		$ledger_j = $transaction_r_j->join('ledger.id','ledger_id');
+		$ledger_j = $transaction_r_j->leftJoin('ledger.id','ledger_id');
 		$ledger_j->addField('group_id');
 
 		$transaction->addExpression('group_path')->set($this->add('xepan\accounts\Model_Group')->addCondition('id',$transaction->getElement('group_id'))->fieldQuery('path'));
