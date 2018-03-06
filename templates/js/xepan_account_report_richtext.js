@@ -1,10 +1,54 @@
 $.each({
-	
-	richtext: function(obj,options,frontend){
+	initToolbarBootstrapBindings : function () {
+		var fonts = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 
+					'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times',
+					'Times New Roman', 'Verdana'],
+			fontTarget = $('[title=Font]').siblings('.dropdown-menu');
+		
+		$.each(fonts, function (idx, fontName) {
+			fontTarget.append($('<li><a data-edit="fontName ' + fontName +'" style="font-family:\''+ fontName +'\'">'+fontName + '</a></li>'));
+		});
+		$('a[title]').tooltip({container:'body'});
+		$('.dropdown-menu input').click(function() {return false;})
+			.change(function () {$(this).parent('.dropdown-menu').siblings('.dropdown-toggle').dropdown('toggle');})
+			.keydown('esc', function () {this.value='';$(this).change();});
+
+		$('[data-role=magic-overlay]').each(function () { 
+			var overlay = $(this), target = $(overlay.data('target')); 
+			overlay.css('opacity', 0).css('position', 'absolute').offset(target.offset()).width(target.outerWidth()).height(target.outerHeight());
+		});
+		if ("onwebkitspeechchange"	in document.createElement("input")) {
+			var editorOffset = $(this.jquery).offset();
+			$('#voiceBtn').css('position','absolute').offset({top: editorOffset.top, left: editorOffset.left+$('#editor').innerWidth()-35});
+		} else {
+			$('#voiceBtn').hide();
+		}
+	},
+	showErrorAlert : function (reason, detail) {
+		var msg='';
+		if (reason==='unsupported-file-type') { msg = "Unsupported format " +detail; }
+		else {
+			console.log("error uploading file", reason, detail);
+		}
+		$('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+ 
+		 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
+	},
+	xepan_account_report_richtext: function(obj,options,frontend,mention_options,accounts_list){
 		tinymce.baseURL = "./vendor/tinymce/tinymce";
 
-        tinymce.editors=[];
-        tinymce.activeEditors=[];
+        // tinymce.editors=[];
+        // tinymce.activeEditors=[];
+        $(tinymce.editors).each(function(index, el) {
+            if(el.id == $(obj).attr('id')) {
+                try{
+                        $(obj).tinymce().remove();
+                }catch(err){
+                        console.log(err);
+                        console.log('tineymce.remove() on ');
+                        console.log(el);
+                }
+            }
+        });
 
         $(document).on('focusin', function(event) {
             if ($(event.target).closest(".mce-window").length) {
@@ -29,18 +73,27 @@ $.each({
                     commandsOptions: {
                         getfile: {
                             oncomplete: 'close',
-                            folders: true
+                            folders: false
                         }
                     }
                 }).dialogelfinder('instance');
             },
-            content_css: "vendor/xepan/accounts/templates/css/tinymention.css",
             plugins: [
                 "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
                 "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
                 "save table contextmenu directionality emoticons template paste textcolor colorpicker imagetools mention"
             ],
-            toolbar1: "insertfile undo redo | styleselect | bold italic fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons",
+            external_plugins:{'mention':'/vendor/xepan/base/templates/js/tinymce-plugins/mention/mention/plugin.min.js'},
+            mentions: $.extend({
+                renderDropdown: function() {
+                    //add twitter bootstrap dropdown-menu class
+                    return '<ul class="rte-autocomplete" style="z-index:3000"></ul>';
+                },
+                source: [],
+                delimiter: []
+            }, mention_options),
+            
+            toolbar1: "insertfile undo redo | styleselect | bold italic fontselect fontsizeselect | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons tmp",
             fontsize_formats: '8pt 10pt 12pt 14pt 18pt 24pt 36pt',
             image_advtab: true,
             save_enablewhendirty: false,
@@ -53,18 +106,11 @@ $.each({
             verify_html: true,
             // cleanup: false,
             convert_urls: false,
+            document_base_url : $('head base').attr('href'),
             // valid_elements: '*[*]',
             // force_br_newlines: false,
             // force_p_newlines: false,
             // forced_root_block: '',
-            mentions: {
-                source: [
-                    { name: 'Tyra Porcelli' }, 
-                    { name: 'Brigid Reddish' },
-                    { name: 'Ashely Buckler' },
-                    { name: 'Teddy Whelan' }
-                ]
-            },
             setup: function(ed) {
                 ed.on("change", function(ed) {
                     tinyMCE.triggerSave();
@@ -78,6 +124,15 @@ $.each({
                                 tinyMCE.activeEditor.execCommand('mceInsertContent', false,ui.helper.html());
                             }
                         });
+                });
+                ed.addButton('tmp', {
+                  icon:'codesample',
+                  tooltip: "Insert Accounts Template",
+                  onclick: function(){
+                    $.univ().dialogOK('HAHA',JSON.stringify(accounts_list),function(){
+                        ed.insertContent(prompt("ASDASD"));
+                    });
+                  }
                 });
                 // ed.addMenuItem('save', {
                 //     title: 'Save Content',
