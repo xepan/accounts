@@ -1,38 +1,4 @@
 $.each({
-	initToolbarBootstrapBindings : function () {
-		var fonts = ['Serif', 'Sans', 'Arial', 'Arial Black', 'Courier', 
-					'Courier New', 'Comic Sans MS', 'Helvetica', 'Impact', 'Lucida Grande', 'Lucida Sans', 'Tahoma', 'Times',
-					'Times New Roman', 'Verdana'],
-			fontTarget = $('[title=Font]').siblings('.dropdown-menu');
-		
-		$.each(fonts, function (idx, fontName) {
-			fontTarget.append($('<li><a data-edit="fontName ' + fontName +'" style="font-family:\''+ fontName +'\'">'+fontName + '</a></li>'));
-		});
-		$('a[title]').tooltip({container:'body'});
-		$('.dropdown-menu input').click(function() {return false;})
-			.change(function () {$(this).parent('.dropdown-menu').siblings('.dropdown-toggle').dropdown('toggle');})
-			.keydown('esc', function () {this.value='';$(this).change();});
-
-		$('[data-role=magic-overlay]').each(function () { 
-			var overlay = $(this), target = $(overlay.data('target')); 
-			overlay.css('opacity', 0).css('position', 'absolute').offset(target.offset()).width(target.outerWidth()).height(target.outerHeight());
-		});
-		if ("onwebkitspeechchange"	in document.createElement("input")) {
-			var editorOffset = $(this.jquery).offset();
-			$('#voiceBtn').css('position','absolute').offset({top: editorOffset.top, left: editorOffset.left+$('#editor').innerWidth()-35});
-		} else {
-			$('#voiceBtn').hide();
-		}
-	},
-	showErrorAlert : function (reason, detail) {
-		var msg='';
-		if (reason==='unsupported-file-type') { msg = "Unsupported format " +detail; }
-		else {
-			console.log("error uploading file", reason, detail);
-		}
-		$('<div class="alert"> <button type="button" class="close" data-dismiss="alert">&times;</button>'+ 
-		 '<strong>File upload error</strong> '+msg+' </div>').prependTo('#alerts');
-	},
 	xepan_account_report_richtext: function(obj,options,frontend,mention_options,accounts_list){
 		tinymce.baseURL = "./vendor/tinymce/tinymce";
 
@@ -134,28 +100,6 @@ $.each({
                     });
                   }
                 });
-                // ed.addMenuItem('save', {
-                //     title: 'Save Content',
-                //     icon: 'save',
-                //     text: 'Save',
-                //     context: 'file',
-                //     onclick: function() {
-                //         ed.windowManager.open({
-                //             title:'Content Manager',
-                //             url : '?page=xepan_cms_admin_contents&cut_page=1',
-                //             width : $(window).width()*.8,
-                //             height : $(window).height()*.8
-                //         });
-                //     }
-                // });
-                // ed.addMenuItem('load', {
-                //     title: 'Load Content',
-                //     text: 'Open',
-                //     context: 'file',
-                //     onclick: function() {
-                //         $.univ().frameURL('Content Manager','xepan_cms_admin_contents',{'data':ed.getContent()});
-                //     }
-                // });
             }
         },options);
             
