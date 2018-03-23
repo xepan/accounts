@@ -93,11 +93,9 @@ $.each({
                 });
                 ed.addButton('tmp', {
                   icon:'codesample',
-                  tooltip: "Insert Accounts Template",
+                  tooltip: "Manage Accounts Functions",
                   onclick: function(){
-                    $.univ().dialogOK('HAHA',JSON.stringify(accounts_list),function(){
-                        ed.insertContent(prompt("ASDASD"));
-                    });
+                    $.univ().frameURL('Manage Accounts Functions','?page=xepan_accounts_reportfunction');
                   }
                 });
             }

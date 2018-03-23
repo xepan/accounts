@@ -50,10 +50,12 @@ class page_report_executer extends page_report{
 
 			// nested [[ ]] square bracket not required, work only for single square bracket with arithmathic operator
 			$matches = [];
+			$layout = preg_replace("/\[\[([ \t]+|&nbsp;)+\]\]/i", ' ', $layout);
 			preg_match_all('^\[\[(.*?)\]\]^', $layout, $matches);
+
 			//replacing all values with function result values like Function1 replace by 100 getting it's value from getResult Function
 			foreach ($matches[1] as $key => $sub_expression) {
-
+				// if(strpos($sub_expression,'loop:') !== false) continue;
 				// checking assignment operator
 				$assignment = explode("=", $sub_expression);
 				
@@ -83,8 +85,10 @@ class page_report_executer extends page_report{
 
 			// eval or math eval for executing  expression like [[ 200 * 90 - 10]];
 			preg_match_all('^\[\[(.*?)\]\]^', $layout, $matches);
-			$eval_math = new \Webit\Util\EvalMath\EvalMath;
+			// $eval_math = new \Webit\Util\EvalMath\EvalMath;
+			$eval_math = new \xepan\base\EvalMath;
 			foreach ($matches[1] as $key => $eval_str) {
+				// echo "workgin on ". $eval_str. '<br/>';
 				// // checking assignment operator
 				$assignment = explode("=", $eval_str);
 				$assignment_variable = 0;
@@ -100,6 +104,8 @@ class page_report_executer extends page_report{
 					try{
 						$result = $eval_math->evaluate($eval_str);
 					}catch(\Exception $e){
+						// throw $e;
+						
 						$result = $eval_str;
 					}
 				}
@@ -205,6 +211,7 @@ class page_report_executer extends page_report{
 			$controller = $this->add('AbstractController');
 
 			$loop_template = '{rows}{row}'.$loop_template.'{/row}{/rows}';
+			// echo htmlentities($loop_template);
 			$temp = $controller->add('GiTemplate');
 			$temp->loadTemplateFromString($loop_template);
 

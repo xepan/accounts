@@ -36,14 +36,20 @@ class page_report_all extends page_report{
 	function init(){
 		parent::init();
 
-		// $tag_helper = $this->add('VirtualPage')
-		// 		->set(function($page){
-		// 			if($_GET['delimiter']=='!')
-		// 				echo json_encode([['name'=>'{$a '. $_GET['query'] .'}'],['name'=>'{$b !}'],['name'=>'{$c !}']]);
-		// 			if($_GET['delimiter']=='$')
-		// 				echo json_encode([['name'=>'{$a $}'],['name'=>'{$b $}'],['name'=>'{$c $}']]);
-		// 			exit;
-		// 		});
+		$tag_helper = $this->add('VirtualPage')
+				->set(function($page){
+						$function_model = $this->add('xepan\accounts\Model_ReportFunction');
+
+						$function_model->addExpression('display_value')->set(function($m,$q){
+							return $q->expr('IF(list_of is null,CONCAT([name],":",[type]),CONCAT("loop:",[name]))',['name'=>$m->getElement('name'),'type'=>$m->getElement('type')]);
+						});
+
+						$function_model->addExpression('value')->set('name');
+
+						$functions = $function_model->getRows();
+						echo json_encode($functions);
+						exit;
+				});
 
 		$crud = $this->add('xepan\hr\CRUD',
 						null,
@@ -57,34 +63,29 @@ class page_report_all extends page_report{
 
 		if($crud->isEditing()){
 
-			$groups = $this->add('xepan\accounts\Model_Group')->getRows(['name']);
-			$ledgers = $this->add('xepan\accounts\Model_Ledger')->getRows(['name']);
-			$bshead = $this->add('xepan\accounts\Model_BalanceSheet')->getRows(['name']);
+			// $groups = $this->add('xepan\accounts\Model_Group')->getRows(['name']);
+			// $ledgers = $this->add('xepan\accounts\Model_Ledger')->getRows(['name']);
+			// $bshead = $this->add('xepan\accounts\Model_BalanceSheet')->getRows(['name']);
 
 			$f = $crud->form->getElement('layout');
 			$f->js_widget='xepan_account_report_richtext';
-			$f->extra_options=[$groups,$ledgers,$bshead];
-			// $f->addAjaxHelper($tag_helper->getURL(),['!','$']);
-			$f->addStaticHelperList($this->possible_templates,'@',false);
-			$f->addStaticHelperList($groups,'G',false);
-			$f->addStaticHelperList($ledgers,'L',false);
-			$f->addStaticHelperList($bshead,'H',false);
+			// $f->extra_options=[$groups,$ledgers,$bshead];
+			$f->addAjaxHelper($tag_helper->getURL(),['@']);
+			// $f->addStaticHelperList($this->possible_templates,'@',false);
+			// $f->addStaticHelperList($groups,'G',false);
+			// $f->addStaticHelperList($ledgers,'L',false);
+			// $f->addStaticHelperList($bshead,'H',false);
 
-			$f->mention_options=[
-					'insert'=>$this->js(null,'function(item){
-						 if(item.hasOwnProperty("value")) return item.value; else return "<span>" + item.id +":(" + item.name + ")</span>";
-						 }
-						 	'),
-					'render'=>$this->js(null,"function(item) { return '<li>' +'<a href=\"javascript:;\"><span>' + item.id+ ' : ' + item.name + '</span></a>' +'</li>';}")
-				];
+			$f->mention_options['insert'] = $this->js(null,'function(item) {return item.value; }');
+			$f->mention_options['render'] = $this->js(null,"function(item) { return '<li><a href=\"javascript:;\"><span>'  + item.display_value + '</span></a></li>';}");
+
 			$f->mention_options['items']=10000;
 			$f->mention_options['delay']=100;
 
-			$f->setFieldHint('Selection Helpers @: possible templates G: Groups, L: Ledgers, H: BalanceSheet Heads ');
+			// $f->setFieldHint('Selection Helpers @: possible templates G: Groups, L: Ledgers, H: BalanceSheet Heads ');
 		}
 
 		if($_GET['Run']){
-
 			$this->app->redirect($this->app->url('xepan_accounts_report_executer',['layout'=>$_GET['Run']]));
 
 			// $rl_model = $this->add('xepan\accounts\Model_Report_Layout');
