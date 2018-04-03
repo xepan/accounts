@@ -60,7 +60,7 @@ class page_audit extends \xepan\base\Page {
 	}
 
 	function page_openningCrDrDiff(){
-		$this->add('h3')->set('Positive Balance signed is DR and negative is CR');
+		$this->add('H3')->set('Positive Balance signed is DR and negative is CR');
 
 		$g= $this->add('xepan\base\Grid');
 		$m = $this->add('xepan\accounts\Model_Ledger');
