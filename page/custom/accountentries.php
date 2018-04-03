@@ -10,6 +10,7 @@ class page_custom_accountentries extends \xepan\base\Page {
     public $namespace = __NAMESPACE__;
 	
 	function page_index(){
+
 	
 		$entry_template_m = $this->add('xepan\accounts\Model_EntryTemplate');
 		$crud = $this->add('xepan\hr\CRUD',null,null,['view/grid/account-transaction-template']);
@@ -30,7 +31,9 @@ class page_custom_accountentries extends \xepan\base\Page {
 
 		if(!$crud->isEditing()){
 			$import_btn=$crud->grid->addButton('import')->addClass('btn btn-primary');
-
+			$update_transactions_btn = $crud->grid->addButton('Update Default Transactions')->addClass('btn btn-primary');
+			$update_transactions_vp = $this->add('VirtualPage');
+			$update_transactions_vp->set([$this,'update_transactions_vp']);
 			$p=$this->add('VirtualPage');
 			$p->set(function($p){
 				$f=$p->add('Form');
@@ -48,6 +51,8 @@ class page_custom_accountentries extends \xepan\base\Page {
 			if($import_btn->isClicked()){
 				$this->js()->univ()->frameURL('Import',$p->getUrl())->execute();
 			}
+
+			$update_transactions_btn->js('click')->univ()->frameURL('Update Default Transactions',$update_transactions_vp->getURL());
 			
 			$p=$this->add('VirtualPage');
 			$p->set(function($p){
@@ -156,6 +161,35 @@ class page_custom_accountentries extends \xepan\base\Page {
 				}
 			});
 		}
+	}
+
+	function update_transactions_vp($page){
+		$page->add('View_Console')
+			->set(function($c){
+				/*Default Account Entry*/
+
+		       	$path=realpath(getcwd().'/vendor/xepan/accounts/defaultAccount');
+				// throw new \Exception($path, 1);
+				
+				if(file_exists($path)){
+		       		foreach (new \DirectoryIterator($path) as $file) {
+		       			if($file->isDot()) continue;
+		       			// echo $path."/".$file;
+						$json= file_get_contents($path."/".$file);
+						$import_model = $this->add('xepan\accounts\Model_EntryTemplate');
+						$c->out('Importing '.json_decode($json,true)['name']);
+						$import_model->tryLoadBy('name',json_decode($json,true)['name']);
+						if($import_model->loaded()){
+							$c->out('     Already Exists');
+							$import_model['is_system_default']=true;
+							$import_model->save();
+							$c->out('           Marked as System Default');
+						}else{
+							$import_model->importJson($json,$as_system=true);
+						}
+		       		}
+		       	}
+			});
 	}
 
 
