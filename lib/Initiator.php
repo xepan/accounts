@@ -372,7 +372,7 @@ class Initiator extends \Controller_Addon {
        			// echo $path."/".$file;
        			 $json= file_get_contents($path."/".$file);
        			 $import_model = $this->add('xepan\accounts\Model_EntryTemplate');
-       			 $import_model->importJson($json);
+       			 $import_model->importJson($json,$as_system=true);
        		}
        	}	
 
