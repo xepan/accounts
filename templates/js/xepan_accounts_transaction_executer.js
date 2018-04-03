@@ -43,19 +43,20 @@ jQuery.widget("ui.transaction_executer", {
 		var date_picker_group = $('<div class="input-group">').appendTo(date_picker_wrapper);
 		$('<span class="input-group-addon"><i class="fa fa-calendar"></i></span>').appendTo(date_picker_group)
 
-		self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" id="transaction-date" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
-		$(self.transaction_date).datepicker({dateFormat: 'dd-MM-yy'});
+		self.transaction_date = $('<input type="text" style="text-align:center;" name="startDate" class="transaction-date tra-form-field" />').appendTo(date_picker_group);
+		$(self.element).find('.transaction-date').datepicker({dateFormat: 'dd-MM-yy'});
 		
 		var default_date = new Date();
 
 		entry_data = JSON.parse(self.options.entry_template);
+		// console.log(entry_data);
 		$.each(entry_data,function(tr_id,transaction_data){
 			
 			// setting up date picker
 			if(transaction_data.transaction_date){
 				var date = new Date(transaction_data.transaction_date);
 				// alert(transaction_data.transaction_date);
-				$(self.transaction_date).datepicker('setDate',date);
+				$(self.element).find('.transaction-date').datepicker('setDate',date);
 				// console.log(self.default_date);
 			}
 			
@@ -168,6 +169,7 @@ jQuery.widget("ui.transaction_executer", {
 		var side = self.left_side;
 		if(row_data.side == "CR")  side = self.right_side;
 		$(row_html).appendTo(side);
+		$(self.element).find('.tr-row-currency').val(self.options.default_currency);
 
 	},
 
@@ -182,7 +184,7 @@ jQuery.widget("ui.transaction_executer", {
 		var self = this;
 
 		// MAKE ITEM FIELD AUTO COMLETE
-		$(self.selectorLedger).livequery(function(){ 
+		$(self.element).find(self.selectorLedger).livequery(function(){ 
 			var autocomplete_field = this;
 			var ledger_name = $(autocomplete_field).closest('div.tr-row').attr('data-ledger_name');
 		  	if(ledger_name == "null" || ledger_name == undefined || !ledger_name.length ){
@@ -226,7 +228,7 @@ jQuery.widget("ui.transaction_executer", {
 		});
 
 		// amount field chnage
-		$(self.selectorAmount).livequery(function(){
+		$(self.element).find(self.selectorAmount).livequery(function(){
 			
 			$(this).keyup(function(e){
 				self.doCalc();
@@ -235,7 +237,7 @@ jQuery.widget("ui.transaction_executer", {
 		});
 
 		// duplicate options
-		$('.tr-row-duplicate').livequery(function(){
+		$(self.element).find('.tr-row-duplicate').livequery(function(){
 			$(this).click(function(e){
 				var current_row = $(this).closest('.tr-row');
 				var new_row = $(current_row).clone();
@@ -253,7 +255,7 @@ jQuery.widget("ui.transaction_executer", {
 		});
 
 		// tr-row-remove
-		$('.tr-row-remove').livequery(function(){
+		$(self.element).find('.tr-row-remove').livequery(function(){
 			$(this).click(function(e){
 				$(this).closest('.tr-row').remove();
 				self.doCalc();
@@ -263,7 +265,7 @@ jQuery.widget("ui.transaction_executer", {
 
 		// tr-error-box remove
 		// Remove Error Box after change
-		$('.tra-form-field').livequery(function(){
+		$(self.element).find('.tra-form-field').livequery(function(){
 			$(this).change(function(){
 				$(this).closest('.form-group')
 					.find('.error-message')
@@ -274,7 +276,7 @@ jQuery.widget("ui.transaction_executer", {
 		});
 
 		// save button
-		$('.transaction-save').livequery(function(){
+		$(self.element).find('.transaction-save').livequery(function(){
 
 			$(this).click(function(e){
 				if(self.total_left_sum != self.total_right_sum){
@@ -294,7 +296,7 @@ jQuery.widget("ui.transaction_executer", {
 					temp.is_system_default = entry_data.is_system_default;
 					temp.editing_transaction_id = entry_data.editing_transaction_id;
 					temp.narration = $(self.element).find('#tra_'+entry_tr_id+' .tra-narration').val();
-					temp.transaction_date = $(self.element).find('#transaction-date').datepicker().val();
+					temp.transaction_date = $(self.element).find('.transaction-date').datepicker().val();
 
 					data_object[entry_tr_id] = temp;
 					
@@ -304,7 +306,7 @@ jQuery.widget("ui.transaction_executer", {
 						var one_row_data = {};
 
 						// transaction date
-						$tran_date = $(self.element).find('#transaction-date');
+						$tran_date = $(self.element).find('.transaction-date');
 						if(!$tran_date.datepicker().val()){
 							// alert($tran_date.datepicker().val());
 							self.showFieldError($tran_date,"please select transaction date");
@@ -429,7 +431,7 @@ jQuery.widget("ui.transaction_executer", {
 		});
 
 		// add new ledger dialog button
-		$('.tr-row-add-ledger').livequery(function(){
+		$(self.element).find('.tr-row-add-ledger').livequery(function(){
 			$(this).click(function(e){
 
 				var $tr_row = $(this).closest('.tr-row');

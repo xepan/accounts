@@ -20,10 +20,10 @@ class page_transactionwidget extends \Page{
 
 	    if($_GET['group']){
 	    	$group_m = $this->add('xepan\accounts\Model_Group');
-	    	$group_m->tryLoadBy('name',$_GET['group']);
+	    	$group_m->addCondition('name',explode(",",$_GET['group']));
     		
-    		if($group_m->loaded())	
-    			$ledger_m->addCondition('group_id',$group_m['id']);
+    		// if($group_m->loaded())	
+			$ledger_m->addCondition('group_id','in',$group_m->fieldQuery('id'));
 	    }
 
 		$data = [];

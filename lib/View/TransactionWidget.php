@@ -92,7 +92,8 @@ class View_TransactionWidget extends \View {
 					->_load('xepan_accounts_transaction_executer')
 					->transaction_executer([
 										'entry_template'=>$json_data,'transaction_name',
-										'currency_list'=>$currency_list
+										'currency_list'=>$currency_list,
+										'default_currency'=>$this->app->epan->default_currency->id
 										]);
 		parent::render();
 	}
