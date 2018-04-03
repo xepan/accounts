@@ -77,7 +77,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		return json_encode($data);
 	}
 
-	function importJson($json){
+	function importJson($json,$as_system=false){
 		$data=json_decode($json,true);
 		// echo "<pre>";
 		// // print_r($data['transactions'][0]['rows']);
@@ -87,7 +87,7 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		$temp['name']=$data['name'];
 		$temp['detail']=$data['detail'];
 		$temp['unique_trnasaction_template_code']=$data['unique_trnasaction_template_code'];
-		$temp['is_system_default']=$data['is_system_default'];
+		$temp['is_system_default']=$as_system?:$data['is_system_default'];
 		$temp['is_favourite_menu_lister']=$data['is_favourite_menu_lister'];
 		$temp['is_merge_transaction']=$data['is_merge_transaction'];
 		$temp->save();
