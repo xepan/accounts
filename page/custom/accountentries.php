@@ -115,6 +115,7 @@ class page_custom_accountentries extends \xepan\base\Page {
 			$form=$crud->form;
 			$grp_fld = $form->getElement('group');
 			$grp_fld->setAttr(['multiple'=>'multiple']);
+			$grp_fld->setEmptyText('Any');
 
 			$grp_fld->set(explode(",",$form->model['group']))->js(true)->trigger('changed');
 
