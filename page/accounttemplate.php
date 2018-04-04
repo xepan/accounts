@@ -11,6 +11,7 @@ class page_accounttemplate extends \Page
 		parent::init();
 
 		$data =[
+				'General' => ['name'=>'General', 'description'=>'An empty form','group_id'=>0,'ledger_type'=>''],
 				'Customer'=>['name'=>'Customer', 'description'=>'Entries related to customer','group_id'=>$this->add('xepan\accounts\Model_Group')->load("Sundry Debtor")->get('id'),'ledger_type'=>'Customer'],
 				'Supplier' => ['name'=>'Supplier', 'description'=>'Entries related to Supplier','group_id'=>$this->add('xepan\accounts\Model_Group')->load("Sundry Creditor")->get('id'),'ledger_type'=>'Supplier'],
 				'Outsourceparty' => ['name'=>'Outsource Party', 'description'=>'Entries related to OutsourceParty','group_id'=>$this->add('xepan\accounts\Model_Group')->load("Sundry Creditor")->get('id'),'ledger_type'=>'OutsourceParty'],

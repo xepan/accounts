@@ -126,7 +126,7 @@ class page_statement extends \xepan\base\Page {
 				$mail_vp = $this->add('VirtualPage');
 				$mail_vp->set(function($p)use($transactions,$ledger_id){
 					
-					$ledger_model=$p->add('xepan\accounts\Model_Ledger');
+					$ledger_model = $p->add('xepan\accounts\Model_Ledger');
 					$ledger=$ledger_model->load($ledger_id);
 					$contact=$ledger->contact();
 					if($contact){
@@ -157,7 +157,8 @@ class page_statement extends \xepan\base\Page {
 												'grid_class'=>'xepan\accounts\Grid_AccountsBase',
 												'grid_options'=>['no_records_message'=>'No account statement found'],
 												'form_class' => null,
-												'allow_add'=> false
+												'allow_add'=> false,
+												'pass_acl'=>true,
 											],null,['view/acstatement']);;
 					
 					if($_GET['ledger_id'])
@@ -187,7 +188,7 @@ class page_statement extends \xepan\base\Page {
 					}
 					$transactions->setOrder('created_at');
 					$statement_list->setModel($transactions);
-					
+					$statement_list->grid->addOnlyOpeningBalance($ledger_model);
 					$vp_form->addSubmit('Send')->addClass('btn btn-primary');
 					
 
@@ -198,7 +199,7 @@ class page_statement extends \xepan\base\Page {
 						$vp_form->js(null,$vp_form->js()->closest('.dialog')->dialog('close'))->univ()->successMessage('Email Send SuccessFully')->execute();
 					}
 
-				});	
+				});
 
 				if($send_email_btn->isClicked()){
 					$this->js()->univ()->frameURL('Send Mail',$mail_vp->getURL(),['ledger_id'=>$_GET['ledger_id']])->execute();
@@ -267,7 +268,8 @@ class page_statement extends \xepan\base\Page {
 		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
 
-			// ,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
+		$crud->grid->addOnlyOpeningBalance($ledger_m);
+		// ,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		// $grid->addPaginator(10);
 
 		if($form->isSubmitted()){
