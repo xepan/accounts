@@ -58,6 +58,9 @@ jQuery.widget("ui.transaction_executer", {
 				// alert(transaction_data.transaction_date);
 				$(self.element).find('.transaction-date').datepicker('setDate',date);
 				// console.log(self.default_date);
+			}else{
+				$(self.element).find('.transaction-date').datepicker('setDate',default_date);
+				
 			}
 			
 			// alert(default_date+" = "+transaction_data.transaction_date);
