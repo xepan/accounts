@@ -82,7 +82,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 
 			// return $party_row->fieldQuery('_amountCr');
 
-			return $q->expr("IFNULL([0],IFNULL([1],0))-[2]",[$party_row->fieldQuery('_amountDr'),$party_row->fieldQuery('_amountCr'),$m->getElement('logged_amount')]);
+			return $q->expr("IFNULL([0],IFNULL([1],0))-[2]",[$party_row->sum('_amountDr'),$party_row->sum('_amountCr'),$m->getElement('logged_amount')]);
 		})->type('money');
 
 		$this->addExpression('party_currency_id')->set(function($m,$q){
