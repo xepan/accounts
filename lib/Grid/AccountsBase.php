@@ -112,6 +112,7 @@ class Grid_AccountsBase extends \xepan\hr\Grid{
 				$grid->current_row_balance = $amount * (($opening_side=='DR')?1:-1); //Assuming Cr to be negative in all software
 			// }
 		});
+
 	}
 
 	function insertBefore($data){
@@ -128,4 +129,33 @@ class Grid_AccountsBase extends \xepan\hr\Grid{
 		$this->current_row_html=$saved_current_row_html;
 	}
 
+	function addOnlyOpeningBalance($ledger_model){
+		
+		if(!$this->model->count()->getOne()){
+			$this->add('View',null,'not_found')->setHtml('
+					<table>
+						<tr>
+							<td> Transactions Type </td>
+							<td> Debit </td>
+							<td> Credit </td>
+							<td> Balace </td>
+						</tr>
+						<tr>
+							<td>
+								By Opening Manager
+							</td>
+							<td>
+								'.$ledger_model['OpeningBalanceDr'].'
+							</td>
+							<td>
+								'.$ledger_model['OpeningBalanceCr'].'
+							</td>
+							<td>
+								'.$ledger_model['balance'].'
+							</td>
+						</tr>
+					</table>
+				');
+		}
+	}
 }
