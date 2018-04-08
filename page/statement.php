@@ -268,7 +268,8 @@ class page_statement extends \xepan\base\Page {
 		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
 
-		$crud->grid->addOnlyOpeningBalance($ledger_m);
+		if($ledger_id)
+			$crud->grid->addOnlyOpeningBalance($ledger_m);
 		// ,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		// $grid->addPaginator(10);
 

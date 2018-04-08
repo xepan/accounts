@@ -52,6 +52,98 @@ class Model_EntryTemplate extends \xepan\base\Model_Table{
 		
 	}
 
+
+/*
+$entry_template->executeSave([
+					$transaction->id => [
+						// 'entry_template_transaction_id'=>$transaction->id,
+						'entry_template_id'=>$entry_template->id,
+						// 'name'=>$transaction['name'],
+						'type'=>$transaction['type'],
+						'transaction_date'=>$this->app->now,
+						'narration'=> $this['narration'],
+						'currency'=>$this->app->epan->default_currency->id,
+						'related_id'=>$this->id,
+						'related_type'=>'xavoc\ispmanager\Model_PaymentTransaction',
+						'exchange_rate'=>1,
+						'rows'=>[
+									[
+										'data-code'=>'cash',
+										'currency'=>$this->app->epan->default_currency->id,
+										'exchange_rate'=>1,
+										'data-side'=>'DR',
+										'data-ledger'=> $this->add('xepan\accounts\Model_Ledger')->tryLoadBy('name','Cash Account')->get('id'),
+										'data-amount'=> $this['amount']
+									],
+									[
+										'data-code'=>'party',
+										'currency'=>$this->app->epan->default_currency->id,
+										'exchange_rate'=>1,
+										'data-side'=>'CR',
+										'data-ledger'=> $this->ref('contact_id')->ledger()->get('id'),
+										'data-amount'=>$this['amount']
+									]
+								]
+
+					]
+				]
+			);
+
+*/
+	function executeSave($transaction_data){
+		$transactions=[];
+        $total_amount=[];
+        $related_transaction_id = null;
+
+        foreach ($transaction_data as $transaction) {
+        	// check if transaction is editing the remove all tr_row record
+            if($transaction['editing_transaction_id']){
+            	$transactions[] = $new_transaction = $this->add('xepan\accounts\Model_Transaction')->load($transaction['editing_transaction_id']);
+        		
+        		// delete rows
+        		$transaction_row_m = $this->add('xepan\accounts\Model_TransactionRow');
+        		$transaction_row_m->addCondition('transaction_id',$transaction['editing_transaction_id']);
+        		$transaction_row_m->deleteAll();
+        	}else{	
+	            $transactions[] = $new_transaction = $this->add('xepan\accounts\Model_Transaction');
+        	}
+
+            $new_transaction->createNewTransaction($transaction['type'],null,date('Y-m-d',strtotime($transaction['transaction_date'])),$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],isset($transaction['related_id'])?$transaction['related_id']:null,isset($transaction['related_type'])?$transaction['related_type']:null,null,$transaction['entry_template_id']);
+            $total_amount[$transaction['type']] = 0;          
+        	
+            foreach ($transaction['rows'] as $index => $row) {
+            	$code = $row['data-code'];
+
+            	$currency_id = $row['currency'];
+            	if($row['currency'] === 'undefined' OR $row['currency'] == null OR $row['currency'] == 0)
+            		$currency_id = $this->app->epan->default_currency;
+            	
+            	$exchange_rate = $row['exchange_rate'];
+            	if($row['exchange_rate'] === 'undefined' OR $row['exchange_rate'] == null OR $row['exchange_rate'] == 0)
+            		$exchange_rate = 1.00;
+
+                if(strtolower($row['data-side'])=='dr'){
+                    $new_transaction->addDebitLedger($row['data-ledger'],$row['data-amount'],$currency_id,$exchange_rate,$remark=null,$code);
+                    $total_amount[$transaction['type']] += $row['data-amount']* $exchange_rate;
+                }else{
+                    $new_transaction->addCreditLedger($row['data-ledger'],$row['data-amount'],$currency_id,$exchange_rate,$remark=null,$code);
+                }
+            }
+
+            if($total_amount[$transaction['type']] > 0){
+                $new_transaction->execute();
+
+                if(!$related_transaction_id){
+                    $related_transaction_id = $new_transaction->id;
+                }
+
+                $new_transaction['updated_at'] = $this->app->now;
+                $new_transaction['related_transaction_id'] = $related_transaction_id;
+                $new_transaction->save();                
+            }
+        }
+	}
+
 	function exportJson(){
 		$data = $this->get();
 		unset($data['id']);
