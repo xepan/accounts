@@ -7,6 +7,7 @@ class Model_ReportLoop extends \xepan\accounts\Model_ReportFunction{
 		parent::init();
 
 		$this->addCondition('list_of','<>',null);
+		$this->addCondition('type','Loop');
 	}
 
 	function getListModel(){

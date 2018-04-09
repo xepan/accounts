@@ -26,7 +26,8 @@ class Model_ReportFunction extends \xepan\base\Model_Table{
 								'GroupOnlyTransactionSUMDR',
 								'GroupOnlyTransactionSUMCR',
 								'PANDL',
-								'Trading'
+								'Trading',
+								'Loop'
 							]);
 
 		$this->hasOne('xepan\accounts\Group','group_id');
