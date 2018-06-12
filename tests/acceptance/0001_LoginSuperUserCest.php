@@ -24,7 +24,6 @@ class LoginSuperUserCest
     public function test_login(SuperUser $i){
         $i->amOnPage('/admin');
         $i->login('management@xavoc.com');
-        $i->waitForText('Dashboard');
         $i->see('Dashboard');
     }
 
