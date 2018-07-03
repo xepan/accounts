@@ -150,6 +150,7 @@ class Initiator extends \Controller_Addon {
         $array['ACCOUNTS_MONTHLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_MONTHLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_MONTHLY_REPORT_AUTO_NOTIFICATION'];
         $array['ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_QUARTLY_REPORT_AUTO_NOTIFICATION'];
         $array['ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION'] = ['caption'=>'ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_ACCOUNTS_YEARLY_REPORT_AUTO_NOTIFICATION'];
+        $array['BalanceSheet'] = ['caption'=>'BalanceSheet', 'type'=>'xepan\base\DropDown','model'=>'xepan\accounts\Model_BalanceSheet'];
     }
 
     function collect_shortcuts($app,&$shortcuts){

@@ -18,16 +18,7 @@ class page_cashbook extends \xepan\base\Page{
 					'form_class' => 'xepan\accounts\Form_EntryRunner',
 					'allow_add'=> false
 				],null,['view/cashbookstatement-grid']);
-
-		$crud->grid->add('VirtualPage')
-	 		->addColumn('edit_transaction')
-			->set(function($page){
-				$id = $_GET[$page->short_name.'_id'];
-				$model = $page->add('xepan\accounts\Model_Transaction')->load($id);
-				$widget = $page->add('xepan\accounts\View_TransactionWidget');
-				$widget->setModel($model);
-			});
-			
+	
 		$transaction = $this->add('xepan\accounts\Model_Transaction');
 		$transaction->getElement('exchange_rate')->destroy();
 		$transaction_r_j = $transaction->join('account_transaction_row.transaction_id','id');
@@ -128,6 +119,18 @@ class page_cashbook extends \xepan\base\Page{
 		}
 		
 		$crud->setModel($transaction);
+
+		if($crud->acl_controller->canEdit()){
+			$crud->grid->add('VirtualPage')
+		 		->addColumn('edit_transaction')
+				->set(function($page){
+					$id = $_GET[$page->short_name.'_id'];
+					$model = $page->add('xepan\accounts\Model_Transaction')->load($id);
+					$widget = $page->add('xepan\accounts\View_TransactionWidget');
+					$widget->setModel($model);
+				});
+			
+		}
 		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
 
 		if($form->isSubmitted()){

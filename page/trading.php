@@ -25,6 +25,11 @@ class page_trading extends \xepan\base\Page{
 		}
 
 		$bsbalancesheet = $view->add('xepan\accounts\Model_BSBalanceSheet');
+		$acl = $bsbalancesheet->add('xepan\hr\Controller_Acl',['skip_allow_add'=>true]);
+		if(!$acl->canView()) {
+			$this->add('View_Error')->set('You are not authorised for this view');
+			return ;
+		}
 		$report = $bsbalancesheet->getTradingBalance($from_date,$to_date);
 
 		$left=$report['left'];

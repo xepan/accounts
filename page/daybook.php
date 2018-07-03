@@ -17,15 +17,6 @@ class page_daybook extends \xepan\base\Page{
 					'form_class' => 'xepan\accounts\Form_EntryRunner',
 					'allow_add'=> false
 				],null,['view/daybookstatement-grid']);
-
-		$crud->grid->add('VirtualPage')
-	 		->addColumn('edit_transaction')
-			->set(function($page){
-				$id = $_GET[$page->short_name.'_id'];
-				$model = $page->add('xepan\accounts\Model_Transaction')->load($id);
-				$widget = $page->add('xepan\accounts\View_TransactionWidget');
-				$widget->setModel($model);
-			});
 			
 		$transaction = $this->add('xepan\accounts\Model_Transaction');
 		$transaction->getElement('exchange_rate')->destroy();
@@ -134,7 +125,19 @@ class page_daybook extends \xepan\base\Page{
 			$transaction->load($crud->id);
 		}	
 
+
 		$crud->setModel($transaction);
+		if($crud->acl_controller->canEdit()){
+			$crud->grid->add('VirtualPage')
+		 		->addColumn('edit_transaction')
+				->set(function($page){
+					$id = $_GET[$page->short_name.'_id'];
+					$model = $page->add('xepan\accounts\Model_Transaction')->load($id);
+					$widget = $page->add('xepan\accounts\View_TransactionWidget');
+					$widget->setModel($model);
+				});
+		}
+
 		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
 
 		if($form->isSubmitted()){

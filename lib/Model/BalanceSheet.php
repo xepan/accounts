@@ -4,7 +4,9 @@ namespace xepan\accounts;
 class Model_BalanceSheet extends \xepan\base\Model_Table{
 	
 	public $table="account_balance_sheet";
-	public $acl=false;
+	public $acl_type='BalanceSheet';
+
+	public $actions=['All'=>['view']];
 	
 	function init(){
 		parent::init();
@@ -18,6 +20,8 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		$this->addField('subtract_from')->enum(array('DR','CR'))->mandatory(true);
 		$this->addField('order');
 		$this->addField('created_at')->type('date')->defaultValue($this->app->today);
+
+		$this->addExpression('status')->set('"All"');
 
 		$this->hasMany('xepan\accounts\Group','balance_sheet_id');
 
