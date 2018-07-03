@@ -4,6 +4,8 @@ namespace xepan\accounts;
 class Model_Ledger extends \xepan\base\Model_Table{
 	public $table="ledger";
 	public $acl_type='Ledger';	
+
+	public $actions=['All'=>['view','edit','delete']];
 	
 	function init(){
 		parent::init();
@@ -32,6 +34,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->addField('affectsBalanceSheet')->type('boolean')->defaultValue(true);
 
 		$this->hasMany('xepan\accounts\TransactionRow','ledger_id',null,'TransactionRows');
+
+		$this->addExpression('status')->set('"All"');
 
 		$this->addExpression('balance_sheet_id')->set(function($m,$q){
 			return $m->refSQL('group_id')->fieldQuery('balance_sheet_id');

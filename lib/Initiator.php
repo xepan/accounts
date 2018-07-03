@@ -141,7 +141,7 @@ class Initiator extends \Controller_Addon {
 
     function exportEntities($app,&$array){
         $array['Currency'] = ['caption'=>'Currency', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_Currency'];
-        $array['ledger'] = ['caption'=>'Ledger', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_Ledger'];
+        $array['Ledger'] = ['caption'=>'Ledger', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_Ledger'];
         $array['EntryTemplate'] = ['caption'=>'EntryTemplate', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_EntryTemplate'];
         $array['Transaction'] = ['caption'=>'Transaction', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_Transaction'];
         $array['FIRM_DEFAULT_CURRENCY_ID'] = ['caption'=>'FIRM_DEFAULT_CURRENCY_ID', 'type'=>'xepan\base\Basic','model'=>'xepan\accounts\Model_FIRM_DEFAULT_CURRENCY_ID'];
