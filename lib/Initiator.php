@@ -108,7 +108,7 @@ class Initiator extends \Controller_Addon {
 	// used for custom menu
 	function getTopApplicationMenu(){
 
-		return ['Accounts'=>
+		return ['Accounts'=>[
 					[	'name'=>'Accounts Chart',
 						'icon'=>'fa fa-bar-chart-o',
 						'url'=>'xepan_accounts_chartofaccount'
@@ -193,12 +193,13 @@ class Initiator extends \Controller_Addon {
 						'icon'=>'fa fa-book',
 						'url'=>'xepan_accounts_report'
 					]
+				]
 			];
 	}
 
 	function getConfigTopApplicationMenu(){
 		return [
-				'Accounts_Config'=>
+				'Accounts_Config'=>[
 					[
 						'name'=>'Currencies Management',
 						'icon'=>'fa fa-cog',
@@ -224,6 +225,7 @@ class Initiator extends \Controller_Addon {
 			        	'icon'=>'fa fa-cog',
 			        	'url'=>'xepan_accounts_salaryledgerassociation'
 			        ]
+			    ]
 			];
 
 	} 
