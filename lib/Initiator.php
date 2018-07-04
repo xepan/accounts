@@ -33,8 +33,8 @@ class Initiator extends \Controller_Addon {
 											);
 			if($this->app->inConfigurationMode)
 	            $this->populateConfigurationMenus();
-	        else
-	            $this->populateApplicationMenus();
+	        // else
+	        //     $this->populateApplicationMenus();
 
 			
 
@@ -104,6 +104,129 @@ class Initiator extends \Controller_Addon {
 			
 		}
 	}
+
+	// used for custom menu
+	function getTopApplicationMenu(){
+
+		return ['Accounts'=>
+					[	'name'=>'Accounts Chart',
+						'icon'=>'fa fa-bar-chart-o',
+						'url'=>'xepan_accounts_chartofaccount'
+					],
+					[
+						'name'=>'Accounts/Ledgers',
+						'icon'=>'fa fa-briefcase',
+						'url'=>'xepan_accounts_accounts'
+					],
+					[
+						'name'=>'Account Paid',
+						'icon'=>'fa fa-cc-visa',
+						'url'=>'xepan_accounts_amtpaid'
+					],
+					[	'name'=>'Payment Received',
+						'icon'=>'fa fa-cc-paypal',
+						'url'=>'xepan_accounts_amtreceived'
+					],
+					[
+						'name'=>'Cash <=> Bank',
+						'icon'=>'fa fa-exchange',
+						'url'=>'xepan_accounts_contra'
+					],
+					[
+						'name'=>'Transaction Lister',
+						'icon'=>'fa fa-list',
+						'url'=>'xepan_accounts_accounttransactionlister'
+					],
+					[
+						'name'=>'Account Statement',
+						'icon'=>'fa fa-file-excel-o',
+						'url'=>'xepan_accounts_statement'
+					],
+					[
+						'name'=>'Merge Accounts',
+						'icon'=>'fa fa-file-excel-o',
+						'url'=>'xepan_accounts_mergeaccounts'
+					],
+					[	'name'=>'Cash Book',
+						'icon'=>'fa fa-book',
+						'url'=>'xepan_accounts_cashbook'
+					],
+					[
+						'name'=>'Day Book',
+						'icon'=>'fa fa-bookmark',
+						'url'=>'xepan_accounts_daybook'
+					],
+					[	'name'=>'Group',
+						'icon'=>'fa fa-group',
+						'url'=>'xepan_accounts_group'
+					],
+					[	'name'=>'Balance Sheet',
+						'icon'=>'fa fa-balance-scale',
+						'url'=>'xepan_accounts_balancesheet'
+					],
+					[	'name'=>'Profit & Loss',
+						'icon'=>'fa fa-database',
+						'url'=>'xepan_accounts_pandl'
+					],
+					[	'name'=>'Trading',
+						'icon'=>'fa fa-exchange',
+						'url'=>'xepan_accounts_trading'
+					],
+					[	'name'=>'Audit',
+						'icon'=>'fa fa-exchange',
+						'url'=>'xepan_accounts_audit'
+					],
+					[	'name'=>'Debit/Credit Note',
+						'icon'=>'fa fa-sticky-note-o',
+						'url'=>'xepan_accounts_debitcreditnote'
+					],
+					[	'name'=>'Currency Management',
+						'icon'=>'fa fa-money',
+						'url'=>'xepan_accounts_currency',
+						'url_param'=>['status'=>'Active']
+					],
+					[	'name'=>'Configuration',
+						'icon'=>'fa fa-cog fa-spin',
+						'url'=>'xepan_accounts_config'
+					],
+					[	'name'=>'Reports',
+						'icon'=>'fa fa-book',
+						'url'=>'xepan_accounts_report'
+					]
+			];
+	}
+
+	function getConfigTopApplicationMenu(){
+		return [
+				'Accounts_Config'=>
+					[
+						'name'=>'Currencies Management',
+						'icon'=>'fa fa-cog',
+						'url'=>'xepan_accounts_currency'
+					],
+					[
+						'name'=>'Default Currency',
+						'icon'=>'fa fa-cog',
+						'url'=>'xepan_accounts_config_currency'
+					],
+					[
+						'name'=>'Accounts Entry Templates',
+						'icon'=>'fa fa-cog',
+						'url'=>'xepan_accounts_custom_accountentries'
+					],
+			        [	
+			        	'name'=>'Financial Year Starting Month',
+			        	'icon'=>'fa fa-cog',
+			        	'url'=>'xepan_accounts_financialyear'
+			        ],
+			        [	
+			        	'name'=>'HR Employee Salary Ledger Association',
+			        	'icon'=>'fa fa-cog',
+			        	'url'=>'xepan_accounts_salaryledgerassociation'
+			        ]
+			];
+
+	} 
 
 	function setup_pre_frontend(){
 		// $this->addAppDateFunctions();
