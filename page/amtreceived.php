@@ -5,7 +5,7 @@ class page_amtreceived extends \xepan\base\Page {
 	function init(){
 		parent::init();
 
-		if(!$this->add('xepan\accounts\Model_Transaction')->add('xepan\hr\Controller_Acl')->canAdd()){
+		if(!$this->add('xepan\accounts\Model_Transaction')->add('xepan\hr\Controller_ACL')->canAdd()){
 			$this->add('View_Error')->set('You do not have permission to add/execute transaction, please give add transaction permission from Day/Cash book ACL');
 			return;
 		}

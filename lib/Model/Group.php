@@ -3,7 +3,10 @@ namespace xepan\accounts;
 
 class Model_Group extends \xepan\base\Model_Table{
 	public $table="account_group";
-	public $acl=false;
+	// public $acl=ture;
+	public $acl_type='Accounts_Group';
+	public $status = ["All"];
+	public $actions = ['All'=>['view','edit','delete']];
 	function init(){
 		parent::init();
 

@@ -203,7 +203,7 @@ class page_audit extends \xepan\base\Page {
 			->setAttr('multiple');
 		$f->addSubmit('Filter');
 
-		$this->add('h3')->set('Positive Balance signed is DR and negative is CR');
+		$this->add('H3')->set('Positive Balance signed is DR and negative is CR');
 
 		$grid = $this->add('xepan\base\Grid');
 		$m = $this->add('xepan\accounts\Model_Ledger');
