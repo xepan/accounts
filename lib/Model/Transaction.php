@@ -358,7 +358,7 @@ class Model_Transaction extends \xepan\base\Model_Table{
 	}
 
 	function deleteTransactionRow(){
-		$this->ref('TransactionRows')->deleteAll();
+		$this->add('xepan\accounts\Model_TransactionRow')->addCondition('transaction_id',$this->id)->deleteAll();
 	}
 
 	function customer(){
