@@ -422,6 +422,8 @@ jQuery.widget("ui.transaction_executer", {
 				}).done(function(ret){
 					if(ret == "success"){
 						$.univ().successMessage('saved successfully');
+						$(self.element).find("input").val("");
+						$(self.element).find("select").val("");
 					}else{
 						$.univ().errorMessage('something wrong');
 					}

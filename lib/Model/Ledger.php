@@ -15,7 +15,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		$this->hasOne('xepan\base\Contact','contact_id')->display(['form'=>'xepan\base\Basic']);
 		$this->hasOne('xepan\accounts\Group','group_id')->mandatory(true);
 		$this->hasOne('xepan\base\Epan','epan_id');
-		
+		$this->hasOne('xepan\base\Branch','branch_id')->defaultValue(@$this->app->branch->id);
+
 		$this->addField('name')->sortable(true);
 		$this->addField('related_id'); // user for related like tax/vat
 		$this->addField('ledger_type'); //
@@ -108,10 +109,18 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		});
 
 		$this->addHook('beforeDelete',$this);
+		$this->addHook('beforeSave',$this);
 		
 		$this->is([
 				'name|required|unique_in_epan'
 			]);
+	}
+
+	function beforeSave(){
+		if($this['contact_id']){
+			$contact_model = $this->add('xepan\base\Model_Contact')->tryLoad($this['contact_id']);
+			$this['branch_id'] = $contact_model['branch_id'];
+		}
 	}
 
 	function beforeDelete(){
@@ -128,8 +137,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		if(!$employee_for->loaded())
 			throw new \Exception("must pass Employee loaded model", 1);	
 
-		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
-		
+		$creditor = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");		
 		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($employee_for['unique_name'],$creditor->id,$employee_for->id,['ledger_type'=>'Employee','LedgerDisplayName'=>$employee_for['name'],'contact_id'=>$employee_for->id]);
 	}
 
@@ -144,7 +152,8 @@ class Model_Ledger extends \xepan\base\Model_Table{
 
 		$debtor = $app->add('xepan\accounts\Model_Group')->load("Sundry Debtor");
 		
-		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($customer_for['unique_name'],$debtor->id,$customer_for->id,['ledger_type'=>'Customer','LedgerDisplayName'=>$customer_for['name'],'contact_id'=>$customer_for->id]);
+		return $app->add('xepan\accounts\Model_Ledger')
+				->createNewLedger($customer_for['unique_name'],$debtor->id,$customer_for->id,['ledger_type'=>'Customer','LedgerDisplayName'=>$customer_for['name'],'contact_id'=>$customer_for->id]);
 	}
 
 	//creating supplier ledger
@@ -170,6 +179,7 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		if(!$outsource_party_for->loaded())
 			throw new \Exception("must pass loaded outsourceparty", 1);	
 
+		
 		$outsource = $app->add('xepan\accounts\Model_Group')->load("Sundry Creditor");
 
 		return $app->add('xepan\accounts\Model_Ledger')->createNewLedger($outsource_party_for['unique_name'],$outsource->id,$outsource_party_for->id,['ledger_type'=>'OutsourceParty','LedgerDisplayName'=>$outsource_party_for['name'],'contact_id'=>$outsource_party_for->id]);
@@ -205,19 +215,16 @@ class Model_Ledger extends \xepan\base\Model_Table{
 		
 		if(!$ledger->loaded()){
 			$ledger['name'] = $name;
-		
 			foreach ($other_values as $field => $value) {
 				$ledger[$field] = $value;
 			}
-			$ledger->save();
-		
+			// $ledger->save();
 		}else{
 			if($ledger['name'] != $name){
 				$ledger['name'] = $name;
-				$ledger->save();
 			}
-		} 
-		
+		}
+		$ledger->save();
 		return $ledger;
 	}
 

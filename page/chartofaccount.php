@@ -8,6 +8,12 @@ class page_chartofaccount extends \xepan\base\Page{
 	{
 		parent::init();
 
+		if($this->app->auth->model['scope'] != "SuperUser"){
+			$this->add('View_Error')->set('you are not authorise to access this page.');
+			return;
+		}
+
+
 		$balance_model = $this->add('xepan\accounts\Model_BalanceSheet');
 
 		$obj = [];
