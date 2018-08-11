@@ -13,6 +13,7 @@ class Model_Group extends \xepan\base\Model_Table{
 		// $this->hasOne('xepan\base\Epan','epan_id');
 
 		$this->hasOne('xepan\accounts\BalanceSheet','balance_sheet_id')->sortable(true);
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id)->system(true);
 
 		$this->hasOne('xepan\accounts\Group','parent_group_id')->sortable(true);
 		$this->addField('root_group_id')->system(true);
