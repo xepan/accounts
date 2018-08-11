@@ -75,7 +75,7 @@ class page_chartofaccount extends \xepan\base\Page{
 	    		// continue;
 	    	// }
 
-	        $output .= '<li>' . $item['name'];
+	        $output .= '<li style="margin-left: 30px;">' . $item['name'];
 	        // echo $item['name']. ' -- ';
 	        if(isset($item['groups']) && count($item['groups'])){
 	            $output .= $this->make_ulli($item['groups']);
