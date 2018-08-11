@@ -3,8 +3,8 @@ namespace xepan\accounts;
 
 class Model_BalanceSheet extends \xepan\base\Model_Table{
 	
-	public $table="account_balance_sheet";
-	public $acl_type='BalanceSheet';
+	public $table = "account_balance_sheet";
+	public $acl_type = 'BalanceSheet';
 
 	public $actions=['All'=>['view']];
 	
@@ -12,6 +12,7 @@ class Model_BalanceSheet extends \xepan\base\Model_Table{
 		parent::init();
 
 		$this->hasOne('xepan\base\Epan','epan_id');
+		$this->hasOne('xepan\hr\Employee','created_by_id')->defaultValue($this->app->employee->id)->system(true);
 		
 		$this->addField('name')->mandatory(true);
 		$this->addField('positive_side')->enum(array('LT','RT'))->mandatory(true);
