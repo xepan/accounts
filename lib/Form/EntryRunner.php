@@ -297,11 +297,12 @@ class Form_EntryRunner extends \Form {
             $new_transaction->createNewTransaction($transaction['type'],null,$transaction['date'],$transaction['narration'],$transaction['currency'],$transaction['exchange_rate'],$transaction['related_id'],$transaction['related_type'],$related_transaction_id, $transaction_template_id = $this->template_id);
             $total_amount[$transaction['type']] = 0;
             foreach ($transaction['rows'] as $code => $row) {
-                if(strtolower($row['side'])=='dr'){
+                if(strtolower($row['side'])=='dr' && $row['amount']){
                     $new_transaction->addDebitLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate'],$remark=null,$code);
-                    $total_amount[$transaction['type']] += $row['amount']* $row['exchange_rate'];
+                    $total_amount[$transaction['type']] += $row['amount']* ($row['exchange_rate']?:1);
                 }else{
-                    $new_transaction->addCreditLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate'],$remark=null,$code);
+                    if($row['amount'])
+                        $new_transaction->addCreditLedger($row['ledger'],$row['amount'],$row['currency'],$row['exchange_rate']?:1,$remark=null,$code);
                 }
             }
             if($total_amount[$transaction['type']] > 0)
