@@ -107,6 +107,7 @@ class Initiator extends \Controller_Addon {
 
 	// used for custom menu
 	function getTopApplicationMenu(){
+		if($this->app->getConfig('hidden_xepan_accounts',false)){return [];}
 
 		return ['Accounts'=>[
 					[	'name'=>'Accounts Chart',
@@ -198,6 +199,8 @@ class Initiator extends \Controller_Addon {
 	}
 
 	function getConfigTopApplicationMenu(){
+		if($this->app->getConfig('hidden_xepan_accounts',false)){return [];}
+		
 		return [
 				'Accounts_Config'=>[
 					[
