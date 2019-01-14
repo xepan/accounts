@@ -39,7 +39,6 @@ class page_statement extends \xepan\base\Page {
 					'allow_add'=> false
 				],null,['view/accountstatement-grid']);
 
-
 		 $crud->grid->add('VirtualPage')
 	 		->addColumn('edit_transaction')
 			->set(function($page){
@@ -267,6 +266,7 @@ class page_statement extends \xepan\base\Page {
 
 		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
 		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
+		$crud->grid->add('xepan\base\Controller_Export',['fields'=>['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr']]);
 
 		if($ledger_id)
 			$crud->grid->addOnlyOpeningBalance($ledger_m);
@@ -284,5 +284,6 @@ class page_statement extends \xepan\base\Page {
 						]
 					)->execute();
 		}
+
 	}
 }
