@@ -65,6 +65,17 @@ class page_statement extends \xepan\base\Page {
 			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
 		});
 
+		$transactions->addExpression('related_contact')->set(function($m,$q){
+			$related_no = $m->add('xepan\commerce\Model_QSP_Master')
+									->addCondition('id',$m->getElement('related_id'));
+			return $q->expr("IFNULL([0],'')",[$related_no->fieldQuery('contact')]);
+		});
+		$transactions->addExpression('related_qsp_type')->set(function($m,$q){
+			$related_no = $m->add('xepan\commerce\Model_QSP_Master')
+									->addCondition('id',$m->getElement('related_id'));
+			return $q->expr("IFNULL([0],'')",[$related_no->fieldQuery('type')]);
+		});
+
 
 		if($ledger_id){
 			$ledger_id = $this->api->stickyGET('ledger_id');
@@ -264,7 +275,7 @@ class page_statement extends \xepan\base\Page {
 			$transactions->load($crud->id);
 		}
 
-		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id']);
+		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id','related_contact','related_type','no','related_qsp_type']);
 		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
 		$crud->grid->add('xepan\base\Controller_Export',['fields'=>['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr']]);
 
