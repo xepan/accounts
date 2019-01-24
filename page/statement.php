@@ -62,7 +62,10 @@ class page_statement extends \xepan\base\Page {
 		$transactions->addExpression('no')->set(function($m,$q){
 			$related_no = $m->add('xepan\commerce\Model_QSP_Master')
 									->addCondition('id',$m->getElement('related_id'));
-			return $q->expr("[0]",[$related_no->fieldQuery('document_no')]);
+			return $q->expr('CONCAT([0]," ",[1])',[
+					$related_no->fieldQuery('serial'),
+					$related_no->fieldQuery('document_no')
+				]);
 		});
 
 		$transactions->addExpression('related_contact')->set(function($m,$q){
@@ -277,7 +280,7 @@ class page_statement extends \xepan\base\Page {
 
 		$crud->setModel($transactions,['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','original_amount_dr','original_amount_cr','related_id','related_contact','related_type','no','related_qsp_type']);
 		$crud->grid->addQuickSearch(['name','Narration','transaction_type','related_type']);
-		$crud->grid->add('xepan\base\Controller_Export',['fields'=>['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr']]);
+		$crud->grid->add('xepan\base\Controller_Export',['fields'=>['voucher_no','transaction_type','created_at','Narration','amountDr','amountCr','related_contact','related_qsp_type','no']]);
 
 		if($ledger_id)
 			$crud->grid->addOnlyOpeningBalance($ledger_m);
